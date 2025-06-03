@@ -3,6 +3,7 @@
 
 #include <sbml/SBMLDocument.h>
 #include <rr/rrRoadRunner.h>
+#include <redland.h>
 
 #include <string>
 #include <chrono>
