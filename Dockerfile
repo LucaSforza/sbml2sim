@@ -14,4 +14,4 @@ COPY . .
 
 COPY ./lib64/libroadrunner.so /lib
 
-RUN make lib
+RUN make -j4

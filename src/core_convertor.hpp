@@ -1,3 +1,6 @@
+#ifndef CORE_CONVERTOR_HPP_
+#define CORE_CONVERTOR_HPP_
+
 #include <stdio.h>
 #include <assert.h>
 
@@ -20,7 +23,7 @@
 
 using Genes = std::map<std::string, std::vector<std::string>>;
 
-Genes extractSpeciesGenes(const libsbml::Model* model) {
+Genes extract_species_genes(const libsbml::Model* model) {
     Genes results;
     const std::string UNIPROT_PREFIX = "https://identifiers.org/uniprot:";
 
@@ -511,113 +514,5 @@ void add_avg_calculations(libsbml::Model *model, bool for_only_proteins) {
     }
 }
 
-class SBMLDoc {
 
-    libsbml::SBMLDocument *doc;
-    libsbml::Model *model;
-    int total_kinetic_constant;
-
-    rr::RoadRunner rr;
-
-public:
-
-    SBMLDoc(const char *file_path, bool all_convience_rate_law = false) {
-        doc = libsbml::readSBML(file_path);
-        if(check_error(doc)) {
-            throw std::runtime_error("Error parsing SBML document");
-        }
-        model = doc->getModel();
-        total_kinetic_constant = add_kinetic_laws(model, all_convience_rate_law);
-        add_avg_calculations(model, false); // TODO: fai in modo che calcoli l'avg solo per le proteine
-
-    }
-    
-    ~SBMLDoc() {
-        delete this->doc;
-    }
-    
-    int number_of_kinetic_constants() const {
-        return this->total_kinetic_constant;
-    }
-
-    void set_kinetic_constants(int id, double value) {
-        this->model->getParameter(id)->setValue(value);
-    }
-    
-    bool save_converted_file(const char *output_path) const {
-        return libsbml::writeSBML(this->doc, output_path);
-    }
-
-    void random_start_concentration() {
-        for (u_int i = 0; i < model->getNumSpecies(); ++i) {
-            libsbml::Species *species = model->getSpecies(i);
-            // Only set for floating species (not boundary or constant)
-            if (!species->getBoundaryCondition() && !species->getConstant()) {
-                double min_exp = 0;
-                double max_exp = 3.0;
-                double scale = static_cast<double>(rand()) / RAND_MAX;
-                double x = min_exp + scale * (max_exp - min_exp);
-                species->setInitialConcentration(x);
-            }
-        }
-    }
-    
-    void simulate(const char *output_file, double duration) {
-        std::string sbmlStr = libsbml::writeSBMLToStdString(this->doc);
-        rr.load(sbmlStr);
-        rr::SimulateOptions options = rr::SimulateOptions();
-        options.output_file = output_file;
-        options.duration = duration;
-        rr.simulate(&options);
-    }
-
-    void dump_genes_data(void) const {
-        Genes genes = extractSpeciesGenes(model);
-        for (const auto& pair : genes) {
-            const std::string& species_id = pair.first;
-            const std::vector<std::string>& gene_ids = pair.second;
-            std::cout << "Species: " << species_id << " Genes: ";
-            for (size_t i = 0; i < gene_ids.size(); ++i) {
-            std::cout << gene_ids[i];
-            if (i != gene_ids.size() - 1) std::cout << ", ";
-            }
-            std::cout << std::endl;
-        }
-    }
-};
-
-extern "C" {
-
-    SBMLDoc *SBMLDoc_new(const char *file_path, bool all_convienece_law) {
-        return new SBMLDoc(file_path, all_convienece_law);
-    }
-
-    int SBMLDoc_number_of_kinetic_costant(const SBMLDoc *_this) {
-        return _this->number_of_kinetic_constants();
-    }
-
-    bool SBMLDoc_save_converted_file(const SBMLDoc *_this, const char *output_path) {
-        return _this->save_converted_file(output_path);
-    }
-
-    void SBMLDoc_set_kinetic_constants(SBMLDoc *_this, int id, double value) {
-        _this->set_kinetic_constants(id, value);
-    }
-
-    void SBMLDoc_simulate(SBMLDoc *_this, const char *output_file, double duration) {
-        _this->simulate(output_file, duration);
-    }
-
-    void SBMLDoc_random_start_concentration(SBMLDoc *_this) {
-        _this->random_start_concentration();
-    }
-
-    void SBMLDoc_dump_genes_data(const SBMLDoc *_this) {
-        _this->dump_genes_data();
-    }
-    
-    void SBMLDoc_delete(SBMLDoc *_this) {
-        delete _this;
-    }
-
-}
+#endif // CORE_CONVERTOR_HPP_

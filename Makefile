@@ -1,7 +1,15 @@
-all: lib
+all: libsbmlconverter.so
 
-build:
+INCLUDE_DIRS= -I./include/
+LIB_DIRS= -L./lib64
+
+CXX =g++
+CXXFLAGS= $(INCLUDE_DIRS) -fPIC
+LDFLAGS= $(LIB_DIRS) -lroadrunner -lsbml
+
+
+folder:
 	mkdir -p build
 
-lib: build src/sbml_converter.cpp
-	g++ -shared -I./include/ -L./lib64 src/sbml_converter.cpp -o build/libsbmlconverter.so -lroadrunner -lsbml -fPIC
+libsbmlconverter.so: folder
+	$(CXX) $(CXXFLAGS) -shared -o build/$@ src/bindings.cpp $(LDFLAGS)
