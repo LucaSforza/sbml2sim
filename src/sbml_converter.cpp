@@ -3,13 +3,11 @@
 
 #include <sbml/SBMLDocument.h>
 #include <rr/rrRoadRunner.h>
-#include <redland.h>
 
 #include <string>
 #include <chrono>
 #include <map>
 #include <vector>
-#include <sbml/xml/XMLNode.h>
 
 #define eprintf(...) fprintf(stdout, __VA_ARGS__)
 #define TODO(msg) assert(false && msg)
@@ -22,82 +20,55 @@
 
 using Genes = std::map<std::string, std::vector<std::string>>;
 
-Genes extractSpeciesGenes(const libsbml::Model *model) {
+Genes extractSpeciesGenes(const libsbml::Model* model) {
     Genes results;
+    const std::string UNIPROT_PREFIX = "https://identifiers.org/uniprot:";
 
-    // Inizializza il mondo Redland RDF
-    librdf_world* world = librdf_new_world();
-    librdf_world_open(world);
-    librdf_uri* base_uri = librdf_new_uri(world, (const unsigned char*)"http://example.org/base#");
-
-    // Namespace per le annotazioni biologiche
-    const unsigned char* bqbiol_ns = (const unsigned char*)"http://biomodels.net/biology-qualifiers/";
-    librdf_uri* hasPart_uri = librdf_new_uri(world, (const unsigned char*)"http://biomodels.net/biology-qualifiers/hasPart");
-
-    // Processa ogni specie
     for (unsigned int i = 0; i < model->getNumSpecies(); ++i) {
         const libsbml::Species* species = model->getSpecies(i);
-        const string species_id = species->getId();
+        const std::string species_id = species->getId();
         const libsbml::XMLNode* annotation = species->getAnnotation();
 
         if (!annotation) continue;
 
-        // Crea un modello RDF per l'annotazione
-        librdf_storage* storage = librdf_new_storage(world, "memory", species_id.c_str(), NULL);
-        librdf_model* rdf_model = librdf_new_model(world, storage, NULL);
-        
-        // Parsa l'annotazione XML in RDF
-        librdf_parser* parser = librdf_new_parser(world, "rdfxml", NULL, NULL);
-        librdf_parser_parse_string_into_model(
-            parser,
-            (const unsigned char*)annotation->toXMLString().c_str(),
-            base_uri,
-            rdf_model
-        );
-        librdf_free_parser(parser);
-
-        // Cerca triple con predicato bqbiol:hasPart
         std::vector<std::string> uniprot_ids;
-        librdf_stream* stream = librdf_model_find_statements(rdf_model, NULL);
         
-        while (!librdf_stream_end(stream)) {
-            librdf_statement* statement = librdf_stream_get_object(stream);
-            librdf_node* predicate = librdf_statement_get_predicate(statement);
-            
-            if (librdf_node_is_resource(predicate) &&
-                librdf_uri_equals(librdf_node_get_uri(predicate), hasPart_uri)) {
+        // Cerca direttamente nei nodi XML
+        for (unsigned int j = 0; j < annotation->getNumChildren(); ++j) {
+            const libsbml::XMLNode& rdfNode = annotation->getChild(j);
+            if (rdfNode.getName() != "RDF") continue;
+
+            for (unsigned int k = 0; k < rdfNode.getNumChildren(); ++k) {
+                const libsbml::XMLNode& descNode = rdfNode.getChild(k);
+                if (descNode.getName() != "Description") continue;
                 
-                librdf_node* object = librdf_statement_get_object(statement);
-                if (librdf_node_is_resource(object)) {
-                    const char* uri = (const char*)librdf_uri_as_string(librdf_node_get_uri(object));
-                    string uri_str(uri);
-                    
-                    // Estrai UniProt ID
-                    size_t pos = uri_str.find("uniprot/");
-                    if (pos != string::npos) {
-                        string uniprot_id = uri_str.substr(pos + 8);
-                        uniprot_ids.push_back(uniprot_id);
+                for (unsigned int m = 0; m < descNode.getNumChildren(); ++m) {
+                    const libsbml::XMLNode& hasPartNode = descNode.getChild(m);
+                    if (hasPartNode.getPrefix() != "bqbiol" || 
+                        hasPartNode.getName() != "hasPart") continue;
+
+                    for (unsigned int n = 0; n < hasPartNode.getNumChildren(); ++n) {
+                        const libsbml::XMLNode& bagNode = hasPartNode.getChild(n);
+                        if (bagNode.getName() != "Bag") continue;
+
+                        for (unsigned int p = 0; p < bagNode.getNumChildren(); ++p) {
+                            const libsbml::XMLNode& liNode = bagNode.getChild(p);
+                            if (liNode.getName() != "li") continue;
+
+                            const std::string resource = liNode.getAttributes().getValue(0);
+                            if (resource.find(UNIPROT_PREFIX) != std::string::npos) {
+                                uniprot_ids.push_back(resource.substr(UNIPROT_PREFIX.length()));
+                            }
+                        }
                     }
                 }
             }
-            librdf_stream_next(stream);
         }
 
         if (!uniprot_ids.empty()) {
             results[species_id] = uniprot_ids;
         }
-
-        // Libera risorse Redland
-        librdf_free_stream(stream);
-        librdf_free_model(rdf_model);
-        librdf_free_storage(storage);
     }
-
-    // Libera risorse finali
-    librdf_free_uri(hasPart_uri);
-    librdf_free_uri(base_uri);
-    librdf_free_world(world);
-
     return results;
 }
 
@@ -599,6 +570,20 @@ public:
         options.duration = duration;
         rr.simulate(&options);
     }
+
+    void dump_genes_data(void) const {
+        Genes genes = extractSpeciesGenes(model);
+        for (const auto& pair : genes) {
+            const std::string& species_id = pair.first;
+            const std::vector<std::string>& gene_ids = pair.second;
+            std::cout << "Species: " << species_id << " Genes: ";
+            for (size_t i = 0; i < gene_ids.size(); ++i) {
+            std::cout << gene_ids[i];
+            if (i != gene_ids.size() - 1) std::cout << ", ";
+            }
+            std::cout << std::endl;
+        }
+    }
 };
 
 extern "C" {
@@ -627,6 +612,10 @@ extern "C" {
         _this->random_start_concentration();
     }
 
+    void SBMLDoc_dump_genes_data(const SBMLDoc *_this) {
+        _this->dump_genes_data();
+    }
+    
     void SBMLDoc_delete(SBMLDoc *_this) {
         delete _this;
     }

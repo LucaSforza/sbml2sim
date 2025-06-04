@@ -6,6 +6,7 @@ import sbmlconverter as sc
 
 sbml = sc.SBMLDoc("sbmls/R-HSA-1643713.sbml")
 sbml.random_start_concentration()
+sbml.dump_genes_data()
 sbml.save_converted_file("R-HSA-1643713-modified.sbml")
 sbml.simulate(duration=1000)
 
