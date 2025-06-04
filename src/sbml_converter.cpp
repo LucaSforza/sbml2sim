@@ -7,6 +7,9 @@
 
 #include <string>
 #include <chrono>
+#include <map>
+#include <vector>
+#include <sbml/xml/XMLNode.h>
 
 #define eprintf(...) fprintf(stdout, __VA_ARGS__)
 #define TODO(msg) assert(false && msg)
@@ -14,6 +17,87 @@
 #define SBO_INHIBITOR 20
 #define SBO_ACTIVATOR 21
 #define SBO_ENZYME 13
+
+using Genes = std::map<std::string, std::vector<std::string>>;
+
+Genes extractSpeciesGenes(const libsbml::Model *model) {
+    Genes results;
+
+    // Inizializza il mondo Redland RDF
+    librdf_world* world = librdf_new_world();
+    librdf_world_open(world);
+    librdf_uri* base_uri = librdf_new_uri(world, (const unsigned char*)"http://example.org/base#");
+
+    // Namespace per le annotazioni biologiche
+    const unsigned char* bqbiol_ns = (const unsigned char*)"http://biomodels.net/biology-qualifiers/";
+    librdf_uri* hasPart_uri = librdf_new_uri(world, (const unsigned char*)"http://biomodels.net/biology-qualifiers/hasPart");
+
+    // Processa ogni specie
+    for (unsigned int i = 0; i < model->getNumSpecies(); ++i) {
+        const libsbml::Species* species = model->getSpecies(i);
+        const string species_id = species->getId();
+        const libsbml::XMLNode* annotation = species->getAnnotation();
+
+        if (!annotation) continue;
+
+        // Crea un modello RDF per l'annotazione
+        librdf_storage* storage = librdf_new_storage(world, "memory", species_id.c_str(), NULL);
+        librdf_model* rdf_model = librdf_new_model(world, storage, NULL);
+        
+        // Parsa l'annotazione XML in RDF
+        librdf_parser* parser = librdf_new_parser(world, "rdfxml", NULL, NULL);
+        librdf_parser_parse_string_into_model(
+            parser,
+            (const unsigned char*)annotation->toXMLString().c_str(),
+            base_uri,
+            rdf_model
+        );
+        librdf_free_parser(parser);
+
+        // Cerca triple con predicato bqbiol:hasPart
+        std::vector<std::string> uniprot_ids;
+        librdf_stream* stream = librdf_model_find_statements(rdf_model, NULL);
+        
+        while (!librdf_stream_end(stream)) {
+            librdf_statement* statement = librdf_stream_get_object(stream);
+            librdf_node* predicate = librdf_statement_get_predicate(statement);
+            
+            if (librdf_node_is_resource(predicate) &&
+                librdf_uri_equals(librdf_node_get_uri(predicate), hasPart_uri)) {
+                
+                librdf_node* object = librdf_statement_get_object(statement);
+                if (librdf_node_is_resource(object)) {
+                    const char* uri = (const char*)librdf_uri_as_string(librdf_node_get_uri(object));
+                    string uri_str(uri);
+                    
+                    // Estrai UniProt ID
+                    size_t pos = uri_str.find("uniprot/");
+                    if (pos != string::npos) {
+                        string uniprot_id = uri_str.substr(pos + 8);
+                        uniprot_ids.push_back(uniprot_id);
+                    }
+                }
+            }
+            librdf_stream_next(stream);
+        }
+
+        if (!uniprot_ids.empty()) {
+            results[species_id] = uniprot_ids;
+        }
+
+        // Libera risorse Redland
+        librdf_free_stream(stream);
+        librdf_free_model(rdf_model);
+        librdf_free_storage(storage);
+    }
+
+    // Libera risorse finali
+    librdf_free_uri(hasPart_uri);
+    librdf_free_uri(base_uri);
+    librdf_free_world(world);
+
+    return results;
+}
 
 /*
     @return true iff the document has a fatal error
