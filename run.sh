@@ -1,3 +1,7 @@
 #/bin/sh
 
-docker run -it -e DISPLAY=$DISPLAY --name sbml2sim sbml2sim
+xhost +local:docker
+
+docker run -it -e DISPLAY=$DISPLAY --net=host --name sbml2sim sbml2sim
+
+xhost -local:docker
