@@ -18,7 +18,7 @@ def usage():
     print("    -c                           All convinience law")
     print("    -h                           Print those informations")
     print("    -g                           Dump protein species and their corresponding genes")
-    print("    -f                           Path to save the simulations result plot")
+    print("    -f <output path>             Path to save the simulations result plot")
     
 def parse_args():
     try:
