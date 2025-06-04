@@ -18,6 +18,8 @@
 #define SBO_ACTIVATOR 21
 #define SBO_ENZYME 13
 
+#define EPSILON (1e-6)
+
 using Genes = std::map<std::string, std::vector<std::string>>;
 
 Genes extractSpeciesGenes(const libsbml::Model *model) {
@@ -153,7 +155,7 @@ std::string create_hill_pos_function(libsbml::Model *model, libsbml::ModifierSpe
     std::string param_k_regulator = "k_activator_"+modifier->getId();
     libsbml::Parameter *p = model->createParameter();
     p->setId(param_k_regulator);
-    p->setValue(random_kinetic_constant());
+    p->setValue(1.0);
     p->setConstant(true);
     *kinetic_constant_added += 1;
     if(h == 1) {
@@ -172,7 +174,7 @@ std::string create_hill_neg_function(libsbml::Model *model, libsbml::ModifierSpe
     libsbml::Parameter *p = model->createParameter();
     p->setId(param_k_regulator);
     p->setConstant(true);
-    p->setValue(random_kinetic_constant());
+    p->setValue(1.0);
     *kinetic_constant_added += 1;
     if(h == 1) {
         return "(("+ param_k_regulator +")/("+param_k_regulator+"+"+modifier->getSpecies()+"))";
@@ -267,7 +269,7 @@ std::string add_convinience_kinetic_law_reversible(libsbml::Model *model, libsbm
     p = model->createParameter();
     p->setId(paramNameforcat);
     p->setConstant(true);
-    p->setValue(random_kinetic_constant()); // default
+    p->setValue(1.0); // default
     reaction_part += paramNameforcat;
     *kinetic_constant_added += 1;
     // create the kinetic constant backcat
@@ -275,7 +277,7 @@ std::string add_convinience_kinetic_law_reversible(libsbml::Model *model, libsbm
     p = model->createParameter();
     p->setId(paramNamebackcat);
     p->setConstant(true);
-    p->setValue(random_kinetic_constant()); // default
+    p->setValue(1.0); // default
     product_part += paramNamebackcat;
     *kinetic_constant_added += 1;
 
@@ -286,7 +288,7 @@ std::string add_convinience_kinetic_law_reversible(libsbml::Model *model, libsbm
         p = model->createParameter();
         p->setId(paramName);
         p->setConstant(true);
-        p->setValue(random_kinetic_constant());
+        p->setValue(1.0);
         *kinetic_constant_added += 1;
         int stoichiometry = sr->getStoichiometry();
         reaction_part += "*(("+sr->getId()+"/"+paramName+")^"+std::to_string(stoichiometry)+")";
@@ -305,7 +307,7 @@ std::string add_convinience_kinetic_law_reversible(libsbml::Model *model, libsbm
         p = model->createParameter();
         p->setId(paramName);
         p->setConstant(true);
-        p->setValue(random_kinetic_constant());
+        p->setValue(1.0);
         *kinetic_constant_added += 1;
         int stoichiometry = sr->getStoichiometry();
         product_part += "*(("+sr->getId()+"/"+paramName+")^"+std::to_string(stoichiometry)+")";
@@ -337,7 +339,7 @@ std::string add_convinience_kinetic_law_irreversible(libsbml::Model *model, libs
     std::string paramNameforcat = "k_forcat_"+r->getId();
     p = model->createParameter();
     p->setId(paramNameforcat);
-    p->setValue(random_kinetic_constant()); // default
+    p->setValue(1.0); // default
     p->setConstant(true);
     reaction_part += paramNameforcat;
     *kinetic_constant_added += 1;
@@ -348,7 +350,7 @@ std::string add_convinience_kinetic_law_irreversible(libsbml::Model *model, libs
         std::string paramName = "k_" + r->getId() + "_"+ sr->getSpecies();
         p = model->createParameter();
         p->setId(paramName);
-        p->setValue(random_kinetic_constant()); // default value
+        p->setValue(1.0); // default value
         p->setConstant(true);
         *kinetic_constant_added += 1;
         int stoichiometry = sr->getStoichiometry();
@@ -387,7 +389,7 @@ std::string add_michelis_menten_kinetic_law_irreversible(libsbml::Model *model, 
     p = model->createParameter();
     p->setId(paramNameforcat);
     p->setConstant(true);
-    p->setValue(random_kinetic_constant()); // default
+    p->setValue(1.0); // default
     substrate_part += paramNameforcat;
     *kinetic_constant_added += 1;
 
@@ -417,7 +419,7 @@ std::string add_michelis_menten_kinetic_law_reversible(libsbml::Model *model, li
     p = model->createParameter();
     p->setId(paramNamebackcat);
     p->setConstant(true);
-    p->setValue(random_kinetic_constant()); // default
+    p->setValue(1.0); // default
     product_part += paramNamebackcat;
     *kinetic_constant_added += 1;
 
@@ -480,6 +482,64 @@ int add_kinetic_law(libsbml::Model *model, libsbml::Reaction *r, bool all_convie
     return kinetic_constant_added;
 }
 
+// @return number of kinetic costant added
+int add_kinetic_laws(libsbml::Model *model, bool all_convience_rate_law) {
+    int total_kinetic_constant_added = 0;
+
+    for(u_int i = 0; i < model->getNumReactions(); i++) {
+        libsbml::Reaction *r = model->getReaction(i);
+        libsbml::KineticLaw *kl = r->getKineticLaw();
+        if(kl == NULL) {
+            total_kinetic_constant_added += add_kinetic_law(model, r, all_convience_rate_law);
+        }
+    }
+
+    if(total_kinetic_constant_added != model->getNumParameters()) {
+        eprintf("added: %d\n", total_kinetic_constant_added);
+        eprintf("real: %d\n", model->getNumParameters());
+        fflush(stderr);
+        throw std::runtime_error("SBML has more parameters than those added");
+    }
+
+    return total_kinetic_constant_added;
+}
+
+void add_avg_calculations(libsbml::Model *model, bool for_only_proteins) {
+    if(for_only_proteins) {
+        TODO("for_only_proteins");
+    }
+
+    libsbml::Parameter *time = model->createParameter();
+    time->setId("get_time");
+    time->setName("Auxiliary variable used in place of time due to naming restrictions");
+    time->setConstant(false);
+    time->setValue(0.0);
+    libsbml::RateRule *time_rule = model->createRateRule();
+    time_rule->setVariable("get_time");
+    time_rule->setFormula("1");
+
+    u_int num_species = model->getNumSpecies();
+
+    for(u_int i = 0; i < num_species; ++i) {
+        libsbml::Species *s = model->getSpecies(i);
+        std::string avg_param_id = "avg_" + s->getId();
+        libsbml::Parameter* avgSpecies = model->createParameter();
+        avgSpecies->setId(avg_param_id);
+        avgSpecies->setName("Average of " + s->getId());
+        if(!std::isnan(s->getInitialConcentration())) {
+            avgSpecies->setValue(s->getInitialConcentration());
+        } else {
+            avgSpecies->setValue(0.0);
+        }
+        avgSpecies->setConstant(false);
+        libsbml::RateRule* avg_rate_rule = model->createRateRule();
+        avg_rate_rule->setVariable(avg_param_id);
+
+        // (x - avg_x)/(time + EPSILON)
+        avg_rate_rule->setFormula("(" + s->getId() + " - " + avg_param_id+ ")/(get_time + " + std::to_string(EPSILON) + ")");
+    }
+}
+
 class SBMLDoc {
 
     libsbml::SBMLDocument *doc;
@@ -496,25 +556,8 @@ public:
             throw std::runtime_error("Error parsing SBML document");
         }
         model = doc->getModel();
-        
-        int total_kinetic_constant_added = 0;
-
-        for(u_int i = 0; i < model->getNumReactions(); i++) {
-            libsbml::Reaction *r = model->getReaction(i);
-            libsbml::KineticLaw *kl = r->getKineticLaw();
-            if(kl == NULL) {
-                total_kinetic_constant_added += add_kinetic_law(model, r, all_convience_rate_law);
-            }
-        }
-
-        if(total_kinetic_constant_added != model->getNumParameters()) {
-            eprintf("added: %d\n", total_kinetic_constant_added);
-            eprintf("real: %d\n", model->getNumParameters());
-            fflush(stderr);
-            throw std::runtime_error("SBML has more parameters than those added");
-        }
-
-        total_kinetic_constant = total_kinetic_constant_added;
+        total_kinetic_constant = add_kinetic_laws(model, all_convience_rate_law);
+        add_avg_calculations(model, false); // TODO: fai in modo che calcoli l'avg solo per le proteine
 
     }
     
