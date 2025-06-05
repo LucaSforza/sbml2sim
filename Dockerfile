@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 RUN python3 -m venv venv-sbml2sim
-RUN venv-sbml2sim/bin/pip3 install nevergrad matplotlib
+RUN venv-sbml2sim/bin/pip3 install nevergrad matplotlib requests
 
 COPY . .
 

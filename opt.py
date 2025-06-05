@@ -3,9 +3,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 import sbmlconverter as sc
+import uniprod
 
 import sys
 import getopt
+from typing import Any
 
 PROGRAM_NAME = sys.argv[0]
 
@@ -73,6 +75,28 @@ def parse_args():
                 sys.exit(1)
     return options
 
+def get_all_ids(genes_data: dict[str, list[str]]) -> set[str]:
+    result = set()
+    for _,ids in genes_data.items():
+        result.update(ids)
+    return result
+
+def map_ids_to_genes(genes_data: dict[str, list[str]]) -> Any | None:
+    genes_id = get_all_ids(genes_data)
+    
+    job_id = uniprod.submit_id_mapping("UniProtKB_AC-ID", "UniProtKB", genes_id)
+    
+    if uniprod.check_id_mapping_results_ready(job_id):
+        link = uniprod.get_id_mapping_results_link(job_id)
+        results = uniprod.get_id_mapping_results_search(link)
+        if results.get('failedIds') is not None:
+            print(f"[WARNING] failed ids: {results['failedIds']}")
+        return results['results']
+    else:
+        print("[FATAL ERROR] failed request")
+        return None
+    
+    
 def main():
     options = parse_args()
 
@@ -91,6 +115,18 @@ def main():
             plt.plot(df["time"], df[col], label=col)
     plt.legend()
     plt.savefig(options["png_outputpath"])
+    
+    results = map_ids_to_genes(sbml.get_genes_data())
+    if results is not None:
+        for result in results:
+            _from = result["from"]
+            _to = result["to"]
+            genes = _to["genes"]
+            if len(genes) > 1:
+                print("[WARNING] a id is assosieted to more than one gene")
+            for gene in genes:
+                name = gene["geneName"]["value"]
+                print(f"{_from} -> {name}")
     
 
 if __name__ == "__main__":
