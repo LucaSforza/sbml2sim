@@ -2,8 +2,8 @@
 
 extern "C" {
 
-    SBMLDoc *SBMLDoc_new(const char *file_path, bool all_convienece_law) {
-        return new SBMLDoc(file_path, all_convienece_law);
+    SBMLDoc *SBMLDoc_new(const char *file_path, int flags) {
+        return new SBMLDoc(file_path, flags);
     }
 
     int SBMLDoc_number_of_kinetic_costant(const SBMLDoc *_this) {

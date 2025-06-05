@@ -79,8 +79,9 @@ def _iterate_genes(genes_ptr):
         lib.Genes_delete_proteins_iterator(it)
 
 class SBMLDoc:
-    def __init__(self, file_path: str, all_convenience_law: bool = False):
-        self.obj = lib.SBMLDoc_new(file_path.encode('utf-8'), all_convenience_law)
+    def __init__(self, file_path: str, all_convenience_law: bool = False, avg_for_only_proteins: bool = False):
+        flags = (1 if all_convenience_law else 0) | (2 if avg_for_only_proteins else 0)
+        self.obj = lib.SBMLDoc_new(file_path.encode('utf-8'), flags)
 
     def number_of_kinetic_constants(self) -> int:
         return lib.SBMLDoc_number_of_kinetic_costant(self.obj)

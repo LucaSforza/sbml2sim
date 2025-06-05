@@ -478,11 +478,7 @@ int add_kinetic_laws(libsbml::Model *model, bool all_convience_rate_law) {
     return total_kinetic_constant_added;
 }
 
-void add_avg_calculations(libsbml::Model *model, bool for_only_proteins) {
-    if(for_only_proteins) {
-        TODO("for_only_proteins");
-    }
-
+void add_time(libsbml::Model *model) {
     libsbml::Parameter *time = model->createParameter();
     time->setId("get_time");
     time->setName("Auxiliary variable used in place of time due to naming restrictions");
@@ -491,6 +487,35 @@ void add_avg_calculations(libsbml::Model *model, bool for_only_proteins) {
     libsbml::RateRule *time_rule = model->createRateRule();
     time_rule->setVariable("get_time");
     time_rule->setFormula("1");
+}
+
+void add_avg_calculations_only_for_proteins(libsbml::Model *model, Genes &genes) {
+    u_int num_species = model->getNumSpecies();
+
+    for(u_int i = 0; i < num_species; ++i) {
+        libsbml::Species *s = model->getSpecies(i);
+        
+        if(genes.find(s->getId()) == genes.end()) continue;
+        
+        std::string avg_param_id = "avg_" + s->getId();
+        libsbml::Parameter* avgSpecies = model->createParameter();
+        avgSpecies->setId(avg_param_id);
+        avgSpecies->setName("Average of " + s->getId());
+        if(!std::isnan(s->getInitialConcentration())) {
+            avgSpecies->setValue(s->getInitialConcentration());
+        } else {
+            avgSpecies->setValue(0.0);
+        }
+        avgSpecies->setConstant(false);
+        libsbml::RateRule* avg_rate_rule = model->createRateRule();
+        avg_rate_rule->setVariable(avg_param_id);
+
+        // (x - avg_x)/(time + EPSILON)
+        avg_rate_rule->setFormula("(" + s->getId() + " - " + avg_param_id+ ")/(get_time + " + std::to_string(EPSILON) + ")");
+    }
+}
+
+void add_avg_calculations(libsbml::Model *model) {
 
     u_int num_species = model->getNumSpecies();
 

@@ -35,19 +35,29 @@ class SBMLDoc {
 
 public:
 
+    enum Flags {
+        all_convience_rate_law = 1 << 0,
+        avg_for_only_proteins = 1 << 1
+    };
+
     /**
      * @param file_path path to the .sbml file
      * @param all_convience_rate_law true if you want to generate only approximate kinetic laws
     */
-    SBMLDoc(const char *file_path, bool all_convience_rate_law = false) {
+    SBMLDoc(const char *file_path, int flags) {
         doc = libsbml::readSBML(file_path);
         if(check_error(doc)) {
             throw std::runtime_error("Error parsing SBML document");
         }
         model = doc->getModel();
-        total_kinetic_constant = add_kinetic_laws(model, all_convience_rate_law);
-        add_avg_calculations(model, false); // TODO: fai in modo che calcoli l'avg solo per le proteine
+        total_kinetic_constant = add_kinetic_laws(model, flags & all_convience_rate_law);
         genes = extract_species_genes(model);
+        add_time(model);
+        if(flags & avg_for_only_proteins) {
+            add_avg_calculations_only_for_proteins(model, genes);
+        } else {
+            add_avg_calculations(model);
+        }
 
     }
     
