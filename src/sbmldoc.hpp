@@ -130,6 +130,15 @@ public:
             std::cout << std::endl;
         }
     }
+
+    /**
+     * @brief Retrieves the gene data associated with this object.
+     *
+     * @return A constant reference to the collection of genes.
+    */
+    const Genes& get_genes_data(void) const {
+        return genes;
+    }
 };
 
 #endif // SBMLDOC_HPP_

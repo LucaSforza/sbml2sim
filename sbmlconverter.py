@@ -1,5 +1,6 @@
 from ctypes import cdll
 from ctypes import c_void_p, c_char_p, c_bool, c_int, c_double
+from ctypes import POINTER, c_size_t
 
 lib = cdll.LoadLibrary("build/libsbmlconverter.so")
 
@@ -30,6 +31,47 @@ lib.SBMLDoc_delete.argtypes = [c_void_p]
 lib.SBMLDoc_dump_genes_data.restype = None
 lib.SBMLDoc_dump_genes_data.argtypes = [c_void_p]
 
+lib.SBMLDoc_get_genes_data.restype = c_void_p
+lib.SBMLDoc_get_genes_data.argtypes = [c_void_p]
+
+lib.Genes_proteins_iterator.restype = c_void_p
+lib.Genes_proteins_iterator.argtypes = [c_void_p]
+
+lib.Genes_delete_proteins_iterator.restype = None
+lib.Genes_delete_proteins_iterator.argtypes = [c_void_p]
+
+lib.Genes_proteins_iterator_next.restype = c_void_p
+lib.Genes_proteins_iterator_next.argtypes = [c_void_p]
+
+lib.Pair_delete.restype = None
+lib.Pair_delete.argtypes = [c_void_p]
+
+lib.Pair_first_c_str.restype = c_char_p
+lib.Pair_first_c_str.argtypes = [c_void_p]
+
+lib.Pair_second_as_cstr_array.restype = POINTER(c_char_p)
+lib.Pair_second_as_cstr_array.argtypes = [c_void_p, POINTER(c_size_t)]
+
+lib.Pair_delete_cstr_array.restype = None
+lib.Pair_delete_cstr_array.argtypes = [POINTER(c_char_p)]
+
+def _iterate_genes(genes_ptr):
+    it = lib.Genes_proteins_iterator(genes_ptr)
+    try:
+        while True:
+            pair_ptr = lib.Genes_proteins_iterator_next(it)
+            if not pair_ptr:
+                break
+            key = lib.Pair_first_c_str(pair_ptr).decode('utf-8')
+            size = c_size_t()
+            arr = lib.Pair_second_as_cstr_array(pair_ptr, size)
+            values = [arr[i].decode('utf-8') for i in range(size.value)]
+            lib.Pair_delete_cstr_array(arr)
+            lib.Pair_delete(pair_ptr)
+            yield key, values
+    finally:
+        lib.Genes_delete_proteins_iterator(it)
+
 class SBMLDoc:
     def __init__(self, file_path: str, all_convenience_law: bool = False):
         self.obj = lib.SBMLDoc_new(file_path.encode('utf-8'), all_convenience_law)
@@ -51,6 +93,15 @@ class SBMLDoc:
     
     def dump_genes_data(self):
         lib.SBMLDoc_dump_genes_data(self.obj)
+    
+    def get_genes_data(self) -> dict[str,list[str]]:
+        result = dict()
+        genes_ptr = lib.SBMLDoc_get_genes_data(self.obj)
+        
+        for protein, genes in _iterate_genes(genes_ptr):
+            result[protein] = genes
+            
+        return result
 
     def __del__(self):
         if hasattr(self, 'obj') and self.obj:

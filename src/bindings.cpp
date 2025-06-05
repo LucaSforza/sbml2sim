@@ -34,4 +34,50 @@ extern "C" {
         delete _this;
     }
 
+    const Genes* SBMLDoc_get_genes_data(const SBMLDoc *_this) {
+        return &(_this->get_genes_data());
+    }
+
+    Genes::const_iterator *Genes_proteins_iterator(const Genes *_this) {
+        return new Genes::const_iterator(_this->cbegin());
+    }
+
+    void Genes_delete_proteins_iterator(Genes::const_iterator *it) {
+        delete it;
+    }
+
+    std::pair<std::string, std::vector<std::string>> *Genes_proteins_iterator_next(Genes::const_iterator *it) {
+        try {
+            auto &pair = *(*it);
+            auto *result = new std::pair<std::string, std::vector<std::string>>(pair.first, pair.second);
+            ++(*it);
+            return result;
+        } catch (...) {
+            return nullptr;
+        }
+    }
+
+    void Pair_delete(std::pair<std::string, std::vector<std::string>> *p) {
+        delete p;
+    }
+
+    const char* Pair_first_c_str(const std::pair<std::string, std::vector<std::string>> *p) {
+        return p->first.c_str();
+    }
+
+    const char** Pair_second_as_cstr_array(const std::pair<std::string, std::vector<std::string>> *p, size_t *size) {
+        if (size) {
+            *size = p->second.size();
+        }
+        const char **arr = new const char*[p->second.size()];
+        for (size_t i = 0; i < p->second.size(); ++i) {
+            arr[i] = p->second[i].c_str();
+        }
+        return arr;
+    }
+
+    void Pair_delete_cstr_array(const char **arr) {
+        delete[] arr;
+    }
+
 }
