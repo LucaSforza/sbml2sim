@@ -2,7 +2,7 @@ import nevergrad as ng
 import pandas as pd
 import matplotlib.pyplot as plt
 
-import sbmlconverter as sc
+import sbml2sim as s2s
 import uniprod
 
 import sys
@@ -100,7 +100,7 @@ def map_ids_to_genes(genes_data: dict[str, list[str]]) -> Any | None:
 def main():
     options = parse_args()
 
-    sbml = sc.SBMLDoc(options["sbml_path"], options["convinience"])
+    sbml = s2s.SBMLDoc(options["sbml_path"], options["convinience"])
     if options["random"]:
         # sbml.random_start_concentration()
         sbml.random_protein_concentrations()
