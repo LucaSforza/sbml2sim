@@ -123,7 +123,7 @@ def main():
             _to = result["to"]
             genes = _to["genes"]
             if len(genes) > 1:
-                print("[WARNING] a id is assosieted to more than one gene")
+                print("[WARNING] an ID is associated with more than one gene")
             for gene in genes:
                 name = gene["geneName"]["value"]
                 print(f"{_from} -> {name}")
