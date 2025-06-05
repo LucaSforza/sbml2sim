@@ -127,7 +127,3 @@ def main():
             for gene in genes:
                 name = gene["geneName"]["value"]
                 print(f"{_from} -> {name}")
-    
-
-if __name__ == "__main__":
-    main()
