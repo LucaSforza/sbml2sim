@@ -99,6 +99,20 @@ public:
             }
         }
     }
+
+    void proteins_start_random_concentration() {
+        double min_exp = 0;
+        double max_exp = 3.0;
+        for (u_int i = 0; i < model->getNumSpecies(); ++i) {
+            libsbml::Species *species = model->getSpecies(i);
+            if(!species->getBoundaryCondition() && !species->getConstant() && this->is_protein(species->getId().c_str())) {
+                // Only set for floating species (not boundary or constant)
+                double scale = static_cast<double>(rand()) / RAND_MAX;
+                double x = min_exp + scale * (max_exp - min_exp);
+                species->setInitialConcentration(x);
+            }
+        }
+    }
     
     /**
      * @brief simulate the model and save results
@@ -138,6 +152,18 @@ public:
     */
     const Genes& get_genes_data(void) const {
         return genes;
+    }
+
+    /**
+     * @brief Checks if the given species name corresponds to a protein.
+     *
+     * Determines whether the specified species name exists in the set of genes.
+     *
+     * @param specie_name The name of the species to check.
+     * @return true if the species name is found in the set of genes (i.e., is a protein), false otherwise.
+    */
+    bool is_protein(const char *specie_name) const {
+        return genes.find(specie_name) != genes.end();
     }
 };
 

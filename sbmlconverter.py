@@ -55,6 +55,12 @@ lib.Pair_second_as_cstr_array.argtypes = [c_void_p, POINTER(c_size_t)]
 lib.Pair_delete_cstr_array.restype = None
 lib.Pair_delete_cstr_array.argtypes = [POINTER(c_char_p)]
 
+lib.SBMLDoc_is_protein.restype = c_bool
+lib.SBMLDoc_is_protein.argtypes = [c_void_p, c_char_p]
+
+lib.SBMLDoc_random_protein_concentrations.restype = None
+lib.SBMLDoc_random_protein_concentrations.argtypes = [c_void_p]
+
 def _iterate_genes(genes_ptr):
     it = lib.Genes_proteins_iterator(genes_ptr)
     try:
@@ -102,6 +108,12 @@ class SBMLDoc:
             result[protein] = genes
             
         return result
+    
+    def is_protein(self, specie: str) -> bool:
+        return lib.SBMLDoc_is_protein(self.obj, specie.encode('utf-8'))
+    
+    def random_protein_concentrations(self):
+        lib.SBMLDoc_random_protein_concentrations(self.obj)
 
     def __del__(self):
         if hasattr(self, 'obj') and self.obj:

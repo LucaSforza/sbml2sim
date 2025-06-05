@@ -78,7 +78,8 @@ def main():
 
     sbml = sc.SBMLDoc(options["sbml_path"], options["convinience"])
     if options["random"]:
-        sbml.random_start_concentration()
+        # sbml.random_start_concentration()
+        sbml.random_protein_concentrations()
     if options["dumps"]:
         sbml.dump_genes_data()
     sbml.save_converted_file(options["output"])

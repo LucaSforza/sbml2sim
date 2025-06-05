@@ -79,5 +79,13 @@ extern "C" {
     void Pair_delete_cstr_array(const char **arr) {
         delete[] arr;
     }
+    
+    bool SBMLDoc_is_protein(const SBMLDoc *_this, const char *specie) {
+        return _this->is_protein(specie);
+    }
+
+    void SBMLDoc_random_protein_concentrations(SBMLDoc *_this) {
+        _this->proteins_start_random_concentration();
+    }
 
 }
