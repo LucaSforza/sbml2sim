@@ -22,7 +22,6 @@ def usage():
     
 def parse_args():
     try:
-        # Use gnu_getopt to allow options after positional arguments
         opts, args = getopt.gnu_getopt(
             sys.argv[1:], 
             "d:o:s:rchgf:", 
@@ -41,7 +40,7 @@ def parse_args():
         "random": False,
         "convinience": False,
         "dumps": False,
-        "png_outpath": "data.png",
+        "png_outputpath": "data.png",
     }
 
     # First positional argument: SBML file path
@@ -65,7 +64,7 @@ def parse_args():
             case "-g":
                 options["dumps"] = True
             case "-f":
-                options["png_outpath"] = a
+                options["png_outputpath"] = a
             case "-h":
                 usage()
                 sys.exit(0)
@@ -73,9 +72,8 @@ def parse_args():
                 usage()
                 sys.exit(1)
     return options
-    
 
-if __name__ == "__main__":
+def main():
     options = parse_args()
 
     sbml = sc.SBMLDoc(options["sbml_path"], options["convinience"])
@@ -92,3 +90,7 @@ if __name__ == "__main__":
             plt.plot(df["time"], df[col], label=col)
     plt.legend()
     plt.savefig(options["png_outputpath"])
+    
+
+if __name__ == "__main__":
+    main()
