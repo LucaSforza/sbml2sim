@@ -47,14 +47,16 @@ extern "C" {
     }
 
     std::pair<std::string, std::vector<std::string>> *Genes_proteins_iterator_next(Genes::const_iterator *it) {
-        try {
-            auto &pair = *(*it);
-            auto *result = new std::pair<std::string, std::vector<std::string>>(pair.first, pair.second);
-            ++(*it);
-            return result;
-        } catch (...) {
-            return nullptr;
-        }
+        eprintf("[FATAL ERROR] function Genes_proteins_iterator_next is deprecated");
+        exit(1);
+        // try {
+        //     auto &pair = *(*it);
+        //     auto *result = new std::pair<std::string, std:std::string>(pair.first, pair.second);
+        //     ++(*it);
+        //     return result;
+        // } catch (...) {
+        //     return nullptr;
+        // }
     }
 
     void Pair_delete(std::pair<std::string, std::vector<std::string>> *p) {

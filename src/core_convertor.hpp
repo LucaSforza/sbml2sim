@@ -21,7 +21,9 @@
 
 #define EPSILON (1e-6)
 
-using Genes = std::map<std::string, std::vector<std::string>>;
+
+// species id -> UniProdId
+using Genes = std::map<std::string, std::string>;
 
 Genes extract_species_genes(const libsbml::Model* model) {
     Genes results;
@@ -32,9 +34,10 @@ Genes extract_species_genes(const libsbml::Model* model) {
         const std::string species_id = species->getId();
         const libsbml::XMLNode* annotation = species->getAnnotation();
 
+        bool found = false;
         if (!annotation) continue;
 
-        std::vector<std::string> uniprot_ids;
+        std::string uniprot_id;
         
         // Cerca direttamente nei nodi XML
         for (unsigned int j = 0; j < annotation->getNumChildren(); ++j) {
@@ -48,7 +51,7 @@ Genes extract_species_genes(const libsbml::Model* model) {
                 for (unsigned int m = 0; m < descNode.getNumChildren(); ++m) {
                     const libsbml::XMLNode& hasPartNode = descNode.getChild(m);
                     if (hasPartNode.getPrefix() != "bqbiol" || 
-                        hasPartNode.getName() != "hasPart") continue;
+                        hasPartNode.getName() != "is") continue;
 
                     for (unsigned int n = 0; n < hasPartNode.getNumChildren(); ++n) {
                         const libsbml::XMLNode& bagNode = hasPartNode.getChild(n);
@@ -60,16 +63,22 @@ Genes extract_species_genes(const libsbml::Model* model) {
 
                             const std::string resource = liNode.getAttributes().getValue(0);
                             if (resource.find(UNIPROT_PREFIX) != std::string::npos) {
-                                uniprot_ids.push_back(resource.substr(UNIPROT_PREFIX.length()));
+                                uniprot_id = resource.substr(UNIPROT_PREFIX.length());
+                                found = true;
+                                break;
                             }
                         }
+                        if(found) break;
                     }
+                    if(found) break;
                 }
+                if(found) break;
             }
+            if(found) break;
         }
 
-        if (!uniprot_ids.empty()) {
-            results[species_id] = uniprot_ids;
+        if (found) {
+            results[species_id] = uniprot_id;
         }
     }
     return results;

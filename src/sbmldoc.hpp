@@ -2,6 +2,7 @@
 #define SBMLDOC_HPP_
 
 #include "core_convertor.hpp"
+#include "tissue.hpp"
 
 /**
  * @class SBMLDoc
@@ -35,10 +36,46 @@ class SBMLDoc {
 
 public:
 
+    static SBMLDoc replicate_model_per_tissue(const char *file_path, std::vector<Tissue> tissues) {
+        return SBMLDoc::replicate_model_per_tissue(libsbml::readSBML(file_path), tissues);
+    }
+
+    static SBMLDoc replicate_model_per_tissue(libsbml::SBMLDocument *doc, std::vector<Tissue> tissues) {
+
+        if(check_error(doc)) {
+            throw std::runtime_error("Error parsing SBML document");
+        }
+
+        for(Tissue t : tissues) {
+            // TODO: do something
+        }
+
+        SBMLDoc result = SBMLDoc();
+
+        return result;
+    }
+
+    static SBMLDoc replicate_model_per_tissue(const char *file_path, Tissue *tissues, size_t n_tissue) {
+        return SBMLDoc::replicate_model_per_tissue(libsbml::readSBML(file_path), tissues, n_tissue);
+    }
+
+    static SBMLDoc replicate_model_per_tissue(libsbml::SBMLDocument *doc, Tissue *tissues, size_t n_tissue) {
+
+        if(check_error(doc)) {
+            throw std::runtime_error("Error parsing SBML document");
+        }
+
+        SBMLDoc result = SBMLDoc();
+
+        return result;
+    }
+
     enum Flags {
         all_convience_rate_law = 1 << 0,
         avg_for_only_proteins = 1 << 1
     };
+
+    SBMLDoc() { }
 
     /**
      * @param file_path path to the .sbml file
@@ -145,7 +182,8 @@ public:
     void dump_genes_data(void) const {
         for (const auto& pair : genes) {
             const std::string& species_id = pair.first;
-            const std::vector<std::string>& gene_ids = pair.second;
+            std::vector<std::string> gene_ids;
+            gene_ids.push_back(pair.second);
             std::cout << "Species: " << species_id << " Genes: ";
             for (size_t i = 0; i < gene_ids.size(); ++i) {
             std::cout << gene_ids[i];
