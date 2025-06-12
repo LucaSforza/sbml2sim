@@ -6,16 +6,16 @@
 #include <deque>
 
 class MathMLIterator {
-    std::deque<const libsbml::ASTNode*> frontier;
+    std::deque<libsbml::ASTNode*> frontier;
 
 public:
-    MathMLIterator(const libsbml::ASTNode *head) {
+    MathMLIterator(libsbml::ASTNode *head) {
         this->frontier.push_back(head);
     }
 
-    const libsbml::ASTNode *next() {
+    libsbml::ASTNode *next() {
         if(frontier.empty()) return NULL;
-        const libsbml::ASTNode *result = frontier[0];
+        libsbml::ASTNode *result = frontier[0];
         frontier.pop_front();
         for(u_int i=0; i < result->getNumChildren(); i++) {
             frontier.push_back(result->getChild(i));
@@ -178,9 +178,9 @@ public:
 
                 // aggiungi la legge cinetica
                 libsbml::KineticLaw *new_kl = new_r->createKineticLaw(); 
-                const libsbml::ASTNode *new_head = kl->getMath()->deepCopy();
+                libsbml::ASTNode *new_head = kl->getMath()->deepCopy();
                 MathMLIterator iterator(new_head);
-                const libsbml::ASTNode *next;
+                libsbml::ASTNode *next;
                 while((next = iterator.next()) != NULL) {
                     assert(!next->isUnknown());
                     if(next->getType() == libsbml::AST_NAME) {
@@ -189,10 +189,20 @@ public:
                             // printf("[INFO] costante cinetica: %s\n", name);
                             // costante cinetica
                             // crea la costante come parametro del new_model se non esiste
+                            libsbml::Parameter *constant = NULL;
+                            if((constant = model->getListOfParameters()->get(name)) != NULL) {
+                                if(new_model->getListOfParameters()->get(name) == NULL) {
+                                    new_model->addParameter(constant);
+                                }
+                            } else {
+                                eprintf("[FATAL ERROR] kinetic constant doen't exists: %s", name);
+                                exit(1);
+                            }
                         } else {
                             // prodotto, substrato oppure modificatore
                             // printf("[INFO] altro: %s\n", name);
                             // modifica il nome appendendo davanti il nome del tessuto
+                            next->setName((tissue+"_"+std::string(name)).c_str());
                         }
                     }
                 }

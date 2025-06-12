@@ -3347,7 +3347,70 @@
         <listOfModifiers>
           <modifierSpeciesReference sboTerm="SBO:0000013" id="hearth_modifierspeciesreference_1225960_catalyst_1225855" species="hearth_species_1225855"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> hearth_species_1225855 </ci>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_1225960 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1225960_input_113592 </ci>
+                      <ci> k_reaction_1225960_species_113592 </ci>
+                    </apply>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1225960_input_1225855 </ci>
+                      <ci> k_reaction_1225960_species_1225855 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1225960_input_113592 </ci>
+                      <ci> k_reaction_1225960_species_113592 </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_1225960_input_113592 </ci>
+                        <ci> k_reaction_1225960_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 2 </cn>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1225960_input_1225855 </ci>
+                      <ci> k_reaction_1225960_species_1225855 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_64" id="liver_reaction_1225960" name="liver Phosphorylation of CBL by ligand-responsive p-6Y-EGFR mutants" reversible="false" compartment="liver_compartment_876">
         <notes>
@@ -3364,7 +3427,70 @@
         <listOfModifiers>
           <modifierSpeciesReference sboTerm="SBO:0000013" id="liver_modifierspeciesreference_1225960_catalyst_1225855" species="liver_species_1225855"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> liver_species_1225855 </ci>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_1225960 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1225960_input_113592 </ci>
+                      <ci> k_reaction_1225960_species_113592 </ci>
+                    </apply>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1225960_input_1225855 </ci>
+                      <ci> k_reaction_1225960_species_1225855 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1225960_input_113592 </ci>
+                      <ci> k_reaction_1225960_species_113592 </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_1225960_input_113592 </ci>
+                        <ci> k_reaction_1225960_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 2 </cn>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1225960_input_1225855 </ci>
+                      <ci> k_reaction_1225960_species_1225855 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_65" id="hearth_reaction_1225950" name="hearth Binding of GRB2:SOS1 complex to phosphorylated ligand-responsive EGFR mutants" reversible="false" compartment="hearth_compartment_876">
         <notes>
@@ -3377,7 +3503,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_1225950_output_1225859" species="hearth_species_1225859" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1225950 </ci>
+              <ci> hearth_species_109797 </ci>
+              <ci> hearth_species_1181062 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_65" id="liver_reaction_1225950" name="liver Binding of GRB2:SOS1 complex to phosphorylated ligand-responsive EGFR mutants" reversible="false" compartment="liver_compartment_876">
         <notes>
@@ -3390,7 +3525,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_1225950_output_1225859" species="liver_species_1225859" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1225950 </ci>
+              <ci> liver_species_109797 </ci>
+              <ci> liver_species_1181062 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_66" id="hearth_reaction_5638137" name="hearth EGFRvIII cancer variant does not bind EGF ligand" reversible="false" compartment="hearth_compartment_984">
         <notes>
@@ -3400,7 +3544,16 @@
           <speciesReference sboTerm="SBO:0000010" id="hearth_speciesreference_5638137_input_179863" species="hearth_species_179863" stoichiometry="1" constant="true"/>
           <speciesReference sboTerm="SBO:0000010" id="hearth_speciesreference_5638137_input_1248004" species="hearth_species_1248004" stoichiometry="1" constant="true"/>
         </listOfReactants>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_5638137 </ci>
+              <ci> hearth_species_179863 </ci>
+              <ci> hearth_species_1248004 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_66" id="liver_reaction_5638137" name="liver EGFRvIII cancer variant does not bind EGF ligand" reversible="false" compartment="liver_compartment_984">
         <notes>
@@ -3410,7 +3563,16 @@
           <speciesReference sboTerm="SBO:0000010" id="liver_speciesreference_5638137_input_179863" species="liver_species_179863" stoichiometry="1" constant="true"/>
           <speciesReference sboTerm="SBO:0000010" id="liver_speciesreference_5638137_input_1248004" species="liver_species_1248004" stoichiometry="1" constant="true"/>
         </listOfReactants>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_5638137 </ci>
+              <ci> liver_species_179863 </ci>
+              <ci> liver_species_1248004 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_67" id="hearth_reaction_1248677" name="hearth Inactivation of over-expressed wild type EGFR by Cetuximab recombinant antibody" reversible="false" compartment="hearth_compartment_984">
         <notes>
@@ -3423,7 +3585,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_1248677_output_1248675" species="hearth_species_1248675" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1248677 </ci>
+              <ci> hearth_species_179837 </ci>
+              <ci> hearth_species_1248673 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_67" id="liver_reaction_1248677" name="liver Inactivation of over-expressed wild type EGFR by Cetuximab recombinant antibody" reversible="false" compartment="liver_compartment_984">
         <notes>
@@ -3436,7 +3607,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_1248677_output_1248675" species="liver_species_1248675" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1248677 </ci>
+              <ci> liver_species_179837 </ci>
+              <ci> liver_species_1248673 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_68" id="hearth_reaction_1225949" name="hearth Binding of CBL to ligand-responsive p-6Y-EGFR mutants" reversible="false" compartment="hearth_compartment_876">
         <notes>
@@ -3449,7 +3629,20 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_1225949_output_1225855" species="hearth_species_1225855" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1225949 </ci>
+              <apply>
+                <power/>
+                <ci> hearth_species_112199 </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+              <ci> hearth_species_1181062 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_68" id="liver_reaction_1225949" name="liver Binding of CBL to ligand-responsive p-6Y-EGFR mutants" reversible="false" compartment="liver_compartment_876">
         <notes>
@@ -3462,7 +3655,20 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_1225949_output_1225855" species="liver_species_1225855" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1225949 </ci>
+              <apply>
+                <power/>
+                <ci> liver_species_112199 </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+              <ci> liver_species_1181062 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_69" id="hearth_reaction_1220611" name="hearth Covalent tyrosine kinase inhibitors bind and inactivate EGFR kinase domain mutant dimers resistant to non-covalent tyrosine kinase inhibitors" reversible="false" compartment="hearth_compartment_876">
         <notes>
@@ -3475,7 +3681,20 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_1220611_output_1220579" species="hearth_species_1220579" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1220611 </ci>
+              <apply>
+                <power/>
+                <ci> hearth_species_1216522 </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+              <ci> hearth_species_1220585 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_69" id="liver_reaction_1220611" name="liver Covalent tyrosine kinase inhibitors bind and inactivate EGFR kinase domain mutant dimers resistant to non-covalent tyrosine kinase inhibitors" reversible="false" compartment="liver_compartment_876">
         <notes>
@@ -3488,7 +3707,20 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_1220611_output_1220579" species="liver_species_1220579" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1220611 </ci>
+              <apply>
+                <power/>
+                <ci> liver_species_1216522 </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+              <ci> liver_species_1220585 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_70" id="hearth_reaction_1225978" name="hearth Covalent tyrosine kinase inhibitors bind and inhibit wild-type EGF:EGFR dimers" reversible="false" compartment="hearth_compartment_70101">
         <notes>
@@ -3501,7 +3733,20 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_1225978_output_1225979" species="hearth_species_1225979" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1225978 </ci>
+              <ci> hearth_species_9624420 </ci>
+              <apply>
+                <power/>
+                <ci> hearth_species_1216522 </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_70" id="liver_reaction_1225978" name="liver Covalent tyrosine kinase inhibitors bind and inhibit wild-type EGF:EGFR dimers" reversible="false" compartment="liver_compartment_70101">
         <notes>
@@ -3514,7 +3759,20 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_1225978_output_1225979" species="liver_species_1225979" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1225978 </ci>
+              <ci> liver_species_9624420 </ci>
+              <apply>
+                <power/>
+                <ci> liver_species_1216522 </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_71" id="hearth_reaction_5637766" name="hearth Binding of SHC1 to p-5Y-EGFRvIII" reversible="false" compartment="hearth_compartment_70101">
         <notes>
@@ -3527,7 +3785,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_5637766_output_5637701" species="hearth_species_5637701" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_5637766 </ci>
+              <ci> hearth_species_1248654 </ci>
+              <ci> hearth_species_74680 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_71" id="liver_reaction_5637766" name="liver Binding of SHC1 to p-5Y-EGFRvIII" reversible="false" compartment="liver_compartment_70101">
         <notes>
@@ -3540,7 +3807,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_5637766_output_5637701" species="liver_species_5637701" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_5637766 </ci>
+              <ci> liver_species_1248654 </ci>
+              <ci> liver_species_74680 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_72" id="hearth_reaction_5637800" name="hearth Dissociation of phosphorylated PLC-gamma 1 from p-EGFRvIII mutant" reversible="false" compartment="hearth_compartment_876">
         <notes>
@@ -3553,7 +3829,15 @@
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_5637800_output_167679" species="hearth_species_167679" stoichiometry="1" constant="true"/>
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_5637800_output_1248654" species="hearth_species_1248654" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_5637800 </ci>
+              <ci> hearth_species_5637706 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_72" id="liver_reaction_5637800" name="liver Dissociation of phosphorylated PLC-gamma 1 from p-EGFRvIII mutant" reversible="false" compartment="liver_compartment_876">
         <notes>
@@ -3566,7 +3850,15 @@
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_5637800_output_167679" species="liver_species_167679" stoichiometry="1" constant="true"/>
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_5637800_output_1248654" species="liver_species_1248654" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_5637800 </ci>
+              <ci> liver_species_5637706 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_73" id="hearth_reaction_1220614" name="hearth Spontaneous dimerization of ligand-responsive EGFR mutants" reversible="false" compartment="hearth_compartment_70101">
         <notes>
@@ -3578,7 +3870,19 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_1220614_output_1500849" species="hearth_species_1500849" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1220614 </ci>
+              <apply>
+                <power/>
+                <ci> hearth_species_1218825 </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_73" id="liver_reaction_1220614" name="liver Spontaneous dimerization of ligand-responsive EGFR mutants" reversible="false" compartment="liver_compartment_70101">
         <notes>
@@ -3590,7 +3894,19 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_1220614_output_1500849" species="liver_species_1500849" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1220614 </ci>
+              <apply>
+                <power/>
+                <ci> liver_species_1218825 </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_74" id="hearth_reaction_5637795" name="hearth Phosphorylation of PLC-gamma 1 by p-EGFRvIII mutant" reversible="false" compartment="hearth_compartment_70101">
         <notes>
@@ -3607,7 +3923,88 @@
         <listOfModifiers>
           <modifierSpeciesReference sboTerm="SBO:0000013" id="hearth_modifierspeciesreference_5637795_catalyst_5637698" species="hearth_species_5637698"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> hearth_species_5637698 </ci>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_5637795 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_5637795_input_113592 </ci>
+                      <ci> k_reaction_5637795_species_113592 </ci>
+                    </apply>
+                    <cn type="integer"> 4 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_5637795_input_5637698 </ci>
+                      <ci> k_reaction_5637795_species_5637698 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_5637795_input_113592 </ci>
+                      <ci> k_reaction_5637795_species_113592 </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_5637795_input_113592 </ci>
+                        <ci> k_reaction_5637795_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 2 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_5637795_input_113592 </ci>
+                        <ci> k_reaction_5637795_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 3 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_5637795_input_113592 </ci>
+                        <ci> k_reaction_5637795_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 4 </cn>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_5637795_input_5637698 </ci>
+                      <ci> k_reaction_5637795_species_5637698 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_74" id="liver_reaction_5637795" name="liver Phosphorylation of PLC-gamma 1 by p-EGFRvIII mutant" reversible="false" compartment="liver_compartment_70101">
         <notes>
@@ -3624,7 +4021,88 @@
         <listOfModifiers>
           <modifierSpeciesReference sboTerm="SBO:0000013" id="liver_modifierspeciesreference_5637795_catalyst_5637698" species="liver_species_5637698"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> liver_species_5637698 </ci>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_5637795 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_5637795_input_113592 </ci>
+                      <ci> k_reaction_5637795_species_113592 </ci>
+                    </apply>
+                    <cn type="integer"> 4 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_5637795_input_5637698 </ci>
+                      <ci> k_reaction_5637795_species_5637698 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_5637795_input_113592 </ci>
+                      <ci> k_reaction_5637795_species_113592 </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_5637795_input_113592 </ci>
+                        <ci> k_reaction_5637795_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 2 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_5637795_input_113592 </ci>
+                        <ci> k_reaction_5637795_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 3 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_5637795_input_113592 </ci>
+                        <ci> k_reaction_5637795_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 4 </cn>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_5637795_input_5637698 </ci>
+                      <ci> k_reaction_5637795_species_5637698 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_75" id="hearth_reaction_1225952" name="hearth Phosphorylation of SHC1 by ligand-responsive p-6Y-EGFR mutants" reversible="false" compartment="hearth_compartment_876">
         <notes>
@@ -3641,7 +4119,70 @@
         <listOfModifiers>
           <modifierSpeciesReference sboTerm="SBO:0000013" id="hearth_modifierspeciesreference_1225952_catalyst_1225858" species="hearth_species_1225858"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> hearth_species_1225858 </ci>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_1225952 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1225952_input_113592 </ci>
+                      <ci> k_reaction_1225952_species_113592 </ci>
+                    </apply>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1225952_input_1225858 </ci>
+                      <ci> k_reaction_1225952_species_1225858 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1225952_input_113592 </ci>
+                      <ci> k_reaction_1225952_species_113592 </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_1225952_input_113592 </ci>
+                        <ci> k_reaction_1225952_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 2 </cn>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1225952_input_1225858 </ci>
+                      <ci> k_reaction_1225952_species_1225858 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_75" id="liver_reaction_1225952" name="liver Phosphorylation of SHC1 by ligand-responsive p-6Y-EGFR mutants" reversible="false" compartment="liver_compartment_876">
         <notes>
@@ -3658,7 +4199,70 @@
         <listOfModifiers>
           <modifierSpeciesReference sboTerm="SBO:0000013" id="liver_modifierspeciesreference_1225952_catalyst_1225858" species="liver_species_1225858"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> liver_species_1225858 </ci>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_1225952 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1225952_input_113592 </ci>
+                      <ci> k_reaction_1225952_species_113592 </ci>
+                    </apply>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1225952_input_1225858 </ci>
+                      <ci> k_reaction_1225952_species_1225858 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1225952_input_113592 </ci>
+                      <ci> k_reaction_1225952_species_113592 </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_1225952_input_113592 </ci>
+                        <ci> k_reaction_1225952_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 2 </cn>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1225952_input_1225858 </ci>
+                      <ci> k_reaction_1225952_species_1225858 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_76" id="hearth_reaction_5637808" name="hearth SOS-mediated nucleotide exchange of RAS (mediated by GRB2:SOS1 in complex with phosphorylated SHC1 and p-EGFRvIII)" reversible="false" compartment="hearth_compartment_70101">
         <notes>
@@ -3675,7 +4279,61 @@
         <listOfModifiers>
           <modifierSpeciesReference sboTerm="SBO:0000013" id="hearth_modifierspeciesreference_5637808_catalyst_5637704" species="hearth_species_5637704"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> hearth_species_5637704 </ci>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_5637808 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_5637808_input_109796 </ci>
+                      <ci> k_reaction_5637808_species_109796 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_5637808_input_29438 </ci>
+                      <ci> k_reaction_5637808_species_29438 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_5637808_input_109796 </ci>
+                      <ci> k_reaction_5637808_species_109796 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_5637808_input_29438 </ci>
+                      <ci> k_reaction_5637808_species_29438 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_76" id="liver_reaction_5637808" name="liver SOS-mediated nucleotide exchange of RAS (mediated by GRB2:SOS1 in complex with phosphorylated SHC1 and p-EGFRvIII)" reversible="false" compartment="liver_compartment_70101">
         <notes>
@@ -3692,7 +4350,61 @@
         <listOfModifiers>
           <modifierSpeciesReference sboTerm="SBO:0000013" id="liver_modifierspeciesreference_5637808_catalyst_5637704" species="liver_species_5637704"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> liver_species_5637704 </ci>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_5637808 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_5637808_input_109796 </ci>
+                      <ci> k_reaction_5637808_species_109796 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_5637808_input_29438 </ci>
+                      <ci> k_reaction_5637808_species_29438 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_5637808_input_109796 </ci>
+                      <ci> k_reaction_5637808_species_109796 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_5637808_input_29438 </ci>
+                      <ci> k_reaction_5637808_species_29438 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_77" id="hearth_reaction_1218833" name="hearth Binding of ligand-responsive EGFR mutants to chaperoning proteins HSP90 and CDC37" reversible="false" compartment="hearth_compartment_876">
         <notes>
@@ -3706,7 +4418,25 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_1218833_output_1218825" species="hearth_species_1218825" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1218833 </ci>
+              <apply>
+                <power/>
+                <ci> hearth_species_1225828 </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+              <ci> hearth_species_1182966 </ci>
+              <apply>
+                <power/>
+                <ci> hearth_species_1221657 </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_77" id="liver_reaction_1218833" name="liver Binding of ligand-responsive EGFR mutants to chaperoning proteins HSP90 and CDC37" reversible="false" compartment="liver_compartment_876">
         <notes>
@@ -3720,7 +4450,25 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_1218833_output_1218825" species="liver_species_1218825" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1218833 </ci>
+              <apply>
+                <power/>
+                <ci> liver_species_1225828 </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+              <ci> liver_species_1182966 </ci>
+              <apply>
+                <power/>
+                <ci> liver_species_1221657 </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_78" id="hearth_reaction_5637801" name="hearth Conversion of PIP2 to PIP3 by PI3K bound to phosphorylated EGFRvIII" reversible="false" compartment="hearth_compartment_876">
         <notes>
@@ -3737,7 +4485,61 @@
         <listOfModifiers>
           <modifierSpeciesReference sboTerm="SBO:0000013" id="hearth_modifierspeciesreference_5637801_catalyst_5637693" species="hearth_species_5637693"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> hearth_species_5637693 </ci>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_5637801 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_5637801_input_113592 </ci>
+                      <ci> k_reaction_5637801_species_113592 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_5637801_input_179856 </ci>
+                      <ci> k_reaction_5637801_species_179856 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_5637801_input_113592 </ci>
+                      <ci> k_reaction_5637801_species_113592 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_5637801_input_179856 </ci>
+                      <ci> k_reaction_5637801_species_179856 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_78" id="liver_reaction_5637801" name="liver Conversion of PIP2 to PIP3 by PI3K bound to phosphorylated EGFRvIII" reversible="false" compartment="liver_compartment_876">
         <notes>
@@ -3754,7 +4556,61 @@
         <listOfModifiers>
           <modifierSpeciesReference sboTerm="SBO:0000013" id="liver_modifierspeciesreference_5637801_catalyst_5637693" species="liver_species_5637693"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> liver_species_5637693 </ci>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_5637801 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_5637801_input_113592 </ci>
+                      <ci> k_reaction_5637801_species_113592 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_5637801_input_179856 </ci>
+                      <ci> k_reaction_5637801_species_179856 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_5637801_input_113592 </ci>
+                      <ci> k_reaction_5637801_species_113592 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_5637801_input_179856 </ci>
+                      <ci> k_reaction_5637801_species_179856 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_79" id="hearth_reaction_1226016" name="hearth Binding of GRB2:GAB1 complex to ligand-responsive p-6Y-EGFR mutants" reversible="false" compartment="hearth_compartment_70101">
         <notes>
@@ -3767,7 +4623,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_1226016_output_1226015" species="hearth_species_1226015" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1226016 </ci>
+              <ci> hearth_species_179849 </ci>
+              <ci> hearth_species_1181062 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_79" id="liver_reaction_1226016" name="liver Binding of GRB2:GAB1 complex to ligand-responsive p-6Y-EGFR mutants" reversible="false" compartment="liver_compartment_70101">
         <notes>
@@ -3780,7 +4645,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_1226016_output_1226015" species="liver_species_1226015" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1226016 </ci>
+              <ci> liver_species_179849 </ci>
+              <ci> liver_species_1181062 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_80" id="hearth_reaction_5637796" name="hearth Phosphorylation of SHC1 by p-5Y-EGFRvIII" reversible="false" compartment="hearth_compartment_876">
         <notes>
@@ -3797,7 +4671,70 @@
         <listOfModifiers>
           <modifierSpeciesReference sboTerm="SBO:0000013" id="hearth_modifierspeciesreference_5637796_catalyst_5637701" species="hearth_species_5637701"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> hearth_species_5637701 </ci>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_5637796 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_5637796_input_113592 </ci>
+                      <ci> k_reaction_5637796_species_113592 </ci>
+                    </apply>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_5637796_input_5637701 </ci>
+                      <ci> k_reaction_5637796_species_5637701 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_5637796_input_113592 </ci>
+                      <ci> k_reaction_5637796_species_113592 </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_5637796_input_113592 </ci>
+                        <ci> k_reaction_5637796_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 2 </cn>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_5637796_input_5637701 </ci>
+                      <ci> k_reaction_5637796_species_5637701 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_80" id="liver_reaction_5637796" name="liver Phosphorylation of SHC1 by p-5Y-EGFRvIII" reversible="false" compartment="liver_compartment_876">
         <notes>
@@ -3814,7 +4751,70 @@
         <listOfModifiers>
           <modifierSpeciesReference sboTerm="SBO:0000013" id="liver_modifierspeciesreference_5637796_catalyst_5637701" species="liver_species_5637701"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> liver_species_5637701 </ci>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_5637796 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_5637796_input_113592 </ci>
+                      <ci> k_reaction_5637796_species_113592 </ci>
+                    </apply>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_5637796_input_5637701 </ci>
+                      <ci> k_reaction_5637796_species_5637701 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_5637796_input_113592 </ci>
+                      <ci> k_reaction_5637796_species_113592 </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_5637796_input_113592 </ci>
+                        <ci> k_reaction_5637796_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 2 </cn>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_5637796_input_5637701 </ci>
+                      <ci> k_reaction_5637796_species_5637701 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_81" id="hearth_reaction_1247841" name="hearth PLCG1 binds to ligand-responsive p-6Y-EGFR mutants" reversible="false" compartment="hearth_compartment_70101">
         <notes>
@@ -3827,7 +4827,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_1247841_output_1247845" species="hearth_species_1247845" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1247841 </ci>
+              <ci> hearth_species_167682 </ci>
+              <ci> hearth_species_1181062 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_81" id="liver_reaction_1247841" name="liver PLCG1 binds to ligand-responsive p-6Y-EGFR mutants" reversible="false" compartment="liver_compartment_70101">
         <notes>
@@ -3840,7 +4849,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_1247841_output_1247845" species="liver_species_1247845" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1247841 </ci>
+              <ci> liver_species_167682 </ci>
+              <ci> liver_species_1181062 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_82" id="hearth_reaction_1248655" name="hearth Trans-autophosphorylation of EGFRvIII mutant dimers" reversible="false" compartment="hearth_compartment_876">
         <notes>
@@ -3857,7 +4875,142 @@
         <listOfModifiers>
           <modifierSpeciesReference sboTerm="SBO:0000013" id="hearth_modifierspeciesreference_1248655_catalyst_1248010" species="hearth_species_1248010"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> hearth_species_1248010 </ci>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_1248655 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1248655_input_113592 </ci>
+                      <ci> k_reaction_1248655_species_113592 </ci>
+                    </apply>
+                    <cn type="integer"> 10 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1248655_input_1248010 </ci>
+                      <ci> k_reaction_1248655_species_1248010 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1248655_input_113592 </ci>
+                      <ci> k_reaction_1248655_species_113592 </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_1248655_input_113592 </ci>
+                        <ci> k_reaction_1248655_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 2 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_1248655_input_113592 </ci>
+                        <ci> k_reaction_1248655_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 3 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_1248655_input_113592 </ci>
+                        <ci> k_reaction_1248655_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 4 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_1248655_input_113592 </ci>
+                        <ci> k_reaction_1248655_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 5 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_1248655_input_113592 </ci>
+                        <ci> k_reaction_1248655_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 6 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_1248655_input_113592 </ci>
+                        <ci> k_reaction_1248655_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 7 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_1248655_input_113592 </ci>
+                        <ci> k_reaction_1248655_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 8 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_1248655_input_113592 </ci>
+                        <ci> k_reaction_1248655_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 9 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_1248655_input_113592 </ci>
+                        <ci> k_reaction_1248655_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 10 </cn>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1248655_input_1248010 </ci>
+                      <ci> k_reaction_1248655_species_1248010 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_82" id="liver_reaction_1248655" name="liver Trans-autophosphorylation of EGFRvIII mutant dimers" reversible="false" compartment="liver_compartment_876">
         <notes>
@@ -3874,7 +5027,142 @@
         <listOfModifiers>
           <modifierSpeciesReference sboTerm="SBO:0000013" id="liver_modifierspeciesreference_1248655_catalyst_1248010" species="liver_species_1248010"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> liver_species_1248010 </ci>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_1248655 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1248655_input_113592 </ci>
+                      <ci> k_reaction_1248655_species_113592 </ci>
+                    </apply>
+                    <cn type="integer"> 10 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1248655_input_1248010 </ci>
+                      <ci> k_reaction_1248655_species_1248010 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1248655_input_113592 </ci>
+                      <ci> k_reaction_1248655_species_113592 </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_1248655_input_113592 </ci>
+                        <ci> k_reaction_1248655_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 2 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_1248655_input_113592 </ci>
+                        <ci> k_reaction_1248655_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 3 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_1248655_input_113592 </ci>
+                        <ci> k_reaction_1248655_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 4 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_1248655_input_113592 </ci>
+                        <ci> k_reaction_1248655_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 5 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_1248655_input_113592 </ci>
+                        <ci> k_reaction_1248655_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 6 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_1248655_input_113592 </ci>
+                        <ci> k_reaction_1248655_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 7 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_1248655_input_113592 </ci>
+                        <ci> k_reaction_1248655_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 8 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_1248655_input_113592 </ci>
+                        <ci> k_reaction_1248655_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 9 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_1248655_input_113592 </ci>
+                        <ci> k_reaction_1248655_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 10 </cn>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1248655_input_1248010 </ci>
+                      <ci> k_reaction_1248655_species_1248010 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_83" id="hearth_reaction_5637770" name="hearth Binding of GRB2:SOS1 complex to phosphorylated EGFRvIII" reversible="false" compartment="hearth_compartment_876">
         <notes>
@@ -3887,7 +5175,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_5637770_output_5637697" species="hearth_species_5637697" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_5637770 </ci>
+              <ci> hearth_species_109797 </ci>
+              <ci> hearth_species_1248654 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_83" id="liver_reaction_5637770" name="liver Binding of GRB2:SOS1 complex to phosphorylated EGFRvIII" reversible="false" compartment="liver_compartment_876">
         <notes>
@@ -3900,7 +5197,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_5637770_output_5637697" species="liver_species_5637697" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_5637770 </ci>
+              <ci> liver_species_109797 </ci>
+              <ci> liver_species_1248654 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_84" id="hearth_reaction_1247844" name="hearth Phosphorylation of PLCG1 by ligand-responsive p-6Y-EGFR mutants" reversible="false" compartment="hearth_compartment_70101">
         <notes>
@@ -3917,7 +5223,88 @@
         <listOfModifiers>
           <modifierSpeciesReference sboTerm="SBO:0000013" id="hearth_modifierspeciesreference_1247844_catalyst_1247845" species="hearth_species_1247845"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> hearth_species_1247845 </ci>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_1247844 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1247844_input_1247845 </ci>
+                      <ci> k_reaction_1247844_species_1247845 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1247844_input_113592 </ci>
+                      <ci> k_reaction_1247844_species_113592 </ci>
+                    </apply>
+                    <cn type="integer"> 4 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1247844_input_1247845 </ci>
+                      <ci> k_reaction_1247844_species_1247845 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1247844_input_113592 </ci>
+                      <ci> k_reaction_1247844_species_113592 </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_1247844_input_113592 </ci>
+                        <ci> k_reaction_1247844_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 2 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_1247844_input_113592 </ci>
+                        <ci> k_reaction_1247844_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 3 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_1247844_input_113592 </ci>
+                        <ci> k_reaction_1247844_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 4 </cn>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_84" id="liver_reaction_1247844" name="liver Phosphorylation of PLCG1 by ligand-responsive p-6Y-EGFR mutants" reversible="false" compartment="liver_compartment_70101">
         <notes>
@@ -3934,7 +5321,88 @@
         <listOfModifiers>
           <modifierSpeciesReference sboTerm="SBO:0000013" id="liver_modifierspeciesreference_1247844_catalyst_1247845" species="liver_species_1247845"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> liver_species_1247845 </ci>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_1247844 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1247844_input_1247845 </ci>
+                      <ci> k_reaction_1247844_species_1247845 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1247844_input_113592 </ci>
+                      <ci> k_reaction_1247844_species_113592 </ci>
+                    </apply>
+                    <cn type="integer"> 4 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1247844_input_1247845 </ci>
+                      <ci> k_reaction_1247844_species_1247845 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1247844_input_113592 </ci>
+                      <ci> k_reaction_1247844_species_113592 </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_1247844_input_113592 </ci>
+                        <ci> k_reaction_1247844_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 2 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_1247844_input_113592 </ci>
+                        <ci> k_reaction_1247844_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 3 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_1247844_input_113592 </ci>
+                        <ci> k_reaction_1247844_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 4 </cn>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_85" id="hearth_reaction_1247842" name="hearth Dissociation of phosphorylated PLCG1 from ligand-responsive p-6Y-EGFR mutants" reversible="false" compartment="hearth_compartment_876">
         <notes>
@@ -3947,7 +5415,15 @@
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_1247842_output_167679" species="hearth_species_167679" stoichiometry="1" constant="true"/>
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_1247842_output_1181062" species="hearth_species_1181062" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1247842 </ci>
+              <ci> hearth_species_1247846 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_85" id="liver_reaction_1247842" name="liver Dissociation of phosphorylated PLCG1 from ligand-responsive p-6Y-EGFR mutants" reversible="false" compartment="liver_compartment_876">
         <notes>
@@ -3960,7 +5436,15 @@
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_1247842_output_167679" species="liver_species_167679" stoichiometry="1" constant="true"/>
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_1247842_output_1181062" species="liver_species_1181062" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1247842 </ci>
+              <ci> liver_species_1247846 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_86" id="hearth_reaction_1225956" name="hearth Inefficient ubiquitination of ligand-responsive p-6Y-EGFR mutants by p-Y371-CBL" reversible="false" compartment="hearth_compartment_876">
         <notes>
@@ -3974,7 +5458,78 @@
           <modifierSpeciesReference sboTerm="SBO:0000013" id="hearth_modifierspeciesreference_1225956_catalyst_1225857" species="hearth_species_1225857"/>
           <modifierSpeciesReference sboTerm="SBO:0000020" id="hearth_modifierspeciesreference_1225956_negativeregulator_1225855" species="hearth_species_1225855"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> hearth_species_1225857 </ci>
+              <apply>
+                <divide/>
+                <ci> k_inhibitor_modifierspeciesreference_1225956_negativeregulator_1225855 </ci>
+                <apply>
+                  <plus/>
+                  <ci> k_inhibitor_modifierspeciesreference_1225956_negativeregulator_1225855 </ci>
+                  <ci> hearth_species_1225855 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_1225956 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1225956_input_113595 </ci>
+                      <ci> k_reaction_1225956_species_113595 </ci>
+                    </apply>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1225956_input_1225857 </ci>
+                      <ci> k_reaction_1225956_species_1225857 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1225956_input_113595 </ci>
+                      <ci> k_reaction_1225956_species_113595 </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_1225956_input_113595 </ci>
+                        <ci> k_reaction_1225956_species_113595 </ci>
+                      </apply>
+                      <cn type="integer"> 2 </cn>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1225956_input_1225857 </ci>
+                      <ci> k_reaction_1225956_species_1225857 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_86" id="liver_reaction_1225956" name="liver Inefficient ubiquitination of ligand-responsive p-6Y-EGFR mutants by p-Y371-CBL" reversible="false" compartment="liver_compartment_876">
         <notes>
@@ -3988,7 +5543,78 @@
           <modifierSpeciesReference sboTerm="SBO:0000013" id="liver_modifierspeciesreference_1225956_catalyst_1225857" species="liver_species_1225857"/>
           <modifierSpeciesReference sboTerm="SBO:0000020" id="liver_modifierspeciesreference_1225956_negativeregulator_1225855" species="liver_species_1225855"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> liver_species_1225857 </ci>
+              <apply>
+                <divide/>
+                <ci> k_inhibitor_modifierspeciesreference_1225956_negativeregulator_1225855 </ci>
+                <apply>
+                  <plus/>
+                  <ci> k_inhibitor_modifierspeciesreference_1225956_negativeregulator_1225855 </ci>
+                  <ci> liver_species_1225855 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_1225956 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1225956_input_113595 </ci>
+                      <ci> k_reaction_1225956_species_113595 </ci>
+                    </apply>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1225956_input_1225857 </ci>
+                      <ci> k_reaction_1225956_species_1225857 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1225956_input_113595 </ci>
+                      <ci> k_reaction_1225956_species_113595 </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_1225956_input_113595 </ci>
+                        <ci> k_reaction_1225956_species_113595 </ci>
+                      </apply>
+                      <cn type="integer"> 2 </cn>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1225956_input_1225857 </ci>
+                      <ci> k_reaction_1225956_species_1225857 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_87" id="hearth_reaction_5637798" name="hearth Phosphorylated SHC1 in complex with p-5Y-EGFRvIII recruits GRB2:SOS1 complex" reversible="false" compartment="hearth_compartment_876">
         <notes>
@@ -4001,7 +5627,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_5637798_output_5637704" species="hearth_species_5637704" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_5637798 </ci>
+              <ci> hearth_species_5637703 </ci>
+              <ci> hearth_species_109797 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_87" id="liver_reaction_5637798" name="liver Phosphorylated SHC1 in complex with p-5Y-EGFRvIII recruits GRB2:SOS1 complex" reversible="false" compartment="liver_compartment_876">
         <notes>
@@ -4014,7 +5649,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_5637798_output_5637704" species="liver_species_5637704" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_5637798 </ci>
+              <ci> liver_species_5637703 </ci>
+              <ci> liver_species_109797 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_88" id="hearth_reaction_1220612" name="hearth Binding of EGF to ligand-responsive EGFR mutants" reversible="false" compartment="hearth_compartment_876">
         <notes>
@@ -4027,7 +5671,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_1220612_output_1220578" species="hearth_species_1220578" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1220612 </ci>
+              <ci> hearth_species_179863 </ci>
+              <ci> hearth_species_1218825 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_88" id="liver_reaction_1220612" name="liver Binding of EGF to ligand-responsive EGFR mutants" reversible="false" compartment="liver_compartment_876">
         <notes>
@@ -4040,7 +5693,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_1220612_output_1220578" species="liver_species_1220578" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1220612 </ci>
+              <ci> liver_species_179863 </ci>
+              <ci> liver_species_1218825 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_89" id="hearth_reaction_1225957" name="hearth SOS-mediated nucleotide exchange of RAS (mediated by GRB2:SOS1 in complex with phosphorylated SHC1 and ligand-responsive p-6Y-EGFR mutants)" reversible="false" compartment="hearth_compartment_70101">
         <notes>
@@ -4057,7 +5719,61 @@
         <listOfModifiers>
           <modifierSpeciesReference sboTerm="SBO:0000013" id="hearth_modifierspeciesreference_1225957_catalyst_1225856" species="hearth_species_1225856"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> hearth_species_1225856 </ci>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_1225957 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1225957_input_109796 </ci>
+                      <ci> k_reaction_1225957_species_109796 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1225957_input_29438 </ci>
+                      <ci> k_reaction_1225957_species_29438 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1225957_input_109796 </ci>
+                      <ci> k_reaction_1225957_species_109796 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1225957_input_29438 </ci>
+                      <ci> k_reaction_1225957_species_29438 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_89" id="liver_reaction_1225957" name="liver SOS-mediated nucleotide exchange of RAS (mediated by GRB2:SOS1 in complex with phosphorylated SHC1 and ligand-responsive p-6Y-EGFR mutants)" reversible="false" compartment="liver_compartment_70101">
         <notes>
@@ -4074,7 +5790,61 @@
         <listOfModifiers>
           <modifierSpeciesReference sboTerm="SBO:0000013" id="liver_modifierspeciesreference_1225957_catalyst_1225856" species="liver_species_1225856"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> liver_species_1225856 </ci>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_1225957 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1225957_input_109796 </ci>
+                      <ci> k_reaction_1225957_species_109796 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1225957_input_29438 </ci>
+                      <ci> k_reaction_1225957_species_29438 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1225957_input_109796 </ci>
+                      <ci> k_reaction_1225957_species_109796 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1225957_input_29438 </ci>
+                      <ci> k_reaction_1225957_species_29438 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_90" id="hearth_reaction_5637764" name="hearth Binding of GRB2:GAB1 complex to p-EGFRvIII mutant" reversible="false" compartment="hearth_compartment_70101">
         <notes>
@@ -4087,7 +5857,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_5637764_output_5637694" species="hearth_species_5637694" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_5637764 </ci>
+              <ci> hearth_species_179849 </ci>
+              <ci> hearth_species_1248654 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_90" id="liver_reaction_5637764" name="liver Binding of GRB2:GAB1 complex to p-EGFRvIII mutant" reversible="false" compartment="liver_compartment_70101">
         <notes>
@@ -4100,7 +5879,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_5637764_output_5637694" species="liver_species_5637694" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_5637764 </ci>
+              <ci> liver_species_179849 </ci>
+              <ci> liver_species_1248654 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_91" id="hearth_reaction_1218824" name="hearth HSP90 is inactivated by binding to benzaquinoid ansamycins" reversible="false" compartment="hearth_compartment_70101">
         <notes>
@@ -4113,7 +5901,20 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_1218824_output_1218829" species="hearth_species_1218829" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1218824 </ci>
+              <apply>
+                <power/>
+                <ci> hearth_species_1217511 </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+              <ci> hearth_species_1221657 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_91" id="liver_reaction_1218824" name="liver HSP90 is inactivated by binding to benzaquinoid ansamycins" reversible="false" compartment="liver_compartment_70101">
         <notes>
@@ -4126,7 +5927,20 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_1218824_output_1218829" species="liver_species_1218829" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1218824 </ci>
+              <apply>
+                <power/>
+                <ci> liver_species_1217511 </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+              <ci> liver_species_1221657 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_92" id="hearth_reaction_1225961" name="hearth Phosphorylated SHC1 in complex with ligand-responsive p-6Y-EGFR mutants recruits GRB2:SOS1 complex" reversible="false" compartment="hearth_compartment_876">
         <notes>
@@ -4139,7 +5953,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_1225961_output_1225856" species="hearth_species_1225856" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1225961 </ci>
+              <ci> hearth_species_109797 </ci>
+              <ci> hearth_species_1225854 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_92" id="liver_reaction_1225961" name="liver Phosphorylated SHC1 in complex with ligand-responsive p-6Y-EGFR mutants recruits GRB2:SOS1 complex" reversible="false" compartment="liver_compartment_876">
         <notes>
@@ -4152,7 +5975,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_1225961_output_1225856" species="liver_species_1225856" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1225961 </ci>
+              <ci> liver_species_109797 </ci>
+              <ci> liver_species_1225854 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_93" id="hearth_reaction_5637792" name="hearth PLC-gamma 1 binds to p-EGFRvIII mutant" reversible="false" compartment="hearth_compartment_70101">
         <notes>
@@ -4165,7 +5997,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_5637792_output_5637698" species="hearth_species_5637698" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_5637792 </ci>
+              <ci> hearth_species_167682 </ci>
+              <ci> hearth_species_1248654 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_93" id="liver_reaction_5637792" name="liver PLC-gamma 1 binds to p-EGFRvIII mutant" reversible="false" compartment="liver_compartment_70101">
         <notes>
@@ -4178,7 +6019,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_5637792_output_5637698" species="liver_species_5637698" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_5637792 </ci>
+              <ci> liver_species_167682 </ci>
+              <ci> liver_species_1248654 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_94" id="hearth_reaction_5637765" name="hearth Binding of PI3K to complex of GRB2:GAB1 and p-EGFRvIII" reversible="false" compartment="hearth_compartment_70101">
         <notes>
@@ -4191,7 +6041,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_5637765_output_5637693" species="hearth_species_5637693" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_5637765 </ci>
+              <ci> hearth_species_5637694 </ci>
+              <ci> hearth_species_1806218 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_94" id="liver_reaction_5637765" name="liver Binding of PI3K to complex of GRB2:GAB1 and p-EGFRvIII" reversible="false" compartment="liver_compartment_70101">
         <notes>
@@ -4204,7 +6063,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_5637765_output_5637693" species="liver_species_5637693" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_5637765 </ci>
+              <ci> liver_species_5637694 </ci>
+              <ci> liver_species_1806218 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_95" id="hearth_reaction_1225951" name="hearth SOS-mediated nucleotide exchange of RAS (mediated by GRB2:SOS1 in complex with ligand-responsive p-6Y-EGFR mutants)" reversible="false" compartment="hearth_compartment_70101">
         <notes>
@@ -4221,7 +6089,61 @@
         <listOfModifiers>
           <modifierSpeciesReference sboTerm="SBO:0000013" id="hearth_modifierspeciesreference_1225951_catalyst_1225859" species="hearth_species_1225859"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> hearth_species_1225859 </ci>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_1225951 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1225951_input_109796 </ci>
+                      <ci> k_reaction_1225951_species_109796 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1225951_input_29438 </ci>
+                      <ci> k_reaction_1225951_species_29438 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1225951_input_109796 </ci>
+                      <ci> k_reaction_1225951_species_109796 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1225951_input_29438 </ci>
+                      <ci> k_reaction_1225951_species_29438 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_95" id="liver_reaction_1225951" name="liver SOS-mediated nucleotide exchange of RAS (mediated by GRB2:SOS1 in complex with ligand-responsive p-6Y-EGFR mutants)" reversible="false" compartment="liver_compartment_70101">
         <notes>
@@ -4238,7 +6160,61 @@
         <listOfModifiers>
           <modifierSpeciesReference sboTerm="SBO:0000013" id="liver_modifierspeciesreference_1225951_catalyst_1225859" species="liver_species_1225859"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> liver_species_1225859 </ci>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_1225951 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1225951_input_109796 </ci>
+                      <ci> k_reaction_1225951_species_109796 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1225951_input_29438 </ci>
+                      <ci> k_reaction_1225951_species_29438 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1225951_input_109796 </ci>
+                      <ci> k_reaction_1225951_species_109796 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1225951_input_29438 </ci>
+                      <ci> k_reaction_1225951_species_29438 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_96" id="hearth_reaction_1247999" name="hearth EGFRvIII mutant binds chaperone proteins HSP90 and CDC37" reversible="false" compartment="hearth_compartment_876">
         <notes>
@@ -4252,7 +6228,17 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_1247999_output_1248004" species="hearth_species_1248004" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1247999 </ci>
+              <ci> hearth_species_1225828 </ci>
+              <ci> hearth_species_1214162 </ci>
+              <ci> hearth_species_1221657 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_96" id="liver_reaction_1247999" name="liver EGFRvIII mutant binds chaperone proteins HSP90 and CDC37" reversible="false" compartment="liver_compartment_876">
         <notes>
@@ -4266,7 +6252,17 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_1247999_output_1248004" species="liver_species_1248004" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1247999 </ci>
+              <ci> liver_species_1225828 </ci>
+              <ci> liver_species_1214162 </ci>
+              <ci> liver_species_1221657 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_97" id="hearth_reaction_1169421" name="hearth Trans-autophosphorylation of activated ligand-responsive EGFR mutant dimers" reversible="false" compartment="hearth_compartment_70101">
         <notes>
@@ -4283,7 +6279,160 @@
         <listOfModifiers>
           <modifierSpeciesReference sboTerm="SBO:0000013" id="hearth_modifierspeciesreference_1169421_catalyst_1220582" species="hearth_species_1220582"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> hearth_species_1220582 </ci>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_1169421 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1169421_input_113592 </ci>
+                      <ci> k_reaction_1169421_species_113592 </ci>
+                    </apply>
+                    <cn type="integer"> 12 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1169421_input_1220582 </ci>
+                      <ci> k_reaction_1169421_species_1220582 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1169421_input_113592 </ci>
+                      <ci> k_reaction_1169421_species_113592 </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_1169421_input_113592 </ci>
+                        <ci> k_reaction_1169421_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 2 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_1169421_input_113592 </ci>
+                        <ci> k_reaction_1169421_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 3 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_1169421_input_113592 </ci>
+                        <ci> k_reaction_1169421_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 4 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_1169421_input_113592 </ci>
+                        <ci> k_reaction_1169421_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 5 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_1169421_input_113592 </ci>
+                        <ci> k_reaction_1169421_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 6 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_1169421_input_113592 </ci>
+                        <ci> k_reaction_1169421_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 7 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_1169421_input_113592 </ci>
+                        <ci> k_reaction_1169421_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 8 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_1169421_input_113592 </ci>
+                        <ci> k_reaction_1169421_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 9 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_1169421_input_113592 </ci>
+                        <ci> k_reaction_1169421_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 10 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_1169421_input_113592 </ci>
+                        <ci> k_reaction_1169421_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 11 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> hearth_speciesreference_1169421_input_113592 </ci>
+                        <ci> k_reaction_1169421_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 12 </cn>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1169421_input_1220582 </ci>
+                      <ci> k_reaction_1169421_species_1220582 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_97" id="liver_reaction_1169421" name="liver Trans-autophosphorylation of activated ligand-responsive EGFR mutant dimers" reversible="false" compartment="liver_compartment_70101">
         <notes>
@@ -4300,7 +6449,160 @@
         <listOfModifiers>
           <modifierSpeciesReference sboTerm="SBO:0000013" id="liver_modifierspeciesreference_1169421_catalyst_1220582" species="liver_species_1220582"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> liver_species_1220582 </ci>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_1169421 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1169421_input_113592 </ci>
+                      <ci> k_reaction_1169421_species_113592 </ci>
+                    </apply>
+                    <cn type="integer"> 12 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1169421_input_1220582 </ci>
+                      <ci> k_reaction_1169421_species_1220582 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1169421_input_113592 </ci>
+                      <ci> k_reaction_1169421_species_113592 </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_1169421_input_113592 </ci>
+                        <ci> k_reaction_1169421_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 2 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_1169421_input_113592 </ci>
+                        <ci> k_reaction_1169421_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 3 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_1169421_input_113592 </ci>
+                        <ci> k_reaction_1169421_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 4 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_1169421_input_113592 </ci>
+                        <ci> k_reaction_1169421_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 5 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_1169421_input_113592 </ci>
+                        <ci> k_reaction_1169421_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 6 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_1169421_input_113592 </ci>
+                        <ci> k_reaction_1169421_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 7 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_1169421_input_113592 </ci>
+                        <ci> k_reaction_1169421_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 8 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_1169421_input_113592 </ci>
+                        <ci> k_reaction_1169421_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 9 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_1169421_input_113592 </ci>
+                        <ci> k_reaction_1169421_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 10 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_1169421_input_113592 </ci>
+                        <ci> k_reaction_1169421_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 11 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> liver_speciesreference_1169421_input_113592 </ci>
+                        <ci> k_reaction_1169421_species_113592 </ci>
+                      </apply>
+                      <cn type="integer"> 12 </cn>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1169421_input_1220582 </ci>
+                      <ci> k_reaction_1169421_species_1220582 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_98" id="hearth_reaction_5637806" name="hearth SOS-mediated nucleotide exchange of RAS (mediated by GRB2:SOS1 in complex with p-EGFRvIII)" reversible="false" compartment="hearth_compartment_70101">
         <notes>
@@ -4317,7 +6619,61 @@
         <listOfModifiers>
           <modifierSpeciesReference sboTerm="SBO:0000013" id="hearth_modifierspeciesreference_5637806_catalyst_5637697" species="hearth_species_5637697"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> hearth_species_5637697 </ci>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_5637806 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_5637806_input_109796 </ci>
+                      <ci> k_reaction_5637806_species_109796 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_5637806_input_29438 </ci>
+                      <ci> k_reaction_5637806_species_29438 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_5637806_input_109796 </ci>
+                      <ci> k_reaction_5637806_species_109796 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_5637806_input_29438 </ci>
+                      <ci> k_reaction_5637806_species_29438 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_98" id="liver_reaction_5637806" name="liver SOS-mediated nucleotide exchange of RAS (mediated by GRB2:SOS1 in complex with p-EGFRvIII)" reversible="false" compartment="liver_compartment_70101">
         <notes>
@@ -4334,7 +6690,61 @@
         <listOfModifiers>
           <modifierSpeciesReference sboTerm="SBO:0000013" id="liver_modifierspeciesreference_5637806_catalyst_5637697" species="liver_species_5637697"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> liver_species_5637697 </ci>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_5637806 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_5637806_input_109796 </ci>
+                      <ci> k_reaction_5637806_species_109796 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_5637806_input_29438 </ci>
+                      <ci> k_reaction_5637806_species_29438 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_5637806_input_109796 </ci>
+                      <ci> k_reaction_5637806_species_109796 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_5637806_input_29438 </ci>
+                      <ci> k_reaction_5637806_species_29438 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_99" id="hearth_reaction_1248002" name="hearth Ligand-independent dimerization of EGFRvIII mutant" reversible="false" compartment="hearth_compartment_876">
         <notes>
@@ -4346,7 +6756,19 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_1248002_output_1248010" species="hearth_species_1248010" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1248002 </ci>
+              <apply>
+                <power/>
+                <ci> hearth_species_1248004 </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_99" id="liver_reaction_1248002" name="liver Ligand-independent dimerization of EGFRvIII mutant" reversible="false" compartment="liver_compartment_876">
         <notes>
@@ -4358,7 +6780,19 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_1248002_output_1248010" species="liver_species_1248010" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1248002 </ci>
+              <apply>
+                <power/>
+                <ci> liver_species_1248004 </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_100" id="hearth_reaction_5637794" name="hearth EGFRvIII does not bind CBL" reversible="false" compartment="hearth_compartment_70101">
         <notes>
@@ -4368,7 +6802,20 @@
           <speciesReference sboTerm="SBO:0000010" id="hearth_speciesreference_5637794_input_1248654" species="hearth_species_1248654" stoichiometry="1" constant="true"/>
           <speciesReference sboTerm="SBO:0000010" id="hearth_speciesreference_5637794_input_112199" species="hearth_species_112199" stoichiometry="2" constant="true"/>
         </listOfReactants>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_5637794 </ci>
+              <ci> hearth_species_1248654 </ci>
+              <apply>
+                <power/>
+                <ci> hearth_species_112199 </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_100" id="liver_reaction_5637794" name="liver EGFRvIII does not bind CBL" reversible="false" compartment="liver_compartment_70101">
         <notes>
@@ -4378,7 +6825,20 @@
           <speciesReference sboTerm="SBO:0000010" id="liver_speciesreference_5637794_input_1248654" species="liver_species_1248654" stoichiometry="1" constant="true"/>
           <speciesReference sboTerm="SBO:0000010" id="liver_speciesreference_5637794_input_112199" species="liver_species_112199" stoichiometry="2" constant="true"/>
         </listOfReactants>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_5637794 </ci>
+              <ci> liver_species_1248654 </ci>
+              <apply>
+                <power/>
+                <ci> liver_species_112199 </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_101" id="hearth_reaction_1225947" name="hearth Binding of SHC1 to p-6Y-EGFR mutants" reversible="false" compartment="hearth_compartment_70101">
         <notes>
@@ -4391,7 +6851,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_1225947_output_1225858" species="hearth_species_1225858" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1225947 </ci>
+              <ci> hearth_species_1181062 </ci>
+              <ci> hearth_species_74680 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_101" id="liver_reaction_1225947" name="liver Binding of SHC1 to p-6Y-EGFR mutants" reversible="false" compartment="liver_compartment_70101">
         <notes>
@@ -4404,7 +6873,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_1225947_output_1225858" species="liver_species_1225858" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1225947 </ci>
+              <ci> liver_species_1181062 </ci>
+              <ci> liver_species_74680 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_102" id="hearth_reaction_1220613" name="hearth EGF-induced dimerization of ligand-responsive EGFR mutants" reversible="false" compartment="hearth_compartment_876">
         <notes>
@@ -4416,7 +6894,19 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_1220613_output_1500847" species="hearth_species_1500847" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1220613 </ci>
+              <apply>
+                <power/>
+                <ci> hearth_species_1220578 </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_102" id="liver_reaction_1220613" name="liver EGF-induced dimerization of ligand-responsive EGFR mutants" reversible="false" compartment="liver_compartment_876">
         <notes>
@@ -4428,7 +6918,19 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_1220613_output_1500847" species="liver_species_1500847" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1220613 </ci>
+              <apply>
+                <power/>
+                <ci> liver_species_1220578 </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_103" id="hearth_reaction_1226012" name="hearth Binding of PI3K to complex of GRB2:GAB1 and ligand-responsive p-6Y-EGFR mutants" reversible="false" compartment="hearth_compartment_70101">
         <notes>
@@ -4441,7 +6943,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_1226012_output_1226013" species="hearth_species_1226013" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1226012 </ci>
+              <ci> hearth_species_1806218 </ci>
+              <ci> hearth_species_1226015 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_103" id="liver_reaction_1226012" name="liver Binding of PI3K to complex of GRB2:GAB1 and ligand-responsive p-6Y-EGFR mutants" reversible="false" compartment="liver_compartment_70101">
         <notes>
@@ -4454,7 +6965,16 @@
         <listOfProducts>
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_1226012_output_1226013" species="liver_species_1226013" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1226012 </ci>
+              <ci> liver_species_1806218 </ci>
+              <ci> liver_species_1226015 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_104" id="hearth_reaction_1220610" name="hearth Non-covalent tyrosine kinase inhibitors bind and inactivate sensitive ligand-responsive EGFR cancer mutants" reversible="false" compartment="hearth_compartment_876">
         <notes>
@@ -4468,7 +6988,20 @@
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_1220610_output_1220585" species="hearth_species_1220585" stoichiometry="1" constant="true"/>
           <speciesReference sboTerm="SBO:0000011" id="hearth_speciesreference_1220610_output_1220587" species="hearth_species_1220587" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1220610 </ci>
+              <ci> hearth_species_1220582 </ci>
+              <apply>
+                <power/>
+                <ci> hearth_species_1216523 </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_104" id="liver_reaction_1220610" name="liver Non-covalent tyrosine kinase inhibitors bind and inactivate sensitive ligand-responsive EGFR cancer mutants" reversible="false" compartment="liver_compartment_876">
         <notes>
@@ -4482,7 +7015,20 @@
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_1220610_output_1220585" species="liver_species_1220585" stoichiometry="1" constant="true"/>
           <speciesReference sboTerm="SBO:0000011" id="liver_speciesreference_1220610_output_1220587" species="liver_species_1220587" stoichiometry="1" constant="true"/>
         </listOfProducts>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_forcat_reaction_1220610 </ci>
+              <ci> liver_species_1220582 </ci>
+              <apply>
+                <power/>
+                <ci> liver_species_1216523 </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="hearth_metaid_105" id="hearth_reaction_1226014" name="hearth Conversion of PIP2 to PIP3 by PI3K bound to ligand-responsive p-6Y-EGFR mutants" reversible="false" compartment="hearth_compartment_876">
         <notes>
@@ -4499,7 +7045,61 @@
         <listOfModifiers>
           <modifierSpeciesReference sboTerm="SBO:0000013" id="hearth_modifierspeciesreference_1226014_catalyst_1226013" species="hearth_species_1226013"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> hearth_species_1226013 </ci>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_1226014 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1226014_input_113592 </ci>
+                      <ci> k_reaction_1226014_species_113592 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1226014_input_179856 </ci>
+                      <ci> k_reaction_1226014_species_179856 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1226014_input_113592 </ci>
+                      <ci> k_reaction_1226014_species_113592 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> hearth_speciesreference_1226014_input_179856 </ci>
+                      <ci> k_reaction_1226014_species_179856 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
       <reaction metaid="liver_metaid_105" id="liver_reaction_1226014" name="liver Conversion of PIP2 to PIP3 by PI3K bound to ligand-responsive p-6Y-EGFR mutants" reversible="false" compartment="liver_compartment_876">
         <notes>
@@ -4516,7 +7116,61 @@
         <listOfModifiers>
           <modifierSpeciesReference sboTerm="SBO:0000013" id="liver_modifierspeciesreference_1226014_catalyst_1226013" species="liver_species_1226013"/>
         </listOfModifiers>
-        <kineticLaw/>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> liver_species_1226013 </ci>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k_forcat_reaction_1226014 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1226014_input_113592 </ci>
+                      <ci> k_reaction_1226014_species_113592 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1226014_input_179856 </ci>
+                      <ci> k_reaction_1226014_species_179856 </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1226014_input_113592 </ci>
+                      <ci> k_reaction_1226014_species_113592 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> liver_speciesreference_1226014_input_179856 </ci>
+                      <ci> k_reaction_1226014_species_179856 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
       </reaction>
     </listOfReactions>
   </model>
