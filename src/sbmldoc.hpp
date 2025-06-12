@@ -3,6 +3,27 @@
 
 #include "core_convertor.hpp"
 
+#include <deque>
+
+class MathMLIterator {
+    std::deque<const libsbml::ASTNode*> frontier;
+
+public:
+    MathMLIterator(const libsbml::ASTNode *head) {
+        this->frontier.push_back(head);
+    }
+
+    const libsbml::ASTNode *next() {
+        if(frontier.empty()) return NULL;
+        const libsbml::ASTNode *result = frontier[0];
+        frontier.pop_front();
+        for(u_int i=0; i < result->getNumChildren(); i++) {
+            frontier.push_back(result->getChild(i));
+        }
+        return result;
+    }
+};
+
 /**
  * @class SBMLDoc
  * @brief A utility class for loading, manipulating, and simulating SBML (Systems Biology Markup Language) documents.
@@ -95,11 +116,11 @@ public:
         for(u_int i=0; i < model->getNumReactions(); ++i) {
             libsbml::Reaction* r = model->getReaction(i);
             libsbml::KineticLaw* kl = r->getKineticLaw();
-            // if(kl == NULL) {
-            //     kl = add_kinetic_law(model, r, false, &kinetic_constants);
-            // } else {
-            //     TODO("aggiungere le costanti cinetiche rispetto alla legge cinetica già esistente");
-            // }
+            if(kl == NULL) {
+                kl = add_kinetic_law(model, r, false, &kinetic_constants);
+            } else {
+                TODO("aggiungere le costanti cinetiche rispetto alla legge cinetica già esistente");
+            }
             // eprintf("[INFO] reaction: %s\n", r->getId().c_str());
             // fflush(stderr);
             for(size_t j=0; j < n_tissues; ++j) {        
@@ -156,6 +177,26 @@ public:
                 // fflush(stderr);
 
                 // aggiungi la legge cinetica
+                libsbml::KineticLaw *new_kl = new_r->createKineticLaw(); 
+                const libsbml::ASTNode *new_head = kl->getMath()->deepCopy();
+                MathMLIterator iterator(new_head);
+                const libsbml::ASTNode *next;
+                while((next = iterator.next()) != NULL) {
+                    assert(!next->isUnknown());
+                    if(next->getType() == libsbml::AST_NAME) {
+                        const char *name = next->getName();
+                        if(name[0] == 'k') {
+                            // printf("[INFO] costante cinetica: %s\n", name);
+                            // costante cinetica
+                            // crea la costante come parametro del new_model se non esiste
+                        } else {
+                            // prodotto, substrato oppure modificatore
+                            // printf("[INFO] altro: %s\n", name);
+                            // modifica il nome appendendo davanti il nome del tessuto
+                        }
+                    }
+                }
+                new_kl->setMath(new_head);
             }
         }
         // eprintf("[INFO] generation complete\n");
