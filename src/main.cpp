@@ -11,5 +11,8 @@ int main(int argc, const char **argv) {
 
     SBMLDoc doc = SBMLDoc::replicate_model_per_tissue(sbml_path, argv, argc);
     doc.save_converted_file("prova.sbml");
+    srand(time(NULL));
+    doc.random_start_concentration();
+    doc.simulate("out.csv", 100.0);
 }
 

@@ -192,7 +192,10 @@ public:
                             libsbml::Parameter *constant = NULL;
                             if((constant = model->getListOfParameters()->get(name)) != NULL) {
                                 if(new_model->getListOfParameters()->get(name) == NULL) {
-                                    new_model->addParameter(constant);
+                                    libsbml::Parameter *parameter = new_model->createParameter();
+                                    parameter->setId(constant->getId());
+                                    parameter->setValue(constant->getValue());
+                                    parameter->setConstant(constant->getConstant());
                                 }
                             } else {
                                 eprintf("[FATAL ERROR] kinetic constant doen't exists: %s", name);
