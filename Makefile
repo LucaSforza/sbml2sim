@@ -12,4 +12,7 @@ folder:
 	mkdir -p build
 
 libsbmlconverter.so: folder
-	$(CXX) $(CXXFLAGS) -shared -o build/$@ src/bindings.cpp $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) -ggdb -shared -o build/$@ src/bindings.cpp $(LDFLAGS)
+
+main: libsbmlconverter.so
+	$(CXX) $(CXXFLAGS) -ggdb -o build/$@ src/main.cpp build/libsbmlconverter.so $(LDFLAGS)

@@ -442,27 +442,26 @@ std::string add_michelis_menten_kinetic_law(libsbml::Model *model, libsbml::Reac
 }
 
 // @return number of kinetic constants added
-int add_kinetic_law(libsbml::Model *model, libsbml::Reaction *r, bool all_convience_rate_law) {
-    int kinetic_constant_added = 0;
+libsbml::KineticLaw *add_kinetic_law(libsbml::Model *model, libsbml::Reaction *r, bool all_convience_rate_law, int *kinetic_constant_added) {
     std::string law;
     if(r->getNumModifiers() == 0 && !all_convience_rate_law) {
-        law = add_michelis_menten_kinetic_law(model, r, &kinetic_constant_added);
+        law = add_michelis_menten_kinetic_law(model, r, kinetic_constant_added);
     } else if (r->getNumModifiers() == 1 && !all_convience_rate_law){
         libsbml::ModifierSpeciesReference *modifier = r->getModifier(0);
         if(modifier->getSBOTerm() == SBO_ACTIVATOR || modifier->getSBOTerm() == SBO_INHIBITOR) {
-            law = add_michelis_menten_kinetic_law(model,r, &kinetic_constant_added);
+            law = add_michelis_menten_kinetic_law(model,r, kinetic_constant_added);
         } else {
-            law = add_convinience_kinetic_law(model, r, &kinetic_constant_added);
+            law = add_convinience_kinetic_law(model, r, kinetic_constant_added);
         }
     } else {
-        law = add_convinience_kinetic_law(model, r, &kinetic_constant_added);
+        law = add_convinience_kinetic_law(model, r, kinetic_constant_added);
     }
 
     libsbml::KineticLaw *kl = r->createKineticLaw();
 
     kl->setFormula(law);
 
-    return kinetic_constant_added;
+    return kl;
 }
 
 // @return number of kinetic costant added
@@ -473,7 +472,7 @@ int add_kinetic_laws(libsbml::Model *model, bool all_convience_rate_law) {
         libsbml::Reaction *r = model->getReaction(i);
         libsbml::KineticLaw *kl = r->getKineticLaw();
         if(kl == NULL) {
-            total_kinetic_constant_added += add_kinetic_law(model, r, all_convience_rate_law);
+            add_kinetic_law(model, r, all_convience_rate_law, &total_kinetic_constant_added);
         }
     }
 

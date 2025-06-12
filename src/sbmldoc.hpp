@@ -2,7 +2,6 @@
 #define SBMLDOC_HPP_
 
 #include "core_convertor.hpp"
-#include "tissue.hpp"
 
 /**
  * @class SBMLDoc
@@ -36,37 +35,140 @@ class SBMLDoc {
 
 public:
 
-    static SBMLDoc replicate_model_per_tissue(const char *file_path, std::vector<Tissue> tissues) {
-        return SBMLDoc::replicate_model_per_tissue(libsbml::readSBML(file_path), tissues);
+    static SBMLDoc replicate_model_per_tissue(const char *file_path, const char **tissues, size_t n_tissues) {
+        return SBMLDoc::replicate_model_per_tissue(libsbml::readSBML(file_path), tissues, n_tissues);
     }
 
-    static SBMLDoc replicate_model_per_tissue(libsbml::SBMLDocument *doc, std::vector<Tissue> tissues) {
+    static SBMLDoc replicate_model_per_tissue(libsbml::SBMLDocument *doc, const char **tissues, size_t n_tissues) {
 
         if(check_error(doc)) {
             throw std::runtime_error("Error parsing SBML document");
         }
 
-        for(Tissue t : tissues) {
-            // TODO: do something
+        libsbml::SBMLDocument *doc_result = new libsbml::SBMLDocument();
+        libsbml::Model *new_model = doc_result->createModel();
+        assert(new_model != NULL);
+        libsbml::Model *model = doc->getModel();
+
+        // crea un compartimento per ogni tessuto
+        if(model->getNumCompartments() == 0) TODO("compartments are 0");
+        for(u_int i=0; i < model->getNumCompartments(); i++) {
+            libsbml::Compartment *comp = model->getCompartment(i);
+            for(size_t j=0; j < n_tissues; ++j) {
+                // TODO: controlla se i singoli parametri sono impostati
+                std::string tissue = std::string(tissues[j]);
+                libsbml::Compartment *new_comp = new_model->createCompartment();
+                new_comp->setConstant(comp->getConstant());
+                new_comp->setName(tissue+" "+comp->getName());
+                new_comp->setId(tissue+"_"+comp->getId());
+                new_comp->setMetaId(tissue+"_"+comp->getMetaId());
+                new_comp->setSBOTerm(comp->getSBOTerm());
+                new_comp->setAnnotation(comp->getAnnotationString());
+            }
         }
 
-        SBMLDoc result = SBMLDoc();
-
-        return result;
-    }
-
-    static SBMLDoc replicate_model_per_tissue(const char *file_path, Tissue *tissues, size_t n_tissue) {
-        return SBMLDoc::replicate_model_per_tissue(libsbml::readSBML(file_path), tissues, n_tissue);
-    }
-
-    static SBMLDoc replicate_model_per_tissue(libsbml::SBMLDocument *doc, Tissue *tissues, size_t n_tissue) {
-
-        if(check_error(doc)) {
-            throw std::runtime_error("Error parsing SBML document");
+        // crea una specie per ogni tessuto del corpo assegnandogli il giusto compartimento
+        for(u_int i=0; i < model->getNumSpecies(); ++i) {
+            libsbml::Species *s = model->getSpecies(i);
+            for(size_t j=0; j < n_tissues; ++j) {
+                std::string tissue = std::string(tissues[j]);
+                libsbml::Species *new_s = new_model->createSpecies();
+                new_s->setBoundaryCondition(s->getBoundaryCondition());
+                new_s->setCompartment(tissue+"_"+s->getCompartment());
+                new_s->setConstant(s->getConstant());
+                new_s->setHasOnlySubstanceUnits(s->getHasOnlySubstanceUnits());
+                new_s->setId(tissue+"_"+s->getId());
+                new_s->setMetaId(tissue+"_"+s->getMetaId());
+                new_s->setName(tissue+" "+s->getName());
+                if(s->isSetNotes()) {
+                    new_s->setNotes(s->getNotes());
+                }
+                new_s->setAnnotation(s->getAnnotationString());
+            }
         }
 
-        SBMLDoc result = SBMLDoc();
+        // crea le reazioni facendo attenzione ad assegnare la stessa costante cinetica per le reazioni identiche 
+        // ma che si trovano in tessuti diversi
 
+        int kinetic_constants = 0;
+
+        for(u_int i=0; i < model->getNumReactions(); ++i) {
+            libsbml::Reaction* r = model->getReaction(i);
+            libsbml::KineticLaw* kl = r->getKineticLaw();
+            // if(kl == NULL) {
+            //     kl = add_kinetic_law(model, r, false, &kinetic_constants);
+            // } else {
+            //     TODO("aggiungere le costanti cinetiche rispetto alla legge cinetica già esistente");
+            // }
+            // eprintf("[INFO] reaction: %s\n", r->getId().c_str());
+            // fflush(stderr);
+            for(size_t j=0; j < n_tissues; ++j) {        
+                std::string tissue = std::string(tissues[j]);
+                libsbml::Reaction *new_r = new_model->createReaction();
+                new_r->setCompartment(tissue+"_"+r->getCompartment());
+                if(r->isSetNotes()) {
+                    new_r->setNotes(r->getNotes());
+                }
+                // if(r->isSetAnnotation()) {
+                //     new_r->setAnnotation(r->getAnnotation());
+                // }
+                if(r->isSetFast()) {
+                    new_r->setFast(r->getFast());
+                }
+                new_r->setId(tissue+"_"+r->getId());
+                new_r->setMetaId(tissue+"_"+r->getMetaId());
+                new_r->setName(tissue+" "+r->getName());
+                new_r->setReversible(r->getReversible());
+                // eprintf("    reactants\n");
+                // fflush(stderr);
+                for(u_int reactant=0; reactant < r->getNumReactants(); reactant++) {
+                    libsbml::SpeciesReference *sr = r->getReactant(reactant);
+                    libsbml::SpeciesReference *new_sr = new_r->createReactant();
+                    if(sr->isSetConstant()) {
+                        new_sr->setConstant(sr->getConstant());
+                    }
+                    new_sr->setId(tissue+"_"+sr->getId());
+                    new_sr->setSBOTerm(sr->getSBOTerm());
+                    new_sr->setSpecies(tissue+"_"+sr->getSpecies());
+                    new_sr->setStoichiometry(sr->getStoichiometry());
+                }
+                // eprintf("    product\n");
+                // fflush(stderr);
+                for(u_int product=0; product < r->getNumProducts(); product++) {
+                    libsbml::SpeciesReference *sr = r->getProduct(product);
+                    libsbml::SpeciesReference *new_sr = new_r->createProduct();
+                    new_sr->setConstant(sr->getConstant());
+                    new_sr->setId(tissue+"_"+sr->getId());
+                    new_sr->setSBOTerm(sr->getSBOTerm());
+                    new_sr->setSpecies(tissue+"_"+sr->getSpecies());
+                    new_sr->setStoichiometry(sr->getStoichiometry());
+                }
+                // eprintf("    modifier\n");
+                // fflush(stderr);
+                for(u_int modifier=0;modifier < r->getNumModifiers(); modifier++) {
+                    libsbml::ModifierSpeciesReference *sr = r->getModifier(modifier);
+                    libsbml::ModifierSpeciesReference *new_sr = new_r->createModifier();
+                    new_sr->setId(tissue+"_"+sr->getId());
+                    new_sr->setSBOTerm(sr->getSBOTerm());
+                    new_sr->setSpecies(tissue+"_"+sr->getSpecies());
+                }
+                // printf("    done\n");
+                // fflush(stderr);
+
+                // aggiungi la legge cinetica
+            }
+        }
+        // eprintf("[INFO] generation complete\n");
+        // fflush(stderr);
+
+        SBMLDoc result = SBMLDoc();
+        result.doc = doc_result;
+        result.model = new_model;
+        result.total_kinetic_constant = kinetic_constants;
+
+
+        // eprintf("[INFO] returning\n");
+        // fflush(stderr);
         return result;
     }
 
