@@ -219,6 +219,9 @@ public:
         result.doc = doc_result;
         result.model = new_model;
         result.total_kinetic_constant = kinetic_constants;
+        result.genes = extract_species_genes(new_model);
+        add_time(new_model);
+        add_avg_calculations_only_for_proteins(new_model, result.genes);
 
 
         // eprintf("[INFO] returning\n");
