@@ -75,14 +75,14 @@ def parse_args():
                 sys.exit(1)
     return options
 
-def get_all_ids(genes_data: dict[str, list[str]]) -> set[str]:
+def get_all_ids(protein_data: dict[str, str]) -> set[str]:
     result = set()
-    for _,ids in genes_data.items():
-        result.update(ids)
+    for _,ids in protein_data.items():
+        result.add(ids)
     return result
 
-def map_ids_to_genes(genes_data: dict[str, list[str]]) -> Any | None:
-    genes_id = get_all_ids(genes_data)
+def map_proteins_to_genes(protein_data: dict[str, str]) -> Any | None:
+    genes_id = get_all_ids(protein_data)
     
     job_id = uniprod.submit_id_mapping("UniProtKB_AC-ID", "UniProtKB", genes_id)
     
@@ -95,6 +95,21 @@ def map_ids_to_genes(genes_data: dict[str, list[str]]) -> Any | None:
     else:
         print("[FATAL ERROR] failed request")
         return None
+    
+def get_map_protein_gene(protein_data: dict[str, str]) -> dict[str, str]:
+    results = map_proteins_to_genes(protein_data)
+    final_result = dict()
+    if results is not None:
+        for result in results:
+            _from = result["from"]
+            _to = result["to"]
+            genes = _to["genes"]
+            if len(genes) > 1:
+                print("[WARNING] an ID is associated with more than one gene")
+            for gene in genes:
+                name = gene["geneName"]["value"]
+                final_result[_from] = name
+    return final_result
     
     
 def main():
@@ -116,14 +131,4 @@ def main():
     plt.legend()
     plt.savefig(options["png_outputpath"])
     
-    results = map_ids_to_genes(sbml.get_genes_data())
-    if results is not None:
-        for result in results:
-            _from = result["from"]
-            _to = result["to"]
-            genes = _to["genes"]
-            if len(genes) > 1:
-                print("[WARNING] an ID is associated with more than one gene")
-            for gene in genes:
-                name = gene["geneName"]["value"]
-                print(f"{_from} -> {name}")
+    

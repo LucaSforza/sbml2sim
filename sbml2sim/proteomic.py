@@ -1,6 +1,8 @@
-from typing import Any
+from typing import Any, Iterable
 import requests
 from requests.adapters import HTTPAdapter, Retry
+
+from reactome2py import analysis
 
 proteomic = dict[str, Any]
 
@@ -30,7 +32,25 @@ def get_all_tissue_names(proteomics: list[proteomic]) -> set[str]:
         result.add(get_tissue_name(proteomic))
     return result
 
+def get_all_tissue_id(proteomics: list[proteomic]) -> set[str]:
+    result = set()
+    for proteomic in proteomics:
+        result.add(get_tissue_id(proteomic))
+    return result
+
+def get_tissue_names_from_bto(proteomics: list[proteomic], btos: set[str]) -> set[str]:
+    result = set()
+    for proteomic in proteomics:
+        if get_tissue_id(proteomic) in btos:
+            result.add(get_tissue_name(proteomic))
+    return result
+
 # @returns list of proteomics
-def get_tissue(uniprod_id) -> list[proteomic]:
+def get_tissue(uniprod_id: str) -> list[proteomic]:
+    print(f"[INFO] requesting proteomics for protein: {uniprod_id}")
     response = requests.get(get_proteomic_string_request(uniprod_id))
+    if response.status_code != 200:
+        print(f"[ERROR] status code of the request: {response.status_code}")
+        exit(1)
+    print("[INFO] completed the request")
     return response.json()['d']['results']
