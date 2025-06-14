@@ -90,4 +90,8 @@ extern "C" {
         _this->proteins_start_random_concentration();
     }
 
+    SBMLDoc SBMLDoc_replicate_model_per_tissue(const char *file_path, const char **tissues, size_t n_tissues) {
+        return SBMLDoc::replicate_model_per_tissue(file_path, tissues, n_tissues);
+    }
+
 }

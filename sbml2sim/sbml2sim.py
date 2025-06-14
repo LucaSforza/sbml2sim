@@ -4,36 +4,6 @@ from ctypes import POINTER, c_size_t
 
 lib = cdll.LoadLibrary("build/libsbmlconverter.so")
 
-lib.SBMLDoc_new.restype = c_void_p
-lib.SBMLDoc_new.argtypes = [c_char_p, c_bool]
-
-lib.SBMLDoc_number_of_kinetic_costant.restype = c_int
-lib.SBMLDoc_number_of_kinetic_costant.argtypes = [c_void_p]
-
-lib.SBMLDoc_set_kinetic_constants.restype = None
-lib.SBMLDoc_set_kinetic_constants.argtypes = [c_void_p, c_int, c_double]
-
-lib.SBMLDoc_save_converted_file.restype = c_bool
-lib.SBMLDoc_save_converted_file.argtypes = [c_void_p, c_char_p]
-
-lib.SBMLDoc_delete.restype = None
-lib.SBMLDoc_delete.argtypes = [c_void_p]
-
-lib.SBMLDoc_simulate.restype = None
-lib.SBMLDoc_simulate.argtypes = [c_void_p, c_char_p, c_double]
-
-lib.SBMLDoc_random_start_concentration.restype = None
-lib.SBMLDoc_random_start_concentration.argtypes = [c_void_p]
-
-lib.SBMLDoc_delete.restype = None
-lib.SBMLDoc_delete.argtypes = [c_void_p]
-
-lib.SBMLDoc_dump_genes_data.restype = None
-lib.SBMLDoc_dump_genes_data.argtypes = [c_void_p]
-
-lib.SBMLDoc_get_genes_data.restype = c_void_p
-lib.SBMLDoc_get_genes_data.argtypes = [c_void_p]
-
 lib.Genes_proteins_iterator.restype = c_void_p
 lib.Genes_proteins_iterator.argtypes = [c_void_p]
 
@@ -55,11 +25,6 @@ lib.Pair_second_as_cstr_array.argtypes = [c_void_p, POINTER(c_size_t)]
 lib.Pair_delete_cstr_array.restype = None
 lib.Pair_delete_cstr_array.argtypes = [POINTER(c_char_p)]
 
-lib.SBMLDoc_is_protein.restype = c_bool
-lib.SBMLDoc_is_protein.argtypes = [c_void_p, c_char_p]
-
-lib.SBMLDoc_random_protein_concentrations.restype = None
-lib.SBMLDoc_random_protein_concentrations.argtypes = [c_void_p]
 
 def _iterate_genes(genes_ptr):
     it = lib.Genes_proteins_iterator(genes_ptr)
@@ -79,6 +44,45 @@ def _iterate_genes(genes_ptr):
         lib.Genes_delete_proteins_iterator(it)
 
 class SBMLDoc:
+    lib.SBMLDoc_new.restype = c_void_p
+    lib.SBMLDoc_new.argtypes = [c_char_p, c_bool]
+
+    lib.SBMLDoc_number_of_kinetic_costant.restype = c_int
+    lib.SBMLDoc_number_of_kinetic_costant.argtypes = [c_void_p]
+
+    lib.SBMLDoc_set_kinetic_constants.restype = None
+    lib.SBMLDoc_set_kinetic_constants.argtypes = [c_void_p, c_int, c_double]
+
+    lib.SBMLDoc_save_converted_file.restype = c_bool
+    lib.SBMLDoc_save_converted_file.argtypes = [c_void_p, c_char_p]
+
+    lib.SBMLDoc_delete.restype = None
+    lib.SBMLDoc_delete.argtypes = [c_void_p]
+
+    lib.SBMLDoc_simulate.restype = None
+    lib.SBMLDoc_simulate.argtypes = [c_void_p, c_char_p, c_double]
+
+    lib.SBMLDoc_random_start_concentration.restype = None
+    lib.SBMLDoc_random_start_concentration.argtypes = [c_void_p]
+
+    lib.SBMLDoc_delete.restype = None
+    lib.SBMLDoc_delete.argtypes = [c_void_p]
+
+    lib.SBMLDoc_dump_genes_data.restype = None
+    lib.SBMLDoc_dump_genes_data.argtypes = [c_void_p]
+
+    lib.SBMLDoc_get_genes_data.restype = c_void_p
+    lib.SBMLDoc_get_genes_data.argtypes = [c_void_p]
+
+    lib.SBMLDoc_is_protein.restype = c_bool
+    lib.SBMLDoc_is_protein.argtypes = [c_void_p, c_char_p]
+
+    lib.SBMLDoc_random_protein_concentrations.restype = None
+    lib.SBMLDoc_random_protein_concentrations.argtypes = [c_void_p]
+    
+    def __init__(self, obj):
+        self.obj = obj
+
     def __init__(self, file_path: str, all_convenience_law: bool = False, avg_for_only_proteins: bool = False):
         flags = (1 if all_convenience_law else 0) | (2 if avg_for_only_proteins else 0)
         self.obj = lib.SBMLDoc_new(file_path.encode('utf-8'), flags)
@@ -120,3 +124,16 @@ class SBMLDoc:
         if hasattr(self, 'obj') and self.obj:
             lib.SBMLDoc_delete(self.obj)
             self.obj = None
+            
+            
+lib.SBMLDoc_replicate_model_per_tissue.restype = c_void_p
+lib.SBMLDoc_replicate_model_per_tissue.argtypes = [c_char_p, POINTER(c_char_p), c_size_t]
+
+def _list_to_pointer(string_list: list[str]):
+    array_type = c_char_p*len(string_list)
+    pointer = array_type(*(s.encode('utf-8') for s in string_list))
+    return POINTER(c_char_p)(pointer)
+
+def replicate_model_per_tissue(file_path: str, tissues: list[str]):
+    obj = lib.SBMLDoc_replicate_model_per_tissue(file_path.encode('utf-8'),_list_to_pointer(tissues), len(tissues))
+    return SBMLDoc(obj)
