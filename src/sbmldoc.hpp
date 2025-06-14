@@ -56,11 +56,16 @@ class SBMLDoc {
 
 public:
 
-    static SBMLDoc replicate_model_per_tissue(const char *file_path, const char **tissues, size_t n_tissues) {
+    static SBMLDoc *replicate_model_per_tissue(const char *file_path, const char **tissues, size_t n_tissues) {
         return SBMLDoc::replicate_model_per_tissue(libsbml::readSBML(file_path), tissues, n_tissues);
     }
 
-    static SBMLDoc replicate_model_per_tissue(libsbml::SBMLDocument *doc, const char **tissues, size_t n_tissues) {
+    static SBMLDoc *replicate_model_per_tissue(SBMLDoc *doc, const char **tissues, size_t n_tissue) {
+        return replicate_model_per_tissue(doc->doc, tissues, n_tissue);
+    }
+
+    // crea le leggi cinetiche se non esistono
+    static SBMLDoc *replicate_model_per_tissue(libsbml::SBMLDocument *doc, const char **tissues, size_t n_tissues) {
 
         if(check_error(doc)) {
             throw std::runtime_error("Error parsing SBML document");
@@ -118,9 +123,10 @@ public:
             libsbml::KineticLaw* kl = r->getKineticLaw();
             if(kl == NULL) {
                 kl = add_kinetic_law(model, r, false, &kinetic_constants);
-            } else {
-                TODO("aggiungere le costanti cinetiche rispetto alla legge cinetica già esistente");
-            }
+            } 
+            // else {
+            //     TODO("aggiungere le costanti cinetiche rispetto alla legge cinetica già esistente");
+            // }
             // eprintf("[INFO] reaction: %s\n", r->getId().c_str());
             // fflush(stderr);
             for(size_t j=0; j < n_tissues; ++j) {        
@@ -215,15 +221,12 @@ public:
         // eprintf("[INFO] generation complete\n");
         // fflush(stderr);
 
-        SBMLDoc result = SBMLDoc();
-        result.doc = doc_result;
-        result.model = new_model;
-        result.total_kinetic_constant = kinetic_constants;
-        result.proteins = extract_proteins_ids(new_model);
-        add_time(new_model);
-        add_avg_calculations_only_for_proteins(new_model, result.proteins);
-
-
+        SBMLDoc *result = new SBMLDoc();
+        result->doc = doc_result;
+        result->model = new_model;
+        result->total_kinetic_constant = kinetic_constants;
+        result->proteins = extract_proteins_ids(new_model);
+        
         // eprintf("[INFO] returning\n");
         // fflush(stderr);
         return result;
@@ -238,29 +241,38 @@ public:
 
     /**
      * @param file_path path to the .sbml file
-     * @param all_convience_rate_law true if you want to generate only approximate kinetic laws
     */
-    SBMLDoc(const char *file_path, int flags) {
-        doc = libsbml::readSBML(file_path);
+    SBMLDoc(const char *file_path): SBMLDoc(libsbml::readSBML(file_path)) {}
+
+    SBMLDoc(libsbml::SBMLDocument *doc) {
         if(check_error(doc)) {
             throw std::runtime_error("Error parsing SBML document");
         }
-        model = doc->getModel();
-        total_kinetic_constant = add_kinetic_laws(model, flags & all_convience_rate_law);
-        proteins= extract_proteins_ids(model);
-        add_time(model);
-        if(flags & avg_for_only_proteins) {
-            add_avg_calculations_only_for_proteins(model, proteins);
-        } else {
-            add_avg_calculations(model);
-        }
-
+        this->doc = doc;
+        model = this->doc->getModel();
+        proteins = extract_proteins_ids(model);
     }
     
     ~SBMLDoc() {
         delete this->doc;
     }
-    
+
+    void add_kinetic_laws_if_not_exists(bool all_convience_rate_law = false) {
+        total_kinetic_constant = add_kinetic_laws(this->model, all_convience_rate_law);
+    }
+
+    void add_time_to_model() {
+        add_time(this->model);
+    }
+
+    void add_avg_calculations_for_all_species() {
+        add_avg_calculations(this->model);
+    }
+
+    void add_avg_calculation_for_all_proteins() {
+        add_avg_calculations_only_for_proteins(this->model, this->proteins);
+    }
+
     /**
     * @returns number of kinetic constants in the document
     */

@@ -2,8 +2,8 @@
 
 extern "C" {
 
-    SBMLDoc *SBMLDoc_new(const char *file_path, int flags) {
-        return new SBMLDoc(file_path, flags);
+    SBMLDoc *SBMLDoc_new(const char *file_path) {
+        return new SBMLDoc(file_path);
     }
 
     int SBMLDoc_number_of_kinetic_costant(const SBMLDoc *_this) {
@@ -34,52 +34,39 @@ extern "C" {
         delete _this;
     }
 
-    const Proteins* SBMLDoc_get_genes_data(const SBMLDoc *_this) {
+    const Proteins* SBMLDoc_get_proteins_data(const SBMLDoc *_this) {
         return &(_this->get_proteins_data());
     }
 
-    Proteins::const_iterator *Genes_proteins_iterator(const Proteins *_this) {
+    Proteins::const_iterator *Proteins_iterator(const Proteins *_this) {
         return new Proteins::const_iterator(_this->cbegin());
     }
 
-    void Proteins_delete_proteins_iterator(Proteins::const_iterator *it) {
+    void Proteins_delete_iterator(Proteins::const_iterator *it) {
         delete it;
     }
 
-    std::pair<std::string, std::vector<std::string>> *Proteins_iterator_next(Proteins::const_iterator *it) {
-        eprintf("[FATAL ERROR] function Genes_proteins_iterator_next is deprecated");
-        exit(1);
-        // try {
-        //     auto &pair = *(*it);
-        //     auto *result = new std::pair<std::string, std:std::string>(pair.first, pair.second);
-        //     ++(*it);
-        //     return result;
-        // } catch (...) {
-        //     return nullptr;
-        // }
+    std::pair<std::string, std::string> *Proteins_iterator_next(Proteins::const_iterator *it) {
+        try {
+            auto &pair = *(*it);
+            auto *result = new std::pair<std::string, std::string>(pair.first, pair.second);
+            ++(*it);
+            return result;
+        } catch (...) {
+            return nullptr;
+        }
     }
 
     void Pair_delete(std::pair<std::string, std::vector<std::string>> *p) {
         delete p;
     }
 
-    const char* Pair_first_c_str(const std::pair<std::string, std::vector<std::string>> *p) {
+    const char *Pair_first_c_str(const std::pair<std::string, std::string> *p) {
         return p->first.c_str();
     }
 
-    const char** Pair_second_as_cstr_array(const std::pair<std::string, std::vector<std::string>> *p, size_t *size) {
-        if (size) {
-            *size = p->second.size();
-        }
-        const char **arr = new const char*[p->second.size()];
-        for (size_t i = 0; i < p->second.size(); ++i) {
-            arr[i] = p->second[i].c_str();
-        }
-        return arr;
-    }
-
-    void Pair_delete_cstr_array(const char **arr) {
-        delete[] arr;
+    const char *Pair_second_c_str(const std::pair<std::string, std::string> *p) {
+        return p->second.c_str();
     }
     
     bool SBMLDoc_is_protein(const SBMLDoc *_this, const char *specie) {
@@ -90,8 +77,12 @@ extern "C" {
         _this->proteins_start_random_concentration();
     }
 
-    SBMLDoc SBMLDoc_replicate_model_per_tissue(const char *file_path, const char **tissues, size_t n_tissues) {
+    SBMLDoc *replicate_model_per_tissue(const char *file_path, const char **tissues, size_t n_tissues) {
         return SBMLDoc::replicate_model_per_tissue(file_path, tissues, n_tissues);
+    }
+
+    SBMLDoc *SBMLDoc_replicate_model_per_tissue(SBMLDoc *_this, const char **tissues, size_t n_tissue) {
+        return SBMLDoc::replicate_model_per_tissue(_this, tissues, n_tissue);
     }
 
 }
