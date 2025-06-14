@@ -26,27 +26,27 @@ extern "C" {
         _this->random_start_concentration();
     }
 
-    void SBMLDoc_dump_genes_data(const SBMLDoc *_this) {
-        _this->dump_genes_data();
+    void SBMLDoc_dump_proteins_data(const SBMLDoc *_this) {
+        _this->dump_proteins_data();
     }
     
     void SBMLDoc_delete(SBMLDoc *_this) {
         delete _this;
     }
 
-    const Genes* SBMLDoc_get_genes_data(const SBMLDoc *_this) {
-        return &(_this->get_genes_data());
+    const Proteins* SBMLDoc_get_genes_data(const SBMLDoc *_this) {
+        return &(_this->get_proteins_data());
     }
 
-    Genes::const_iterator *Genes_proteins_iterator(const Genes *_this) {
-        return new Genes::const_iterator(_this->cbegin());
+    Proteins::const_iterator *Genes_proteins_iterator(const Proteins *_this) {
+        return new Proteins::const_iterator(_this->cbegin());
     }
 
-    void Genes_delete_proteins_iterator(Genes::const_iterator *it) {
+    void Proteins_delete_proteins_iterator(Proteins::const_iterator *it) {
         delete it;
     }
 
-    std::pair<std::string, std::vector<std::string>> *Genes_proteins_iterator_next(Genes::const_iterator *it) {
+    std::pair<std::string, std::vector<std::string>> *Proteins_iterator_next(Proteins::const_iterator *it) {
         eprintf("[FATAL ERROR] function Genes_proteins_iterator_next is deprecated");
         exit(1);
         // try {

@@ -50,7 +50,7 @@ class SBMLDoc {
     libsbml::SBMLDocument *doc;
     libsbml::Model *model;
     int total_kinetic_constant;
-    Genes genes;
+    Proteins proteins;
 
     rr::RoadRunner rr;
 
@@ -219,9 +219,9 @@ public:
         result.doc = doc_result;
         result.model = new_model;
         result.total_kinetic_constant = kinetic_constants;
-        result.genes = extract_species_genes(new_model);
+        result.proteins = extract_proteins_ids(new_model);
         add_time(new_model);
-        add_avg_calculations_only_for_proteins(new_model, result.genes);
+        add_avg_calculations_only_for_proteins(new_model, result.proteins);
 
 
         // eprintf("[INFO] returning\n");
@@ -247,10 +247,10 @@ public:
         }
         model = doc->getModel();
         total_kinetic_constant = add_kinetic_laws(model, flags & all_convience_rate_law);
-        genes = extract_species_genes(model);
+        proteins= extract_proteins_ids(model);
         add_time(model);
         if(flags & avg_for_only_proteins) {
-            add_avg_calculations_only_for_proteins(model, genes);
+            add_avg_calculations_only_for_proteins(model, proteins);
         } else {
             add_avg_calculations(model);
         }
@@ -338,15 +338,15 @@ public:
      * @brief Prints the mapping between species and their associated genes to the standard output.
      * @note This function does not take any parameters.
     */
-    void dump_genes_data(void) const {
-        for (const auto& pair : genes) {
+    void dump_proteins_data(void) const {
+        for (const auto& pair : proteins) {
             const std::string& species_id = pair.first;
             std::vector<std::string> gene_ids;
             gene_ids.push_back(pair.second);
-            std::cout << "Species: " << species_id << " Genes: ";
+            std::cout << "Species: " << species_id << " Protein Id: ";
             for (size_t i = 0; i < gene_ids.size(); ++i) {
-            std::cout << gene_ids[i];
-            if (i != gene_ids.size() - 1) std::cout << ", ";
+                std::cout << gene_ids[i];
+                if (i != gene_ids.size() - 1) std::cout << ", ";
             }
             std::cout << std::endl;
         }
@@ -357,20 +357,20 @@ public:
      *
      * @return A constant reference to the collection of genes.
     */
-    const Genes& get_genes_data(void) const {
-        return genes;
+    const Proteins& get_proteins_data(void) const {
+        return proteins;
     }
 
     /**
      * @brief Checks if the given species name corresponds to a protein.
      *
-     * Determines whether the specified species name exists in the set of genes.
+     * Determines whether the specified species name exists in the set of proteins.
      *
      * @param specie_name The name of the species to check.
-     * @return true if the species name is found in the set of genes (i.e., is a protein), false otherwise.
+     * @return true if the species name is found in the set of proteins (i.e., is a protein), false otherwise.
     */
     bool is_protein(const char *specie_name) const {
-        return genes.find(specie_name) != genes.end();
+        return proteins.find(specie_name) != proteins.end();
     }
 };
 

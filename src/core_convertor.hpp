@@ -23,10 +23,10 @@
 
 
 // species id -> UniProdId
-using Genes = std::map<std::string, std::string>;
+using Proteins = std::map<std::string, std::string>;
 
-Genes extract_species_genes(const libsbml::Model* model) {
-    Genes results;
+Proteins extract_proteins_ids(const libsbml::Model* model) {
+    Proteins results;
     const std::string UNIPROT_PREFIX = "https://identifiers.org/uniprot:";
 
     for (unsigned int i = 0; i < model->getNumSpecies(); ++i) {
@@ -497,13 +497,13 @@ void add_time(libsbml::Model *model) {
     time_rule->setFormula("1");
 }
 
-void add_avg_calculations_only_for_proteins(libsbml::Model *model, Genes &genes) {
+void add_avg_calculations_only_for_proteins(libsbml::Model *model, Proteins &proteins) {
     u_int num_species = model->getNumSpecies();
 
     for(u_int i = 0; i < num_species; ++i) {
         libsbml::Species *s = model->getSpecies(i);
         
-        if(genes.find(s->getId()) == genes.end()) continue;
+        if(proteins.find(s->getId()) == proteins.end()) continue;
         
         std::string avg_param_id = "avg_" + s->getId();
         libsbml::Parameter* avgSpecies = model->createParameter();
