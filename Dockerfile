@@ -7,8 +7,9 @@ RUN apt-get update && apt-get install -y \
     python3 python3-pip python3.11-venv \
     && rm -rf /var/lib/apt/lists/*
 
-RUN python3 -m venv venv-sbml2sim
-RUN venv-sbml2sim/bin/pip3 install nevergrad matplotlib requests
+RUN python3 -m venv /venv-sbml2sim
+RUN echo "source /venv-sbml2sim/bin/activate" >> ~/.bashrc
+RUN /venv-sbml2sim/bin/pip3 install nevergrad matplotlib requests reactome2py
 
 COPY . .
 
