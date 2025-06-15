@@ -2,8 +2,6 @@ from typing import Any, Iterable
 import requests
 from requests.adapters import HTTPAdapter, Retry
 
-from reactome2py import analysis
-
 proteomic = dict[str, Any]
 
 POLLING_INTERVAL = 3
@@ -44,6 +42,11 @@ def get_tissue_names_from_bto(proteomics: list[proteomic], btos: set[str]) -> se
         if get_tissue_id(proteomic) in btos:
             result.add(get_tissue_name(proteomic))
     return result
+
+def print_proteomic(proteomic: proteomic, prefix: str = "") -> None:
+    print(prefix, "Tissue name: ", get_tissue_name(proteomic))
+    print(prefix, "Tissue id:   ", get_tissue_id(proteomic))
+    print(prefix, "Value:       ", get_intensity(proteomic))
 
 # @returns list of proteomics
 def get_tissue(uniprod_id: str) -> list[proteomic]:

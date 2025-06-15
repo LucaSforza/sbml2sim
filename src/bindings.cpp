@@ -57,7 +57,7 @@ extern "C" {
         }
     }
 
-    void Pair_delete(std::pair<std::string, std::vector<std::string>> *p) {
+    void Pair_delete(std::pair<std::string, std::string> *p) {
         delete p;
     }
 

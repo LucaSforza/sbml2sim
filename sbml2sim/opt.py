@@ -1,79 +1,28 @@
-import nevergrad as ng
-import pandas as pd
-import matplotlib.pyplot as plt
+# import nevergrad as ng
+# import pandas as pd
+# import matplotlib.pyplot as plt
 
 import sbml2sim as s2s
 import uniprod
+import proteomic as ptc
+from proteomic import proteomic
 
 import sys
-import getopt
 from typing import Any
+import json
 
 PROGRAM_NAME = sys.argv[0]
 
 def usage():
-    print(f"{PROGRAM_NAME} <SBML file path> [OPTIONS]")
-    print("    -d <horizon>                 Horizon for the simulation, default: 100")
-    print("    -o <output path>             Output path for the new SBML file, default: a.out")
-    print("    -s <simulation results path> Indicate the path for saving the simulation results, default: simulation_results.csv")
-    print("    -r                           Random start concentrations for all the species")
-    print("    -c                           All convinience law")
-    print("    -h                           Print those informations")
-    print("    -g                           Dump protein species and their corresponding genes")
-    print("    -f <output path>             Path to save the simulations result plot")
-    
-def parse_args():
-    try:
-        opts, args = getopt.gnu_getopt(
-            sys.argv[1:], 
-            "d:o:s:rchgf:", 
-            []
-        )
-    except getopt.GetoptError as err:
-        print(err)
-        usage()
-        sys.exit(2)
+    print(f"{PROGRAM_NAME} <SBML file path>")
 
-    # Defaults
-    options = {
-        "horizon": 100,
-        "output": "a.out",
-        "simresults": "simulation_results.csv",
-        "random": False,
-        "convinience": False,
-        "dumps": False,
-        "png_outputpath": "data.png",
-    }
-
-    # First positional argument: SBML file path
-    if not args:
+# @returns SBML path
+def parse_args() -> str:
+    if len(sys.argv) <= 1:
+        print("[ERROR] must specify the SBML file path")
         usage()
-        sys.exit(2)
-    options["sbml_path"] = args[0]
-    
-    for o, a in opts:
-        match o:
-            case "-d":
-                options["horizon"] = int(a)
-            case "-o":
-                options["output"] = a
-            case "-s":
-                options["simresults"] = a
-            case "-r":
-                options["random"] = True
-            case "-c":
-                options["convinience"] = True
-            case "-g":
-                options["dumps"] = True
-            case "-f":
-                options["png_outputpath"] = a
-            case "-h":
-                usage()
-                sys.exit(0)
-            case _:
-                usage()
-                sys.exit(1)
-    return options
+        exit(1)
+    return sys.argv[1]
 
 def get_all_ids(protein_data: dict[str, str]) -> set[str]:
     result = set()
@@ -110,25 +59,43 @@ def get_map_protein_gene(protein_data: dict[str, str]) -> dict[str, str]:
                 name = gene["geneName"]["value"]
                 final_result[_from] = name
     return final_result
-    
+
+def save_proteomics(
+    proteomics: dict[str, tuple[str, list[proteomic]]],
+    file_name: str = "proteomics.json"
+) -> None:
+    with open(file_name, "w") as f:
+        json.dump(proteomics, f)
     
 def main():
-    options = parse_args()
+    file_path = parse_args()
+    sim_output = "result.csv"
 
-    sbml = s2s.SBMLDoc(options["sbml_path"], options["convinience"])
-    if options["random"]:
-        # sbml.random_start_concentration()
-        sbml.random_protein_concentrations()
-    if options["dumps"]:
-        sbml.dump_genes_data()
-    sbml.save_converted_file(options["output"])
-    sbml.simulate(output_file=options["simresults"], duration=options["horizon"])
+    sbml: s2s.SBMLDoc = s2s.SBMLDoc(file_path)
+    proteins: dict[str,str] = sbml.get_proteins_data()
 
-    df = pd.read_csv(options["simresults"])
-    for col in df.columns:
-        if col != "time" and col.startswith("avg_"):
-            plt.plot(df["time"], df[col], label=col)
-    plt.legend()
-    plt.savefig(options["png_outputpath"])
+    tissue_names = set()
+    proteomics: dict[str,tuple[str, list[proteomic]]] = dict()
+    for species, protein in proteins.items():
+        tissues = ptc.get_tissue(protein)
+        proteomics[species] = (protein,tissues)
+        tissue_names.update(ptc.get_all_tissue_names(tissues))
+    
+    save_proteomics(proteomics)
+    new_sbml = sbml.replicate_model_per_tissue(tissue_names)
+    new_sbml.save_converted_file(file_path.replace(".","-modified."))
+    
+            
+    
+    # sbml.random_protein_concentrations()
+    # sbml.save_converted_file("a.sbml")
+    # sbml.simulate(output_file=sim_output)
+
+    # df = pd.read_csv(sim_output)
+    # for col in df.columns:
+    #     if col != "time" and col.startswith("avg_"):
+    #         plt.plot(df["time"], df[col], label=col)
+    # plt.legend()
+    # plt.savefig(options["png_outputpath"])
     
     
