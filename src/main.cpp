@@ -13,6 +13,7 @@ int main(int argc, const char **argv) {
     doc.save_converted_file("prova.sbml");
     srand(time(NULL));
     doc.random_start_concentration();
+    doc.add_kinetic_laws_if_not_exists();
     doc.simulate("out.csv", 100.0);
 }
 

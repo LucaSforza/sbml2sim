@@ -26,56 +26,122 @@
 using Proteins  = std::map<std::string, std::string>;
 using Compounds = std::map<std::string, std::string>;
 
+enum SpeciesTipology {
+    UNKNOWN,
+    DRUG,
+    PROTEIN,
+    COMPOUND,
+    COMPLEX,
+    SET,
+};
+
+bool is_drug(const libsbml::Species *species) {
+    if(!species->isSetNotes()) return false;
+    std::string notes = species->getNotesString();
+    return(notes.find("ProteinDrug") != std::string::npos);
+}
+
+bool is_protein(const libsbml::Species *species) {
+    if(!species->isSetNotes()) return false;
+    std::string notes = species->getNotesString();
+    return(notes.find("This is a protein") != std::string::npos);
+}
+
+bool is_compound(const libsbml::Species *species) {
+    if(!species->isSetNotes()) return false;
+    std::string notes = species->getNotesString();
+    return(notes.find("This is a small compound") != std::string::npos);
+}
+
+bool is_complex(const libsbml::Species *species) {
+    TODO("is_complex");
+}
+
+bool is_set(const libsbml::Species *species) {
+    TODO("is_set");
+}
+
+
+
+SpeciesTipology get_tipology(const libsbml::Species *species) {
+    if(is_drug(species)) return SpeciesTipology::DRUG;
+    if(is_protein(species)) return SpeciesTipology::PROTEIN;
+    if(is_compound(species)) return SpeciesTipology::COMPOUND;
+    if(is_complex(species)) return SpeciesTipology::COMPLEX;
+    if(is_set(species)) return SpeciesTipology::SET;
+    return SpeciesTipology::UNKNOWN;
+}
+
+std::vector<std::string> extract_information_from_species(const libsbml::Species *species, const std::string& tipology_information) {
+    std::vector<std::string> result;
+    // Cerca direttamente nei nodi XML
+    const libsbml::XMLNode* annotation = species->getAnnotation();
+    if(annotation == NULL) return std::vector<std::string>();
+
+    for (u_int j = 0; j < annotation->getNumChildren(); ++j) {
+        const libsbml::XMLNode& rdfNode = annotation->getChild(j);
+        if (rdfNode.getName() != "RDF") continue;
+
+        for (u_int k = 0; k < rdfNode.getNumChildren(); ++k) {
+            const libsbml::XMLNode& descNode = rdfNode.getChild(k);
+            if (descNode.getName() != "Description") continue;
+            
+            for (u_int m = 0; m < descNode.getNumChildren(); ++m) {
+                const libsbml::XMLNode& hasPartNode = descNode.getChild(m);
+                if (hasPartNode.getPrefix() != "bqbiol" || 
+                    hasPartNode.getName() != tipology_information) continue;
+
+                for (u_int n = 0; n < hasPartNode.getNumChildren(); ++n) {
+                    const libsbml::XMLNode& bagNode = hasPartNode.getChild(n);
+                    if (bagNode.getName() != "Bag") continue;
+
+                    for (u_int p = 0; p < bagNode.getNumChildren(); ++p) {
+                        const libsbml::XMLNode& liNode = bagNode.getChild(p);
+                        if (liNode.getName() != "li") continue;
+
+                        result.push_back(liNode.getAttributes().getValue(0));
+                    }
+                }
+            }
+        }
+    }
+    return result;
+}
+
+std::vector<std::string> extract_is_information_from_species(const libsbml::Species *species) {
+    return extract_information_from_species(species, "is");
+}
+
+std::vector<std::string> extract_has_part_information_from_species(const libsbml::Species *species) {
+    return extract_information_from_species(species, "hasPart");
+}
+
+std::string extract_protein_id(const libsbml::Species *species) {
+    const std::string UNIPROT_PREFIX = "https://identifiers.org/uniprot:";
+    return extract_is_information_from_species(species)[0].substr(UNIPROT_PREFIX.length());
+}
+
+std::string extract_compounds_id(const libsbml::Species *species) {
+    const std::string CHEBI_PREFIX = "https://identifiers.org/CHEBI:";
+    return extract_is_information_from_species(species)[0].substr(CHEBI_PREFIX.length());
+}
+
 Proteins extract_proteins_ids(const libsbml::Model* model) {
     Proteins results;
     const std::string UNIPROT_PREFIX = "https://identifiers.org/uniprot:";
 
     for (u_int i = 0; i < model->getNumSpecies(); ++i) {
         const libsbml::Species* species = model->getSpecies(i);
-        const std::string species_id = species->getId();
-        const libsbml::XMLNode* annotation = species->getAnnotation();
-
-        bool found = false;
-        if (!annotation) continue;
-
+        const std::string& species_id = species->getId();
         std::string uniprot_id;
-        
+        bool found = false;
         // Cerca direttamente nei nodi XML
-        for (u_int j = 0; j < annotation->getNumChildren(); ++j) {
-            const libsbml::XMLNode& rdfNode = annotation->getChild(j);
-            if (rdfNode.getName() != "RDF") continue;
-
-            for (u_int k = 0; k < rdfNode.getNumChildren(); ++k) {
-                const libsbml::XMLNode& descNode = rdfNode.getChild(k);
-                if (descNode.getName() != "Description") continue;
-                
-                for (u_int m = 0; m < descNode.getNumChildren(); ++m) {
-                    const libsbml::XMLNode& hasPartNode = descNode.getChild(m);
-                    if (hasPartNode.getPrefix() != "bqbiol" || 
-                        hasPartNode.getName() != "is") continue;
-
-                    for (u_int n = 0; n < hasPartNode.getNumChildren(); ++n) {
-                        const libsbml::XMLNode& bagNode = hasPartNode.getChild(n);
-                        if (bagNode.getName() != "Bag") continue;
-
-                        for (u_int p = 0; p < bagNode.getNumChildren(); ++p) {
-                            const libsbml::XMLNode& liNode = bagNode.getChild(p);
-                            if (liNode.getName() != "li") continue;
-
-                            const std::string resource = liNode.getAttributes().getValue(0);
-                            if (resource.find(UNIPROT_PREFIX) != std::string::npos) {
-                                uniprot_id = resource.substr(UNIPROT_PREFIX.length());
-                                found = true;
-                                break;
-                            }
-                        }
-                        if(found) break;
-                    }
-                    if(found) break;
-                }
-                if(found) break;
+        for(std::string &resource : extract_is_information_from_species(species)) {
+            if (resource.find(UNIPROT_PREFIX) != std::string::npos) {
+                uniprot_id = resource.substr(UNIPROT_PREFIX.length());
+                found = true;
+                break;
             }
-            if(found) break;
         }
 
         if (found) {
@@ -619,37 +685,10 @@ void eliminate_drugs(libsbml::Model *model) {
         // Check annotation for IUPHAR ligand (drug) reference
         // TODO: maybe in a DefinedSet not all the reference are drugs
         if (!is_drug && s->isSetAnnotation()) {
-            const libsbml::XMLNode* annotation = s->getAnnotation();
-            if (annotation) {
-                for (u_int j = 0; j < annotation->getNumChildren(); ++j) {
-                    const libsbml::XMLNode& rdfNode = annotation->getChild(j);
-                    if (rdfNode.getName() != "RDF") continue;
-                    for (u_int k = 0; k < rdfNode.getNumChildren(); ++k) {
-                        const libsbml::XMLNode& descNode = rdfNode.getChild(k);
-                        if (descNode.getName() != "Description") continue;
-                        for (u_int m = 0; m < descNode.getNumChildren(); ++m) {
-                            const libsbml::XMLNode& hasPartNode = descNode.getChild(m);
-                            if (hasPartNode.getPrefix() != "bqbiol" || hasPartNode.getName() != "hasPart") continue;
-                            for (u_int n = 0; n < hasPartNode.getNumChildren(); ++n) {
-                                const libsbml::XMLNode& bagNode = hasPartNode.getChild(n);
-                                if (bagNode.getName() != "Bag") continue;
-                                for (u_int p = 0; p < bagNode.getNumChildren(); ++p) {
-                                    const libsbml::XMLNode& liNode = bagNode.getChild(p);
-                                    if (liNode.getName() != "li") continue;
-                                    // Check for IUPHAR ligand reference
-                                    std::string resource = liNode.getAttributes().getValue(0);
-                                    if (resource.find("https://identifiers.org/iuphar.ligand") != std::string::npos) {
-                                        is_drug = true;
-                                        break;
-                                    }
-                                }
-                                if (is_drug) break;
-                            }
-                            if (is_drug) break;
-                        }
-                        if (is_drug) break;
-                    }
-                    if (is_drug) break;
+            for(std::string& resource : extract_has_part_information_from_species(s)) {
+                if (resource.find("https://identifiers.org/iuphar.ligand") != std::string::npos) {
+                    is_drug = true;
+                    break;
                 }
             }
         }
@@ -669,11 +708,35 @@ void eliminate_drugs(libsbml::Model *model) {
 }
 
 void register_atomic_species(libsbml::Model *model, RegistrationResult &result) {
-    TODO("register_atomic_species");
+    for (u_int i = 0; i < model->getNumSpecies(); ++i) {
+        libsbml::Species *s = model->getSpecies(i);
+        if(is_protein(s)) {
+            result.proteins[s->getId()] = extract_protein_id(s);
+        } else if(is_compound(s)) {
+            result.compounds[s->getId()] = extract_compounds_id(s);
+        }
+    }
+}
+
+// @return the number of new indices
+int delete_complex(libsbml::Species *complex, RegistrationResult &result) {
+    return 0;
+}
+
+// @return the number of new indices
+int delete_set(libsbml::Species *set, RegistrationResult &result) {
+    return 0;
 }
 
 void eliminate_abstractions(libsbml::Model *model, RegistrationResult &result) {
-    TODO("eliminate_abstractions");
+    for (u_int i = 0; i < model->getNumSpecies(); ++i) {
+        libsbml::Species *s = model->getSpecies(i);
+        if(is_complex(s)) {
+            TODO("delete the complex");
+        } else if(is_set(s)) {
+            TODO("delete the set");
+        }
+    }
 }
 
 /**
