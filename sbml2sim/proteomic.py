@@ -57,3 +57,25 @@ def get_tissue(uniprod_id: str) -> list[proteomic]:
         exit(1)
     print("[INFO] completed the request")
     return response.json()['d']['results']
+
+# import reactome2py.content as content
+# import reactome2py.analysis as analysis
+
+# def get_pathway_proteins(pathway_id: str) -> list[Any]:
+#     data = content.participants_physical_entities(pathway_id)
+#     proteins = []
+#     for d in data:
+#         if d['className'] == "Protein":
+#             proteins.append(d)
+#     return proteins
+
+# def get_tissue_from_reactome(proteins: list[Any], pathway_id: str) -> list[str]:
+#     res = analysis.identifiers(
+#         ids = ",".join([str(p['dbId']) for p in proteins]),
+#         resource="HPA",
+#         page_size="100",
+#         page="1",
+#     )
+    
+#     print(res)
+    

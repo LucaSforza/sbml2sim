@@ -85,6 +85,10 @@ def main():
     new_sbml = sbml.replicate_model_per_tissue(tissue_names)
     new_sbml.save_converted_file(file_path.replace(".","-modified."))
     
+    # proteins = ptc.get_pathway_proteins("R-HSA-1643713")
+    # print(proteins)
+    # ptc.get_tissue_from_reactome(proteins, "R-HSA-1643713")
+    
             
     
     # sbml.random_protein_concentrations()

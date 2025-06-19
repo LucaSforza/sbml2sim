@@ -85,4 +85,20 @@ extern "C" {
         return SBMLDoc::replicate_model_per_tissue(_this, tissues, n_tissue);
     }
 
+    void add_kinetic_laws_if_not_exists(SBMLDoc *_this, bool all_convience_rate_law) {
+        _this->add_kinetic_laws_if_not_exists(all_convience_rate_law);
+    }
+
+    void add_time_to_model(SBMLDoc *_this) {
+        _this->add_time_to_model();
+    }
+
+    void add_avg_calculations_for_all_species(SBMLDoc *_this) {
+        _this->add_avg_calculations_for_all_species();
+    }
+
+    void add_avg_calculation_for_all_proteins(SBMLDoc *_this) {
+        _this->add_avg_calculation_for_all_proteins();
+    }
+
 }
