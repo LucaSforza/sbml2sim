@@ -250,6 +250,7 @@ public:
         }
         this->doc = doc;
         model = this->doc->getModel();
+        eliminate_drugs(model);
         proteins = extract_proteins_ids(model);
     }
     

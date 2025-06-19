@@ -23,13 +23,14 @@
 
 
 // species id -> UniProdId
-using Proteins = std::map<std::string, std::string>;
+using Proteins  = std::map<std::string, std::string>;
+using Compounds = std::map<std::string, std::string>;
 
 Proteins extract_proteins_ids(const libsbml::Model* model) {
     Proteins results;
     const std::string UNIPROT_PREFIX = "https://identifiers.org/uniprot:";
 
-    for (unsigned int i = 0; i < model->getNumSpecies(); ++i) {
+    for (u_int i = 0; i < model->getNumSpecies(); ++i) {
         const libsbml::Species* species = model->getSpecies(i);
         const std::string species_id = species->getId();
         const libsbml::XMLNode* annotation = species->getAnnotation();
@@ -40,24 +41,24 @@ Proteins extract_proteins_ids(const libsbml::Model* model) {
         std::string uniprot_id;
         
         // Cerca direttamente nei nodi XML
-        for (unsigned int j = 0; j < annotation->getNumChildren(); ++j) {
+        for (u_int j = 0; j < annotation->getNumChildren(); ++j) {
             const libsbml::XMLNode& rdfNode = annotation->getChild(j);
             if (rdfNode.getName() != "RDF") continue;
 
-            for (unsigned int k = 0; k < rdfNode.getNumChildren(); ++k) {
+            for (u_int k = 0; k < rdfNode.getNumChildren(); ++k) {
                 const libsbml::XMLNode& descNode = rdfNode.getChild(k);
                 if (descNode.getName() != "Description") continue;
                 
-                for (unsigned int m = 0; m < descNode.getNumChildren(); ++m) {
+                for (u_int m = 0; m < descNode.getNumChildren(); ++m) {
                     const libsbml::XMLNode& hasPartNode = descNode.getChild(m);
                     if (hasPartNode.getPrefix() != "bqbiol" || 
                         hasPartNode.getName() != "is") continue;
 
-                    for (unsigned int n = 0; n < hasPartNode.getNumChildren(); ++n) {
+                    for (u_int n = 0; n < hasPartNode.getNumChildren(); ++n) {
                         const libsbml::XMLNode& bagNode = hasPartNode.getChild(n);
                         if (bagNode.getName() != "Bag") continue;
 
-                        for (unsigned int p = 0; p < bagNode.getNumChildren(); ++p) {
+                        for (u_int p = 0; p < bagNode.getNumChildren(); ++p) {
                             const libsbml::XMLNode& liNode = bagNode.getChild(p);
                             if (liNode.getName() != "li") continue;
 
@@ -91,12 +92,12 @@ bool check_error(libsbml::SBMLDocument *document) {
     u_int errors;
     bool seriousErrors = false;
     if((errors = document->getNumErrors()) > 0) {
-        unsigned int numReadErrors   = 0;
-        unsigned int numReadWarnings = 0;
+        u_int numReadErrors   = 0;
+        u_int numReadWarnings = 0;
         std::string  errMsgRead      = "";
  
         if (errors > 0) {
-            for (unsigned int i = 0; i < errors; i++) {
+            for (u_int i = 0; i < errors; i++) {
                 if (document->getError(i)->isFatal() || document->getError(i)->isError()) {
                     seriousErrors = true;
                     ++numReadErrors;
@@ -547,5 +548,166 @@ void add_avg_calculations(libsbml::Model *model) {
     }
 }
 
+struct RegistrationResult {
+    Proteins proteins;
+    Compounds compounds;
+};
+
+// Removes all reactions from the model where the given species appears as a reactant, product, or modifier.
+void remove_reactions_with_species(libsbml::Model *model, const std::string& species_id) {
+    // Collect indices of reactions to remove
+    std::vector<u_int> reactions_to_remove;
+    for (u_int i = 0; i < model->getNumReactions(); ++i) {
+        libsbml::Reaction* reaction = model->getReaction(i);
+        bool found = false;
+        // Check reactants
+        for (u_int j = 0; j < reaction->getNumReactants(); ++j) {
+            if (reaction->getReactant(j)->getSpecies() == species_id) {
+                found = true;
+                break;
+            }
+        }
+        // Check products
+        if (!found) {
+            for (u_int j = 0; j < reaction->getNumProducts(); ++j) {
+                if (reaction->getProduct(j)->getSpecies() == species_id) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+        // Check modifiers
+        if (!found) {
+            for (u_int j = 0; j < reaction->getNumModifiers(); ++j) {
+                if (reaction->getModifier(j)->getSpecies() == species_id) {
+                    // Remove only the modifier, not the whole reaction
+                    reaction->removeModifier(j);
+                    // Adjust index after removal
+                    --j;
+                }
+            }
+        }
+        if (found) {
+            reactions_to_remove.push_back(i);
+        }
+    }
+    // Remove reactions in reverse order to avoid index shifting
+    for (auto it = reactions_to_remove.rbegin(); it != reactions_to_remove.rend(); ++it) {
+        model->removeReaction(*it);
+    }
+}
+
+void eliminate_drugs(libsbml::Model *model) {
+    // Iterate over a copy of species IDs to avoid iterator invalidation
+    std::vector<std::string> species_ids_to_remove;
+
+    for (u_int i = 0; i < model->getNumSpecies(); ++i) {
+        libsbml::Species *s = model->getSpecies(i);
+        if (!s) continue;
+
+        // Check for "ProteinDrug" in notes or annotation
+        bool is_drug = false;
+
+        // Check notes for "ProteinDrug"
+        if (s->isSetNotes()) {
+            std::string notes = s->getNotesString();
+            if (notes.find("ProteinDrug") != std::string::npos) {
+                is_drug = true;
+            }
+        }
+
+        // Check annotation for IUPHAR ligand (drug) reference
+        // TODO: maybe in a DefinedSet not all the reference are drugs
+        if (!is_drug && s->isSetAnnotation()) {
+            const libsbml::XMLNode* annotation = s->getAnnotation();
+            if (annotation) {
+                for (u_int j = 0; j < annotation->getNumChildren(); ++j) {
+                    const libsbml::XMLNode& rdfNode = annotation->getChild(j);
+                    if (rdfNode.getName() != "RDF") continue;
+                    for (u_int k = 0; k < rdfNode.getNumChildren(); ++k) {
+                        const libsbml::XMLNode& descNode = rdfNode.getChild(k);
+                        if (descNode.getName() != "Description") continue;
+                        for (u_int m = 0; m < descNode.getNumChildren(); ++m) {
+                            const libsbml::XMLNode& hasPartNode = descNode.getChild(m);
+                            if (hasPartNode.getPrefix() != "bqbiol" || hasPartNode.getName() != "hasPart") continue;
+                            for (u_int n = 0; n < hasPartNode.getNumChildren(); ++n) {
+                                const libsbml::XMLNode& bagNode = hasPartNode.getChild(n);
+                                if (bagNode.getName() != "Bag") continue;
+                                for (u_int p = 0; p < bagNode.getNumChildren(); ++p) {
+                                    const libsbml::XMLNode& liNode = bagNode.getChild(p);
+                                    if (liNode.getName() != "li") continue;
+                                    // Check for IUPHAR ligand reference
+                                    std::string resource = liNode.getAttributes().getValue(0);
+                                    if (resource.find("https://identifiers.org/iuphar.ligand") != std::string::npos) {
+                                        is_drug = true;
+                                        break;
+                                    }
+                                }
+                                if (is_drug) break;
+                            }
+                            if (is_drug) break;
+                        }
+                        if (is_drug) break;
+                    }
+                    if (is_drug) break;
+                }
+            }
+        }
+
+        if (is_drug) {
+            species_ids_to_remove.push_back(s->getId());
+        }
+    }
+
+    // Remove all reactions and the species itself for each drug
+    for (const auto& id : species_ids_to_remove) {
+        // Remove all reactions where this species appears
+        remove_reactions_with_species(model, id);
+        // Remove the species itself
+        model->removeSpecies(id);
+    }
+}
+
+void register_atomic_species(libsbml::Model *model, RegistrationResult &result) {
+    TODO("register_atomic_species");
+}
+
+void eliminate_abstractions(libsbml::Model *model, RegistrationResult &result) {
+    TODO("eliminate_abstractions");
+}
+
+/**
+ * Registra le specie di questo modello SBML, elimina tutte le Drugs da questo modello 
+ * Alla prima iterazione in cui si leggono le specie:
+ * Se una specie è una normale proteina, viene aggiunta alle proteine
+ * 
+ * Se una specie è un chemical compound allora viene aggiunto ai compound
+ * 
+ * Se una specie è un farmaco, allora rimuovilo ed elimina tutte le reazioni in cui appare
+ * 
+ * Alla seconda iterazione:
+ * Se una specie è un Reactome Complex allora prima verifica che non ci siano farmaci in questo complesso
+ * Se sono farmaci allora elimina questa specie e tutte le reazioni che compaiono in questa specie
+ * Altrimenti per ogni elemento nel complesso:
+ *     Verifica se esiste già come specie, altrimenti creala.
+ * Poi per ogni reazione in cui appare il complesso sostituiscilo con le singole specie all'interno del complesso
+ * 
+ * Se una specie è un DefinedSet allora per ogni elemento del set esegui queste operazioni:
+ * Se un elemento è un farmaco ignoralo
+ * Se un elemento non esiste già allora crealo
+ * Per ogni reazione in cui appare questo DefinedSet creane una nuova in cui appare il singolo elemento
+ * Finite queste operazioni elemina la specie e elimina le reazioni in cui appare
+ */
+RegistrationResult register_all_species(libsbml::Model *model) {
+    RegistrationResult result;
+
+    eliminate_drugs(model);
+
+    register_atomic_species(model,result);
+
+    eliminate_abstractions(model, result);
+
+    return result;
+}
 
 #endif // CORE_CONVERTOR_HPP_

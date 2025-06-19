@@ -9,7 +9,7 @@ int main(int argc, const char **argv) {
 
     printf("[INFO] %s: %s\n",program_name, sbml_path);
 
-    SBMLDoc doc = SBMLDoc::replicate_model_per_tissue(sbml_path, argv, argc);
+    SBMLDoc doc = SBMLDoc(sbml_path);
     doc.save_converted_file("prova.sbml");
     srand(time(NULL));
     doc.random_start_concentration();
