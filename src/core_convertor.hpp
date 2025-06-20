@@ -9,7 +9,7 @@
 
 #include <string>
 #include <chrono>
-#include <map>
+#include <unordered_map>
 #include <vector>
 
 #include "utils.hpp"
@@ -25,8 +25,8 @@
 
 
 // species id -> UniProdId
-using Proteins  = std::map<std::string, std::string>;
-using Compounds = std::map<std::string, std::string>;
+using Proteins  = std::unordered_map<std::string, std::string>;
+using Compounds = std::unordered_map<std::string, std::string>;
 
 enum SpeciesTipology {
     UNKNOWN,
@@ -56,14 +56,16 @@ bool is_compound(const libsbml::Species *species) {
 }
 
 bool is_complex(const libsbml::Species *species) {
-    TODO("is_complex");
+    if(!species->isSetNotes()) return false;
+    std::string notes = species->getNotesString();
+    return(notes.find("Reactome Complex") != std::string::npos);
 }
 
 bool is_set(const libsbml::Species *species) {
-    TODO("is_set");
+    if(!species->isSetNotes()) return false;
+    std::string notes = species->getNotesString();
+    return(notes.find("Reactome DefinedSet") != std::string::npos);
 }
-
-
 
 SpeciesTipology get_tipology(const libsbml::Species *species) {
     if(is_drug(species)) return SpeciesTipology::DRUG;
@@ -72,6 +74,41 @@ SpeciesTipology get_tipology(const libsbml::Species *species) {
     if(is_complex(species)) return SpeciesTipology::COMPLEX;
     if(is_set(species)) return SpeciesTipology::SET;
     return SpeciesTipology::UNKNOWN;
+}
+
+const std::string UNIPROT_PREFIX = "https://identifiers.org/uniprot:";
+const std::string CHEBI_PREFIX   = "https://identifiers.org/CHEBI:";
+const std::string IUPHAR_PREFIX  = "https://identifiers.org/iuphar.ligand:";
+
+bool is_drug(const std::string &url) {
+    return url.find(IUPHAR_PREFIX);    
+}
+
+bool is_protein(const std::string &url) {
+    return url.find(UNIPROT_PREFIX);
+}
+
+bool is_compound(const std::string &url) {
+    return url.find(CHEBI_PREFIX);
+}
+
+SpeciesTipology get_tipology(const std::string &url) {
+    if(is_protein(url)) return SpeciesTipology::PROTEIN;
+    if(is_compound(url)) return SpeciesTipology::COMPOUND;
+    if(is_drug(url)) return SpeciesTipology::DRUG;
+    return SpeciesTipology::UNKNOWN;
+}
+
+std::string get_drug_id(const std::string &url) {
+    return url.substr(IUPHAR_PREFIX.length());
+}
+
+std::string get_protein_id(const std::string &url) {
+    return url.substr(UNIPROT_PREFIX.length());
+}
+
+std::string get_compound_id(const std::string &url) {
+    return url.substr(CHEBI_PREFIX.length());
 }
 
 std::vector<std::string> extract_information_from_species(const libsbml::Species *species, const std::string& tipology_information) {
@@ -112,18 +149,15 @@ std::vector<std::string> extract_has_part_information_from_species(const libsbml
 }
 
 std::string extract_protein_id(const libsbml::Species *species) {
-    const std::string UNIPROT_PREFIX = "https://identifiers.org/uniprot:";
     return extract_is_information_from_species(species)[0].substr(UNIPROT_PREFIX.length());
 }
 
 std::string extract_compounds_id(const libsbml::Species *species) {
-    const std::string CHEBI_PREFIX = "https://identifiers.org/CHEBI:";
     return extract_is_information_from_species(species)[0].substr(CHEBI_PREFIX.length());
 }
 
 Proteins extract_proteins_ids(const libsbml::Model* model) {
     Proteins results;
-    const std::string UNIPROT_PREFIX = "https://identifiers.org/uniprot:";
 
     for (u_int i = 0; i < model->getNumSpecies(); ++i) {
         const libsbml::Species* species = model->getSpecies(i);
@@ -610,8 +644,10 @@ void add_avg_calculations(libsbml::Model *model) {
 }
 
 struct RegistrationResult {
-    Proteins proteins;
-    Compounds compounds;
+    Proteins species_to_protein;
+    Proteins protein_to_species;
+    Compounds species_to_compounds;
+    Compounds compounds_to_species;
 };
 
 // Removes all reactions from the model where the given species appears as a reactant, product, or modifier.
@@ -706,30 +742,260 @@ void register_atomic_species(libsbml::Model *model, RegistrationResult &result) 
     for (u_int i = 0; i < model->getNumSpecies(); ++i) {
         libsbml::Species *s = model->getSpecies(i);
         if(is_protein(s)) {
-            result.proteins[s->getId()] = extract_protein_id(s);
+            std::string id = extract_protein_id(s);
+            std::string species_id = s->getId();
+            result.species_to_protein[species_id] = id;
+            result.protein_to_species[id] = species_id; 
         } else if(is_compound(s)) {
-            result.compounds[s->getId()] = extract_compounds_id(s);
+            std::string id = extract_compounds_id(s);
+            std::string species_id = s->getId();
+            result.species_to_compounds[species_id] = id;
+            result.compounds_to_species[id] = species_id; 
         }
     }
 }
 
-// @return the number of new indices
-int delete_complex(libsbml::Species *complex, RegistrationResult &result) {
-    return 0;
+void delete_species(libsbml::Species *species, libsbml::Model *model) {
+    // Remove all reactions where this species appears
+    remove_reactions_with_species(model, species->getId());
+
+    // Remove the species itself from the model
+    model->removeSpecies(species->getId());
 }
 
-// @return the number of new indices
-int delete_set(libsbml::Species *set, RegistrationResult &result) {
-    return 0;
+void delete_complex(libsbml::Species *complex, libsbml::Model *model) {
+    model->removeSpecies(complex->getId());
+}
+
+void delete_set(libsbml::Species *set, libsbml::Model *model) {
+    model->removeSpecies(set->getId());
+}
+
+struct ComplexInformation {
+    std::string id;
+    SpeciesTipology tipology;
+    u_int stoichiometry;
+};
+
+std::vector<ComplexInformation> get_complex_information(libsbml::Species *complex) {
+    TODO("get_complex_information");
+}
+
+std::vector<libsbml::Reaction*> get_reaction_where_appear_species(libsbml::Species *species, libsbml::Model *model) {
+    std::vector<libsbml::Reaction*> reactions_to_modify;
+
+    // Collect all reactions where the complex appears as reactant, product, or modifier
+    for (u_int i = 0; i < model->getNumReactions(); ++i) {
+        libsbml::Reaction* reaction = model->getReaction(i);
+        bool found = false;
+        // Check reactants
+        for (u_int j = 0; j < reaction->getNumReactants(); ++j) {
+            if (reaction->getReactant(j)->getSpecies() == species->getId()) {
+                found = true;
+                break;
+            }
+        }
+        // Check products
+        if (!found) {
+            for (u_int j = 0; j < reaction->getNumProducts(); ++j) {
+                if (reaction->getProduct(j)->getSpecies() == species->getId()) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+        // Check modifiers
+        if (!found) {
+            for (u_int j = 0; j < reaction->getNumModifiers(); ++j) {
+                if (reaction->getModifier(j)->getSpecies() == species->getId()) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+        if (found) {
+            reactions_to_modify.push_back(reaction);
+        }
+    }
+    return reactions_to_modify;
+}
+
+void expand_complex(libsbml::Species *complex, libsbml::Model *model, RegistrationResult &result) {
+    std::vector<ComplexInformation> elementes = get_complex_information(complex);
+    for(ComplexInformation &e : elementes) {
+        const Proteins::iterator it = result.protein_to_species.find(e.id);
+        if(it == result.protein_to_species.end()) {
+            TODO("create a new species");
+        } else {
+            e.id = (*it).second;
+        }
+    }
+
+    // cerca tutte le reazioni in cui appare il complesso e crea una nuova reazione che al posto della specie del complesso ha quelle nuove
+
+    std::vector<libsbml::Reaction*> reactions_to_modify = get_reaction_where_appear_species(complex, model);
+
+    // For each reaction, create a new reaction with the complex replaced by its components
+    for (libsbml::Reaction* reaction : reactions_to_modify) {
+        // Create a new reaction
+        libsbml::Reaction* new_reaction = model->createReaction();
+        new_reaction->setId(reaction->getId() + "_expanded_" + complex->getId());
+
+        // Copy reactants
+        for (u_int j = 0; j < reaction->getNumReactants(); ++j) {
+            const libsbml::SpeciesReference* sr = reaction->getReactant(j);
+            if (sr->getSpecies() == complex->getId()) {
+                // Replace with all elements of the complex
+                for (const ComplexInformation& ci : elementes) {
+                    libsbml::SpeciesReference* new_sr = new_reaction->createReactant();
+                    new_sr->setSpecies(ci.id);
+                    new_sr->setStoichiometry(sr->getStoichiometry() * ci.stoichiometry);
+                }
+            } else {
+                libsbml::SpeciesReference* new_sr = new_reaction->createReactant();
+                new_sr->setSpecies(sr->getSpecies());
+                new_sr->setStoichiometry(sr->getStoichiometry());
+            }
+        }
+        // Copy products
+        for (u_int j = 0; j < reaction->getNumProducts(); ++j) {
+            const libsbml::SpeciesReference* sr = reaction->getProduct(j);
+            if (sr->getSpecies() == complex->getId()) {
+                for (const ComplexInformation& ci : elementes) {
+                    libsbml::SpeciesReference* new_sr = new_reaction->createProduct();
+                    new_sr->setSpecies(ci.id);
+                    new_sr->setStoichiometry(sr->getStoichiometry() * ci.stoichiometry);
+                }
+            } else {
+                libsbml::SpeciesReference* new_sr = new_reaction->createProduct();
+                new_sr->setSpecies(sr->getSpecies());
+                new_sr->setStoichiometry(sr->getStoichiometry());
+            }
+        }
+        // Copy modifiers
+        for (u_int j = 0; j < reaction->getNumModifiers(); ++j) {
+            const libsbml::ModifierSpeciesReference* mr = reaction->getModifier(j);
+            if (mr->getSpecies() == complex->getId()) {
+                for (const ComplexInformation& ci : elementes) {
+                    libsbml::ModifierSpeciesReference* new_mr = new_reaction->createModifier();
+                    new_mr->setSpecies(ci.id);
+                    new_mr->setSBOTerm(mr->getSBOTerm());
+                }
+            } else {
+                libsbml::ModifierSpeciesReference* new_mr = new_reaction->createModifier();
+                new_mr->setSpecies(mr->getSpecies());
+                new_mr->setSBOTerm(mr->getSBOTerm());
+            }
+        }
+        // Copy reversibility
+        new_reaction->setReversible(reaction->getReversible());
+    }
+
+    // Remove the original reactions
+    for (libsbml::Reaction* reaction : reactions_to_modify) {
+        model->removeReaction(reaction->getId());
+    }
+}
+
+void expand_set(libsbml::Species *set, libsbml::Model *model, RegistrationResult &result) {
+    std::vector<std::string> data = extract_is_information_from_species(set);
+    std::vector<std::string> species;
+    for(const std::string &url: data) {
+        if(is_protein(url)) {
+            std::string id = get_protein_id(url);
+            Proteins::iterator it = result.protein_to_species.find(id);
+            if(it == result.protein_to_species.end()) {
+                TODO("create a new protein");
+            } else {
+                species.push_back((*it).second);
+            }
+        } else if(is_compound(url)) {
+            std::string id = get_compound_id(url);
+            Proteins::iterator it = result.compounds_to_species.find(id);
+            if(it == result.compounds_to_species.end()) {
+                TODO("create a new compounds");
+            } else {
+                species.push_back((*it).second);
+            }
+        }
+    }
+
+    std::vector<libsbml::Reaction*> reactions_to_modify = get_reaction_where_appear_species(set);
+    for(libsbml::Reaction *reaction : reactions_to_modify) {
+        for(const std::string& s : species) {
+            // Create a new reaction
+            libsbml::Reaction* new_reaction = model->createReaction();
+            new_reaction->setId(reaction->getId() + "_set_expanded_" + set->getId()+"_new_species_"+s);
+
+            // Copy reactants
+            for (u_int j = 0; j < reaction->getNumReactants(); ++j) {
+                const libsbml::SpeciesReference* sr = reaction->getReactant(j);
+                if (sr->getSpecies() == set->getId()) {
+                    // Replace with all elements of the set
+                    libsbml::SpeciesReference* new_sr = new_reaction->createReactant();
+                    new_sr->setSpecies(s);
+                    new_sr->setStoichiometry(sr->getStoichiometry());
+                } else {
+                    libsbml::SpeciesReference* new_sr = new_reaction->createReactant();
+                    new_sr->setSpecies(sr->getSpecies());
+                    new_sr->setStoichiometry(sr->getStoichiometry());
+                }
+            }
+            // Copy products
+            for (u_int j = 0; j < reaction->getNumProducts(); ++j) {
+                const libsbml::SpeciesReference* sr = reaction->getProduct(j);
+                if (sr->getSpecies() == complex->getId()) {
+                    for (const ComplexInformation& ci : elementes) {
+                        libsbml::SpeciesReference* new_sr = new_reaction->createProduct();
+                        new_sr->setSpecies(ci.id);
+                        new_sr->setStoichiometry(sr->getStoichiometry() * ci.stoichiometry);
+                    }
+                } else {
+                    libsbml::SpeciesReference* new_sr = new_reaction->createProduct();
+                    new_sr->setSpecies(sr->getSpecies());
+                    new_sr->setStoichiometry(sr->getStoichiometry());
+                }
+            }
+            // Copy modifiers
+            for (u_int j = 0; j < reaction->getNumModifiers(); ++j) {
+                const libsbml::ModifierSpeciesReference* mr = reaction->getModifier(j);
+                if (mr->getSpecies() == complex->getId()) {
+                    for (const ComplexInformation& ci : elementes) {
+                        libsbml::ModifierSpeciesReference* new_mr = new_reaction->createModifier();
+                        new_mr->setSpecies(ci.id);
+                        new_mr->setSBOTerm(mr->getSBOTerm());
+                    }
+                } else {
+                    libsbml::ModifierSpeciesReference* new_mr = new_reaction->createModifier();
+                    new_mr->setSpecies(mr->getSpecies());
+                    new_mr->setSBOTerm(mr->getSBOTerm());
+                }
+            }
+            // Copy reversibility
+            new_reaction->setReversible(reaction->getReversible());
+        }
+    }
+
+    // Remove the original reactions
+    for (libsbml::Reaction* reaction : reactions_to_modify) {
+        model->removeReaction(reaction->getId());
+    }
 }
 
 void eliminate_abstractions(libsbml::Model *model, RegistrationResult &result) {
-    for (u_int i = 0; i < model->getNumSpecies(); ++i) {
+    u_int num_species = model->getNumSpecies();
+    for (u_int i = 0; i < num_species; ++i) {
         libsbml::Species *s = model->getSpecies(i);
         if(is_complex(s)) {
-            TODO("delete the complex");
+            expand_complex(s,model,result);
+            delete_complex(s,model);
+            i--;
+            num_species--;
         } else if(is_set(s)) {
-            TODO("delete the set");
+            expand_set(s,model, result);
+            delete_set(s,model);
+            i--;
+            num_species--;
         }
     }
 }
