@@ -2,27 +2,9 @@
 #define SBMLDOC_HPP_
 
 #include "core_convertor.hpp"
+#include "utils.hpp"
 
-#include <deque>
 
-class MathMLIterator {
-    std::deque<libsbml::ASTNode*> frontier;
-
-public:
-    MathMLIterator(libsbml::ASTNode *head) {
-        this->frontier.push_back(head);
-    }
-
-    libsbml::ASTNode *next() {
-        if(frontier.empty()) return NULL;
-        libsbml::ASTNode *result = frontier[0];
-        frontier.pop_front();
-        for(u_int i=0; i < result->getNumChildren(); i++) {
-            frontier.push_back(result->getChild(i));
-        }
-        return result;
-    }
-};
 
 /**
  * @class SBMLDoc

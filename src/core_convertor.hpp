@@ -12,6 +12,8 @@
 #include <map>
 #include <vector>
 
+#include "utils.hpp"
+
 #define eprintf(...) fprintf(stdout, __VA_ARGS__)
 #define TODO(msg) assert(false && msg)
 
@@ -74,37 +76,30 @@ SpeciesTipology get_tipology(const libsbml::Species *species) {
 
 std::vector<std::string> extract_information_from_species(const libsbml::Species *species, const std::string& tipology_information) {
     std::vector<std::string> result;
-    // Cerca direttamente nei nodi XML
     const libsbml::XMLNode* annotation = species->getAnnotation();
     if(annotation == NULL) return std::vector<std::string>();
 
-    for (u_int j = 0; j < annotation->getNumChildren(); ++j) {
-        const libsbml::XMLNode& rdfNode = annotation->getChild(j);
-        if (rdfNode.getName() != "RDF") continue;
+    DFSExplorer explorer(annotation);
 
-        for (u_int k = 0; k < rdfNode.getNumChildren(); ++k) {
-            const libsbml::XMLNode& descNode = rdfNode.getChild(k);
-            if (descNode.getName() != "Description") continue;
-            
-            for (u_int m = 0; m < descNode.getNumChildren(); ++m) {
-                const libsbml::XMLNode& hasPartNode = descNode.getChild(m);
-                if (hasPartNode.getPrefix() != "bqbiol" || 
-                    hasPartNode.getName() != tipology_information) continue;
+    const libsbml::XMLNode *next = NULL;
 
-                for (u_int n = 0; n < hasPartNode.getNumChildren(); ++n) {
-                    const libsbml::XMLNode& bagNode = hasPartNode.getChild(n);
-                    if (bagNode.getName() != "Bag") continue;
-
-                    for (u_int p = 0; p < bagNode.getNumChildren(); ++p) {
-                        const libsbml::XMLNode& liNode = bagNode.getChild(p);
+    while((next = explorer.next()) != NULL) {
+        if (next->getPrefix() == "bqbiol" && 
+            next->getName() == tipology_information) {
+                next = explorer.next();
+                if(next->getName() == "Bag") {
+                    for (u_int p = 0; p < next->getNumChildren(); ++p) {
+                        const libsbml::XMLNode& liNode = next->getChild(p);
                         if (liNode.getName() != "li") continue;
-
                         result.push_back(liNode.getAttributes().getValue(0));
                     }
+                    break;
+                } else {
+                    eprintf("[WARNING] not found the bag for species %s\n", species->getId().c_str());
                 }
             }
-        }
     }
+
     return result;
 }
 
