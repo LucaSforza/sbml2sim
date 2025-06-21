@@ -1,3 +1,24 @@
+# 21/06/2025
+
+## TODOs
+
+## Things Discovered
+
+- Protein complexes should not be expanded, but should all be set to 0 before the simulation
+
+## TODOs
+
+- Replicate the biological model only for tissues with complete available data.
+- Set the initial concentration of proteins using data obtained from the APIs.
+- Retrieve data for small compounds.
+- Isolate the inputs and make them constant.
+- Convert iBAQ into mol/L
+- Find volumes for the compartements
+
+# Optional TODOs
+
+- create unit measure
+
 # 19/06/2025
 
 ## TODOs
