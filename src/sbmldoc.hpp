@@ -31,8 +31,11 @@ class SBMLDoc {
 
     libsbml::SBMLDocument *doc;
     libsbml::Model *model;
-    int total_kinetic_constant;
-    Proteins proteins;
+    u_int total_kinetic_constant;
+    Proteins species_to_proteins;
+    Proteins proteins_to_species;
+    Compounds species_to_compounds;
+    Compounds compounds_to_species;
 
     rr::RoadRunner rr;
 
@@ -207,7 +210,12 @@ public:
         result->doc = doc_result;
         result->model = new_model;
         result->total_kinetic_constant = kinetic_constants;
-        result->proteins = extract_proteins_ids(new_model);
+        // TODO: verifica correttezza
+        RegistrationResult r = register_all_species(model);
+        result->proteins_to_species  = r.protein_to_species;
+        result->species_to_proteins  = r.species_to_protein;
+        result->compounds_to_species = r.compounds_to_species;
+        result->species_to_compounds = r.species_to_compounds;
         
         // eprintf("[INFO] returning\n");
         // fflush(stderr);
@@ -232,8 +240,12 @@ public:
         }
         this->doc = doc;
         model = this->doc->getModel();
-        eliminate_drugs(model);
-        proteins = extract_proteins_ids(model);
+        this->total_kinetic_constant = 0;
+        RegistrationResult result = register_all_species(model);
+        proteins_to_species  = result.protein_to_species;
+        species_to_proteins  = result.species_to_protein;
+        compounds_to_species = result.compounds_to_species;
+        species_to_compounds = result.species_to_compounds;
     }
     
     ~SBMLDoc() {
@@ -253,7 +265,7 @@ public:
     }
 
     void add_avg_calculation_for_all_proteins() {
-        add_avg_calculations_only_for_proteins(this->model, this->proteins);
+        add_avg_calculations_only_for_proteins(this->model, this->species_to_proteins);
     }
 
     /**
@@ -314,6 +326,16 @@ public:
             }
         }
     }
+
+    void random_kinetic_costant_value() {
+        for (u_int i = 0; i < this->total_kinetic_constant; ++i) {
+            double min_exp = 0;
+            double max_exp = 0.05;
+            double scale = static_cast<double>(rand()) / RAND_MAX;
+            double x = min_exp + scale * (max_exp - min_exp);
+            this->set_kinetic_constants(i, x);
+        }
+    }
     
     /**
      * @brief simulate the model and save results
@@ -334,7 +356,7 @@ public:
      * @note This function does not take any parameters.
     */
     void dump_proteins_data(void) const {
-        for (const auto& pair : proteins) {
+        for (const auto& pair : species_to_proteins) {
             const std::string& species_id = pair.first;
             std::vector<std::string> gene_ids;
             gene_ids.push_back(pair.second);
@@ -353,7 +375,7 @@ public:
      * @return A constant reference to the collection of genes.
     */
     const Proteins& get_proteins_data(void) const {
-        return proteins;
+        return species_to_proteins;
     }
 
     /**
@@ -365,7 +387,7 @@ public:
      * @return true if the species name is found in the set of proteins (i.e., is a protein), false otherwise.
     */
     bool is_protein(const char *specie_name) const {
-        return proteins.find(specie_name) != proteins.end();
+        return species_to_proteins.find(specie_name) != species_to_proteins.end();
     }
 };
 
