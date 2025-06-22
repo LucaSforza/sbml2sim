@@ -85,7 +85,7 @@ extern "C" {
     }
 
     SBMLDoc *SBMLDoc_replicate_model_per_tissue(SBMLDoc *_this, const char **tissues, size_t n_tissue) {
-        return SBMLDoc::replicate_model_per_tissue(_this, tissues, n_tissue);
+        return _this->replicate_model_per_tissue(tissues, n_tissue);
     }
 
     void SBMLDoc_add_kinetic_laws_if_not_exists(SBMLDoc *_this) {

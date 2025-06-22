@@ -46,10 +46,6 @@ public:
         return SBMLDoc::replicate_model_per_tissue(libsbml::readSBML(file_path), tissues, n_tissues);
     }
 
-    static SBMLDoc *replicate_model_per_tissue(SBMLDoc *doc, const char **tissues, size_t n_tissue) {
-        return replicate_model_per_tissue(doc->doc, tissues, n_tissue);
-    }
-
     // crea le leggi cinetiche se non esistono
     static SBMLDoc *replicate_model_per_tissue(libsbml::SBMLDocument *doc, const char **tissues, size_t n_tissues) {
         SBMLDoc document = SBMLDoc(doc);
@@ -190,27 +186,6 @@ public:
         options.output_file = output_file;
         options.duration = horizon;
         rr.simulate(&options);
-    }
-
-    /**
-     * @brief Prints the mapping between species and their associated genes to the standard output.
-     * @note This function does not take any parameters.
-    */
-    void dump_proteins_data(void) const {
-        eprintf("[ERROR] dump_proteins_data deprecated");
-        exit(1);
-        
-        // for (const auto& pair : species_to_proteins) {
-        //     const std::string& species_id = pair.first;
-        //     std::vector<std::string> gene_ids;
-        //     gene_ids.push_back(pair.second);
-        //     std::cout << "Species: " << species_id << " Protein Id: ";
-        //     for (size_t i = 0; i < gene_ids.size(); ++i) {
-        //         std::cout << gene_ids[i];
-        //         if (i != gene_ids.size() - 1) std::cout << ", ";
-        //     }
-        //     std::cout << std::endl;
-        // }
     }
 
     /**
