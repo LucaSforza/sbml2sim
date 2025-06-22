@@ -4,7 +4,6 @@
 
 - Set the initial concentration of proteins using data obtained from the APIs.
 - Retrieve data for small compounds.
-- Clone the model for multiple tissues (easy)
 - Convert iBAQ into mol/L
 - Find volumes for the compartements
 

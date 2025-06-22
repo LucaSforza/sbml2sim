@@ -216,6 +216,8 @@ public:
 
         // crea un compartimento per ogni tessuto
         if(model->getNumCompartments() == 0) TODO("compartments are 0");
+        printf("[INFO] clone compartements\n");
+        fflush(stdout);
         for(u_int i=0; i < model->getNumCompartments(); i++) {
             libsbml::Compartment *comp = model->getCompartment(i);
             for(size_t j=0; j < n_tissues; ++j) {
@@ -256,20 +258,20 @@ public:
                 new_s->setAnnotation(s->getAnnotationString());
             }
         }
-
+        printf("[INFO] end clone compartements\n");
+        fflush(stdout);
         // crea le reazioni facendo attenzione ad assegnare la stessa costante cinetica per le reazioni identiche 
         // ma che si trovano in tessuti diversi
 
-        int kinetic_constants = 0;
-
+        printf("[INFO] cloning reactions\n");
+        fflush(stdout);
         for(u_int i=0; i < model->getNumReactions(); ++i) {
             libsbml::Reaction* r = model->getReaction(i);
             libsbml::KineticLaw* kl = r->getKineticLaw();
             if(kl == NULL) {
-                kl = add_kinetic_law(model, r, false, &kinetic_constants);
-            } 
-            // eprintf("[INFO] reaction: %s\n", r->getId().c_str());
-            // fflush(stderr);
+                eprintf("[FATAL ERROR] replicate_model_per_tissue: SBML document doen't have kinetic law for reaction %s\n", r->getId().c_str());
+                exit(1);
+            }
             for(size_t j=0; j < n_tissues; ++j) {        
                 std::string tissue = std::string(tissues[j]);
                 libsbml::Reaction *new_r = new_model->createReaction();
@@ -359,15 +361,21 @@ public:
                 new_kl->setMath(new_head);
             }
         }
+        printf("[INFO] end cloning reactions\n");
+        fflush(stdout);
         // eprintf("[INFO] generation complete\n");
         // fflush(stderr);
 
         SBMLDoc *result = new SBMLDoc();
+        assert(result != NULL);
         result->doc = doc_result;
+        
         result->model = new_model;
-        result->total_kinetic_constant = kinetic_constants;
-        result->infos = register_all_species(new_model);
-    
+        
+        result->total_kinetic_constant = this->number_of_kinetic_constants();
+        
+        result->infos = this->infos.clone_per_tissue(tissues, n_tissues);
+
         for(const std::string&species_id : this->inputs) {
             for(size_t i=0; i < n_tissues; ++i) {
                 std::string tissue = std::string(tissues[i]);

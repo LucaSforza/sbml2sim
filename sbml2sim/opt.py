@@ -134,26 +134,11 @@ def main():
     random.seed(random_seed)
     s2s.set_seed(random_seed)
     sbml.add_kinetic_laws_if_not_exists()
-    sbml.random_kinetic_costant_value()
     sbml.save_converted_file(file_path.replace(".","-modified."))
-    sbml.random_start_concentration()
-    sbml.simulate(sim_output)
-    
-    # proteins = ptc.get_pathway_proteins("R-HSA-1643713")
-    # print(proteins)
-    # ptc.get_tissue_from_reactome(proteins, "R-HSA-1643713")
-    
-            
-    
-    # sbml.random_protein_concentrations()
-    # sbml.save_converted_file("a.sbml")
-    # sbml.simulate(output_file=sim_output)
-
-    # df = pd.read_csv(sim_output)
-    # for col in df.columns:
-    #     if col != "time" and col.startswith("avg_"):
-    #         plt.plot(df["time"], df[col], label=col)
-    # plt.legend()
-    # plt.savefig(options["png_outputpath"])
+    new_sbml = sbml.replicate_model_per_tissue(tissue_names)
+    new_sbml.random_kinetic_costant_value()
+    new_sbml.random_start_concentration()
+    # new_sbml.simulate(sim_output)
+    new_sbml.save_converted_file(file_path.replace(".","-tissues-modified."))
     
     

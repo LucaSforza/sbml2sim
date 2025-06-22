@@ -108,6 +108,26 @@ public:
     const IdToProtein& get_id_to_protein() const { return id_to_p; }
     const CompoundToId& get_compound_to_id() const { return c_to_id; }
     const IdToCompound& get_id_to_compound() const { return id_to_c; }
+
+    SpeciesInformation clone_per_tissue(const char **tissues, size_t n_tissue) const {
+        SpeciesInformation cloned;
+        for (size_t t = 0; t < n_tissue; ++t) {
+            std::string tissue = tissues[t];
+            // Clone proteins
+            for (const auto& [species_id, uniprot_id] : p_to_id) {
+                std::string new_species_id = species_id + "_" + tissue;
+                cloned.p_to_id[new_species_id] = uniprot_id;
+                cloned.id_to_p[uniprot_id].push_back(new_species_id);
+            }
+            // Clone compounds
+            for (const auto& [species_id, chebi_id] : c_to_id) {
+                std::string new_species_id = species_id + "_" + tissue;
+                cloned.c_to_id[new_species_id] = chebi_id;
+                cloned.id_to_c[chebi_id].push_back(new_species_id);
+            }
+        }
+        return cloned;
+    }
 };
 
 enum SpeciesTipology {
@@ -764,9 +784,7 @@ SpeciesInformation register_all_species(libsbml::Model *model) {
     SpeciesInformation result;
 
     eliminate_drugs(model);
-
     register_atomic_species(model,result);
-
     eliminate_abstractions(model, result);
 
     return result;
