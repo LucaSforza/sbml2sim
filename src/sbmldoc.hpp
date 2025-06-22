@@ -35,6 +35,8 @@ class SBMLDoc {
     libsbml::Model *model;
     u_int total_kinetic_constant;
     SpeciesInformation infos;
+    Inputs inputs;
+    Outputs outputs;
 
     rr::RoadRunner rr;
 
@@ -237,6 +239,17 @@ public:
         model = this->doc->getModel();
         this->total_kinetic_constant = 0;
         this->infos = register_all_species(model);
+        this->inputs = collect_all_inputs(model);
+        make_all_input_costant_species(model, inputs);
+        this->outputs = collect_all_outputs(model);
+        create_a_fake_reaction_for_all_outputs(model, outputs);
+
+        for (const auto &input : this->inputs) {
+            std::cout << "[INPUT] " << input << std::endl;
+        }
+        for (const auto &output : this->outputs) {
+            std::cout << "[OUTPUT] " << output << std::endl;
+        }
     }
     
     ~SBMLDoc() {

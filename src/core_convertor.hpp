@@ -10,6 +10,7 @@
 #include <string>
 #include <chrono>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include <optional>
 
@@ -769,6 +770,85 @@ SpeciesInformation register_all_species(libsbml::Model *model) {
     eliminate_abstractions(model, result);
 
     return result;
+}
+
+using Inputs = std::unordered_set<std::string>;
+
+bool is_input(const libsbml::Species *species, const libsbml::Model *model) {
+    for (u_int i = 0; i < model->getNumReactions(); ++i) {
+        const libsbml::Reaction* reaction = model->getReaction(i);
+        for (u_int j = 0; j < reaction->getNumProducts(); ++j) {
+            if (reaction->getProduct(j)->getSpecies() == species->getId()) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+Inputs collect_all_inputs(const libsbml::Model *model) {
+    Inputs result;
+    for(u_int i = 0; i < model->getNumSpecies(); ++i) {
+        const libsbml::Species *species = model->getSpecies(i);
+        if(is_input(species, model)) {
+            result.insert(species->getId());
+        }
+    }
+    return result;
+}
+
+using Outputs = std::unordered_set<std::string>;
+
+bool is_output(const libsbml::Species *species, const libsbml::Model *model) {
+    for (u_int i = 0; i < model->getNumReactions(); ++i) {
+        const libsbml::Reaction* reaction = model->getReaction(i);
+        for (u_int j = 0; j < reaction->getNumReactants(); ++j) {
+            if (reaction->getReactant(j)->getSpecies() == species->getId()) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+Outputs collect_all_outputs(const libsbml::Model *model) {
+    Outputs result;
+    for(u_int i = 0; i < model->getNumSpecies(); ++i) {
+        const libsbml::Species *species = model->getSpecies(i);
+        if(is_output(species, model)) {
+            result.insert(species->getId());
+        }
+    }
+    return result;
+}
+
+void make_all_input_costant_species(libsbml::Model *model,const Inputs& inputs) {
+    for(const std::string& species_id : inputs) {
+        libsbml::Species *s = model->getSpecies(species_id);
+        assert(s != NULL);
+        s->setBoundaryCondition(true);
+        s->setConstant(true);
+    }
+}
+
+void create_a_fake_reaction_for_all_outputs(libsbml::Model *model, const Outputs& outputs) {
+    for(const std::string &species_id : outputs) {
+        libsbml::Species *s = model->getSpecies(species_id);
+        assert(s != NULL);
+        libsbml::Reaction *r = model->createReaction();
+        r->setId("degredete_output_"+species_id);
+        r->setName("Degredate the output species of the pathway: "+species_id);
+        r->setReversible(false);
+        r->setCompartment(s->getCompartment());
+        libsbml::SpeciesReference* sr = r->createReactant();
+        sr->setSpecies(s->getId());
+        sr->setId("sr_output_" + species_id);
+        sr->setStoichiometry(1.0);
+        sr->setSBOTerm(s->getSBOTerm());
+        libsbml::KineticLaw* kl = r->createKineticLaw();
+        std::string formula = s->getId();
+        kl->setFormula(formula);
+    }
 }
 
 #endif // CORE_CONVERTOR_HPP_

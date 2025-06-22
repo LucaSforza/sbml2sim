@@ -1,3 +1,17 @@
+# 22/06/2025
+
+## TODOs
+
+- Set the initial concentration of proteins using data obtained from the APIs.
+- Retrieve data for small compounds.
+- Clone the model for multiple tissues (easy)
+- Convert iBAQ into mol/L
+- Find volumes for the compartements
+
+## Optional TODOS
+
+- create unit measure
+
 # 21/06/2025
 
 ## TODOs
@@ -9,7 +23,7 @@
 ## TODOs
 
 - Replicate the biological model only for tissues with complete available data. (easy)
-- Set the initial concentration of proteins using data obtained from the APIs. (easy)
+- Set the initial concentration of proteins using data obtained from the APIs.
 - Retrieve data for small compounds.
 - Isolate the inputs and make them constant. (easy)
 - Convert iBAQ into mol/L
