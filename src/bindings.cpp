@@ -25,10 +25,6 @@ extern "C" {
     void SBMLDoc_random_start_concentration(SBMLDoc *_this) {
         _this->random_start_concentration();
     }
-
-    void SBMLDoc_dump_proteins_data(const SBMLDoc *_this) {
-        _this->dump_proteins_data();
-    }
     
     void SBMLDoc_delete(SBMLDoc *_this) {
         delete _this;
@@ -47,6 +43,9 @@ extern "C" {
     }
 
     std::pair<std::string, std::string> *Proteins_iterator_next(ProteinToId::const_iterator *it) {
+        if(it == nullptr) {
+            return nullptr;
+        }
         try {
             auto &pair = *(*it);
             auto *result = new std::pair<std::string, std::string>(pair.first, pair.second);
@@ -55,6 +54,10 @@ extern "C" {
         } catch (...) {
             return nullptr;
         }
+    }
+
+    bool Proteins_iterator_end(const ProteinToId *_this,ProteinToId::const_iterator *it) {
+        return(_this->cend() == *it);
     }
 
     void Pair_delete(std::pair<std::string, std::string> *p) {
@@ -85,20 +88,28 @@ extern "C" {
         return SBMLDoc::replicate_model_per_tissue(_this, tissues, n_tissue);
     }
 
-    void add_kinetic_laws_if_not_exists(SBMLDoc *_this, bool all_convience_rate_law) {
-        _this->add_kinetic_laws_if_not_exists(all_convience_rate_law);
+    void SBMLDoc_add_kinetic_laws_if_not_exists(SBMLDoc *_this) {
+        _this->add_kinetic_laws_if_not_exists();
     }
 
-    void add_time_to_model(SBMLDoc *_this) {
+    void SBMLDoc_add_time_to_model(SBMLDoc *_this) {
         _this->add_time_to_model();
     }
 
-    void add_avg_calculations_for_all_species(SBMLDoc *_this) {
+    void SBMLDoc_add_avg_calculations_for_all_species(SBMLDoc *_this) {
         _this->add_avg_calculations_for_all_species();
     }
 
-    void add_avg_calculation_for_all_proteins(SBMLDoc *_this) {
+    void SBMLDoc_add_avg_calculation_for_all_proteins(SBMLDoc *_this) {
         _this->add_avg_calculation_for_all_proteins();
+    }
+
+    void SBMLDoc_random_kinetic_costant_value(SBMLDoc *_this) {
+        _this->random_kinetic_costant_value();
+    }
+
+    void set_seed(unsigned int seed) {
+        srand(seed);
     }
 
 }

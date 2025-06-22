@@ -10,6 +10,10 @@ from proteomic import proteomic
 import sys
 from typing import Any
 import json
+from collections import Counter
+import os
+import random
+import time
 
 PROGRAM_NAME = sys.argv[0]
 
@@ -66,24 +70,74 @@ def save_proteomics(
 ) -> None:
     with open(file_name, "w") as f:
         json.dump(proteomics, f)
+        
+def choose_tissue_for_replication(all_tissue_names: set[str], proteomics: dict[str,tuple[str, list[proteomic]]]) -> set[str]:
+    tissue_names = set()
     
+    for name in all_tissue_names:
+        invariant = True
+        for (_,(_,ps)) in proteomics.items():
+            found = False
+            for p in ps:
+                if ptc.get_tissue_name(p) == name:
+                    found = True
+                    break
+            if not found:
+                invariant = False
+                break
+        if invariant:
+            tissue_names.add(name)
+    
+    if not tissue_names:
+        # Trova il/i tessuto/i più frequente/i tra tutte le proteine
+
+        all_tissues = []
+        for _, (_, ps) in proteomics.items():
+            all_tissues.extend([ptc.get_tissue_name(p) for p in ps])
+
+        if not all_tissues:
+            print("[ERROR] Nessun tessuto trovato tra le proteine.")
+            exit(1)
+
+        counter = Counter(all_tissues)
+        max_count = max(counter.values())
+        most_common_tissues = {tissue for tissue, count in counter.items() if count == max_count}
+        tissue_names = most_common_tissues
+    return tissue_names
 def main():
     file_path = parse_args()
     sim_output = "result.csv"
 
     sbml: s2s.SBMLDoc = s2s.SBMLDoc(file_path)
-    proteins: dict[str,str] = sbml.get_proteins_data()
-
-    tissue_names = set()
-    proteomics: dict[str,tuple[str, list[proteomic]]] = dict()
-    for species, protein in proteins.items():
-        tissues = ptc.get_tissue(protein)
-        proteomics[species] = (protein,tissues)
-        tissue_names.update(ptc.get_all_tissue_names(tissues))
     
+    proteins: dict[str,str] = sbml.get_proteins_data()
+    
+    
+    
+    all_tissue_names = set()
+    proteomics: dict[str,tuple[str, list[proteomic]]] = dict()
+    if os.path.exists("proteomics.json"):
+        with open("proteomics.json", "r") as f:
+            proteomics = json.load(f)
+            for species, (protein, tissues) in proteomics.items():
+                all_tissue_names.update(ptc.get_all_tissue_names(tissues))
+    else:
+        for species, protein in proteins.items():
+            tissues = ptc.get_tissue(protein)
+            proteomics[species] = (protein,tissues)
+            all_tissue_names.update(ptc.get_all_tissue_names(tissues))
+    
+    tissue_names = choose_tissue_for_replication(all_tissue_names, proteomics)
+    print(tissue_names)
     save_proteomics(proteomics)
-    new_sbml = sbml.replicate_model_per_tissue(tissue_names)
-    new_sbml.save_converted_file(file_path.replace(".","-modified."))
+    random_seed = int(time.time() * 1000)
+    random.seed(random_seed)
+    s2s.set_seed(random_seed)
+    sbml.add_kinetic_laws_if_not_exists()
+    sbml.random_kinetic_costant_value()
+    sbml.save_converted_file(file_path.replace(".","-modified."))
+    sbml.random_start_concentration()
+    sbml.simulate(sim_output)
     
     # proteins = ptc.get_pathway_proteins("R-HSA-1643713")
     # print(proteins)
