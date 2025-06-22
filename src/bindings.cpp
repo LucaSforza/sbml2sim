@@ -34,19 +34,19 @@ extern "C" {
         delete _this;
     }
 
-    const Proteins* SBMLDoc_get_proteins_data(const SBMLDoc *_this) {
+    const ProteinToId* SBMLDoc_get_proteins_data(const SBMLDoc *_this) {
         return &(_this->get_proteins_data());
     }
 
-    Proteins::const_iterator *Proteins_iterator(const Proteins *_this) {
-        return new Proteins::const_iterator(_this->cbegin());
+    ProteinToId::const_iterator *Proteins_iterator(const ProteinToId *_this) {
+        return new ProteinToId::const_iterator(_this->cbegin());
     }
 
-    void Proteins_delete_iterator(Proteins::const_iterator *it) {
+    void Proteins_delete_iterator(ProteinToId::const_iterator *it) {
         delete it;
     }
 
-    std::pair<std::string, std::string> *Proteins_iterator_next(Proteins::const_iterator *it) {
+    std::pair<std::string, std::string> *Proteins_iterator_next(ProteinToId::const_iterator *it) {
         try {
             auto &pair = *(*it);
             auto *result = new std::pair<std::string, std::string>(pair.first, pair.second);

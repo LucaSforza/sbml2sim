@@ -2,6 +2,8 @@
 #define SBMLDOC_HPP_
 
 #include "core_convertor.hpp"
+#include "avg.hpp"
+#include "kinetic_laws.hpp"
 #include "utils.hpp"
 
 
@@ -32,10 +34,7 @@ class SBMLDoc {
     libsbml::SBMLDocument *doc;
     libsbml::Model *model;
     u_int total_kinetic_constant;
-    Proteins species_to_proteins;
-    Proteins proteins_to_species;
-    Compounds species_to_compounds;
-    Compounds compounds_to_species;
+    SpeciesInformation infos;
 
     rr::RoadRunner rr;
 
@@ -211,11 +210,7 @@ public:
         result->model = new_model;
         result->total_kinetic_constant = kinetic_constants;
         // TODO: verifica correttezza
-        RegistrationResult r = register_all_species(model);
-        result->proteins_to_species  = r.protein_to_species;
-        result->species_to_proteins  = r.species_to_protein;
-        result->compounds_to_species = r.compounds_to_species;
-        result->species_to_compounds = r.species_to_compounds;
+        result->infos = register_all_species(new_model);
         
         // eprintf("[INFO] returning\n");
         // fflush(stderr);
@@ -241,11 +236,7 @@ public:
         this->doc = doc;
         model = this->doc->getModel();
         this->total_kinetic_constant = 0;
-        RegistrationResult result = register_all_species(model);
-        proteins_to_species  = result.protein_to_species;
-        species_to_proteins  = result.species_to_protein;
-        compounds_to_species = result.compounds_to_species;
-        species_to_compounds = result.species_to_compounds;
+        this->infos = register_all_species(model);
     }
     
     ~SBMLDoc() {
@@ -265,7 +256,7 @@ public:
     }
 
     void add_avg_calculation_for_all_proteins() {
-        add_avg_calculations_only_for_proteins(this->model, this->species_to_proteins);
+        add_avg_calculations_only_for_proteins(this->model, this->infos);
     }
 
     /**
@@ -356,17 +347,20 @@ public:
      * @note This function does not take any parameters.
     */
     void dump_proteins_data(void) const {
-        for (const auto& pair : species_to_proteins) {
-            const std::string& species_id = pair.first;
-            std::vector<std::string> gene_ids;
-            gene_ids.push_back(pair.second);
-            std::cout << "Species: " << species_id << " Protein Id: ";
-            for (size_t i = 0; i < gene_ids.size(); ++i) {
-                std::cout << gene_ids[i];
-                if (i != gene_ids.size() - 1) std::cout << ", ";
-            }
-            std::cout << std::endl;
-        }
+        eprintf("[ERROR] dump_proteins_data deprecated");
+        exit(1);
+        
+        // for (const auto& pair : species_to_proteins) {
+        //     const std::string& species_id = pair.first;
+        //     std::vector<std::string> gene_ids;
+        //     gene_ids.push_back(pair.second);
+        //     std::cout << "Species: " << species_id << " Protein Id: ";
+        //     for (size_t i = 0; i < gene_ids.size(); ++i) {
+        //         std::cout << gene_ids[i];
+        //         if (i != gene_ids.size() - 1) std::cout << ", ";
+        //     }
+        //     std::cout << std::endl;
+        // }
     }
 
     /**
@@ -374,8 +368,8 @@ public:
      *
      * @return A constant reference to the collection of genes.
     */
-    const Proteins& get_proteins_data(void) const {
-        return species_to_proteins;
+    const ProteinToId &get_proteins_data(void) const {
+        return this->infos.get_protein_to_id();
     }
 
     /**
@@ -387,7 +381,7 @@ public:
      * @return true if the species name is found in the set of proteins (i.e., is a protein), false otherwise.
     */
     bool is_protein(const char *specie_name) const {
-        return species_to_proteins.find(specie_name) != species_to_proteins.end();
+        return this->infos.is_protein(specie_name);
     }
 };
 

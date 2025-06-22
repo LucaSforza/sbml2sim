@@ -8,10 +8,10 @@
 
 ## TODOs
 
-- Replicate the biological model only for tissues with complete available data.
-- Set the initial concentration of proteins using data obtained from the APIs.
+- Replicate the biological model only for tissues with complete available data. (easy)
+- Set the initial concentration of proteins using data obtained from the APIs. (easy)
 - Retrieve data for small compounds.
-- Isolate the inputs and make them constant.
+- Isolate the inputs and make them constant. (easy)
 - Convert iBAQ into mol/L
 - Find volumes for the compartements
 
