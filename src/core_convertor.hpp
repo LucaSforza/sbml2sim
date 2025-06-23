@@ -115,13 +115,13 @@ public:
             std::string tissue = tissues[t];
             // Clone proteins
             for (const auto& [species_id, uniprot_id] : p_to_id) {
-                std::string new_species_id = species_id + "_" + tissue;
+                std::string new_species_id = tissue+"_"+species_id;
                 cloned.p_to_id[new_species_id] = uniprot_id;
                 cloned.id_to_p[uniprot_id].push_back(new_species_id);
             }
             // Clone compounds
             for (const auto& [species_id, chebi_id] : c_to_id) {
-                std::string new_species_id = species_id + "_" + tissue;
+                std::string new_species_id = tissue+"_"+species_id ;
                 cloned.c_to_id[new_species_id] = chebi_id;
                 cloned.id_to_c[chebi_id].push_back(new_species_id);
             }
@@ -758,6 +758,52 @@ void eliminate_abstractions(libsbml::Model *model, SpeciesInformation &result) {
     }
 }
 
+void eliminate_useless_species(libsbml::Model *model) {
+    // Collect species IDs to remove
+    std::vector<std::string> species_to_remove;
+    for (u_int i = 0; i < model->getNumSpecies(); ++i) {
+        libsbml::Species *species = model->getSpecies(i);
+        bool found = false;
+        // Check all reactions for this species
+        for (u_int j = 0; j < model->getNumReactions(); ++j) {
+            libsbml::Reaction *reaction = model->getReaction(j);
+            // Reactants
+            for (u_int k = 0; k < reaction->getNumReactants(); ++k) {
+                if (reaction->getReactant(k)->getSpecies() == species->getId()) {
+                    found = true;
+                    break;
+                }
+            }
+            // Products
+            if (!found) {
+                for (u_int k = 0; k < reaction->getNumProducts(); ++k) {
+                    if (reaction->getProduct(k)->getSpecies() == species->getId()) {
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            // Modifiers
+            if (!found) {
+                for (u_int k = 0; k < reaction->getNumModifiers(); ++k) {
+                    if (reaction->getModifier(k)->getSpecies() == species->getId()) {
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            if (found) break;
+        }
+        if (!found) {
+            species_to_remove.push_back(species->getId());
+        }
+    }
+    // Remove species
+    for (const std::string &id : species_to_remove) {
+        model->removeSpecies(id);
+    }
+}
+
 /**
  * Registra le specie di questo modello SBML, elimina tutte le Drugs da questo modello 
  * Alla prima iterazione in cui si leggono le specie:
@@ -784,8 +830,8 @@ SpeciesInformation register_all_species(libsbml::Model *model) {
     SpeciesInformation result;
 
     eliminate_drugs(model);
+    eliminate_useless_species(model);
     register_atomic_species(model,result);
-    eliminate_abstractions(model, result);
 
     return result;
 }

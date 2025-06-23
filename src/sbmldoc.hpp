@@ -140,13 +140,11 @@ public:
         for (u_int i = 0; i < model->getNumSpecies(); ++i) {
             libsbml::Species *species = model->getSpecies(i);
             // Only set for floating species (not boundary or constant)
-            if (!species->getBoundaryCondition() && !species->getConstant()) {
-                double min_exp = 0;
-                double max_exp = 3.0;
-                double scale = static_cast<double>(rand()) / RAND_MAX;
-                double x = min_exp + scale * (max_exp - min_exp);
-                species->setInitialConcentration(x);
-            }
+            double min_exp = 0;
+            double max_exp = 3.0;
+            double scale = static_cast<double>(rand()) / RAND_MAX;
+            double x = min_exp + scale * (max_exp - min_exp);
+            species->setInitialConcentration(x);
         }
     }
 
@@ -155,8 +153,20 @@ public:
         double max_exp = 3.0;
         for (u_int i = 0; i < model->getNumSpecies(); ++i) {
             libsbml::Species *species = model->getSpecies(i);
-            if(!species->getBoundaryCondition() && !species->getConstant() && this->is_protein(species->getId().c_str())) {
-                // Only set for floating species (not boundary or constant)
+            if(this->is_protein(species->getId().c_str())) {
+                double scale = static_cast<double>(rand()) / RAND_MAX;
+                double x = min_exp + scale * (max_exp - min_exp);
+                species->setInitialConcentration(x);
+            }
+        }
+    }
+
+    void small_compound_start_random_concentration() {
+        double min_exp = 0;
+        double max_exp = 3.0;
+        for (u_int i = 0; i < model->getNumSpecies(); ++i) {
+            libsbml::Species *species = model->getSpecies(i);
+            if(this->infos.is_compound(species->getId())) {
                 double scale = static_cast<double>(rand()) / RAND_MAX;
                 double x = min_exp + scale * (max_exp - min_exp);
                 species->setInitialConcentration(x);
@@ -167,7 +177,7 @@ public:
     void random_kinetic_costant_value() {
         for (u_int i = 0; i < this->total_kinetic_constant; ++i) {
             double min_exp = 0;
-            double max_exp = 0.05;
+            double max_exp = 1;
             double scale = static_cast<double>(rand()) / RAND_MAX;
             double x = min_exp + scale * (max_exp - min_exp);
             this->set_kinetic_constants(i, x);
@@ -207,6 +217,25 @@ public:
     */
     bool is_protein(const char *specie_name) const {
         return this->infos.is_protein(specie_name);
+    }
+
+    u_int get_num_compartements() const {
+        return model->getNumCompartments();
+    }
+
+    void set_volume_compartement(u_int id_compartement, double volume) {
+        libsbml::Compartment *comp = model->getCompartment(id_compartement);
+        if(comp == NULL) throw std::runtime_error("Compartement with id: "+std::to_string(id_compartement)+ "doens't exists");
+        if(!comp->isSetSpatialDimensions()) {
+            comp->setSpatialDimensions(3.0);
+        }
+        comp->setVolume(volume);
+    }
+
+    const char* get_name_compartement(u_int id_compartement) const {
+        libsbml::Compartment *comp = model->getCompartment(id_compartement);
+        if(comp == NULL) throw std::runtime_error("Compartement with id: "+std::to_string(id_compartement)+ "doens't exists");
+        return comp->getName().c_str();
     }
 
     SBMLDoc *replicate_model_per_tissue(const char **tissues, size_t n_tissues) const {

@@ -23,7 +23,7 @@ def main():
 
     df = pd.read_csv(results_path)
     for col in df.columns:
-        if col != "time":
+        if col.startswith("avg_"):
             plt.plot(df["time"], df[col], label=col)
     plt.legend()
     plt.savefig("data.png")

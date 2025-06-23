@@ -112,4 +112,20 @@ extern "C" {
         srand(seed);
     }
 
+    u_int SBMLDoc_get_num_compartements(const SBMLDoc *_this) {
+        return _this->get_num_compartements();
+    }
+
+    void SBMLDoc_set_volume_compartement(SBMLDoc *_this, u_int id_compartement, double volume) {
+        _this->set_volume_compartement(id_compartement, volume);
+    }
+
+    const char *SBMLDoc_get_name_compartement(const SBMLDoc *_this, u_int id_compartement) {
+        return _this->get_name_compartement(id_compartement);
+    }
+
+    void SBMDoc_small_compound_start_random_concentration(SBMLDoc *_this) {
+        _this->small_compound_start_random_concentration();
+    }
+
 }

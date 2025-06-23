@@ -110,12 +110,34 @@ class SBMLDoc:
     lib.SBMLDoc_random_kinetic_costant_value.restype = None
     lib.SBMLDoc_random_kinetic_costant_value.argtypes = [c_void_p]
 
+    lib.SBMDoc_small_compound_start_random_concentration.restype = None
+    lib.SBMDoc_small_compound_start_random_concentration.argtypes = [c_void_p]
+
+    lib.SBMLDoc_get_num_compartements.restype = c_uint
+    lib.SBMLDoc_get_num_compartements.argtypes = [c_void_p]
+
+    lib.SBMLDoc_set_volume_compartement.restype = None
+    lib.SBMLDoc_set_volume_compartement.argtypes = [c_void_p, c_uint, c_double]
+
+    lib.SBMLDoc_get_name_compartement.restype = c_char_p
+    lib.SBMLDoc_get_name_compartement.argtypes = [c_void_p, c_uint]
+
+    def get_num_compartements(self) -> int:
+        return lib.SBMLDoc_get_num_compartements(self.obj)
+    
+    def set_volume_compartement(self, id: int, volume: float):
+        lib.SBMLDoc_set_volume_compartement(self.obj, c_uint(id), c_double(volume))
+    
+    def get_name_compartement(self, id: int) -> str:
+        name_ptr = lib.SBMLDoc_get_name_compartement(self.obj, c_uint(id))
+        return name_ptr.decode('utf-8') if name_ptr else ""
+
     def __init__(self, file_path: str = None):
         if file_path is not None:
             self.obj = lib.SBMLDoc_new(file_path.encode('utf-8'))
             
     def add_time_to_model(self):
-        lib.add_time_to_model(self.obj)
+        lib.SBMLDoc_add_time_to_model(self.obj)
 
     def add_avg_calculations_for_all_species(self):
         lib.SBMLDoc_add_avg_calculations_for_all_species(self.obj)
@@ -128,6 +150,9 @@ class SBMLDoc:
 
     def random_kinetic_costant_value(self):
         lib.SBMLDoc_random_kinetic_costant_value(self.obj)
+
+    def small_compound_start_random_concentration(self):
+        lib.SBMDoc_small_compound_start_random_concentration(self.obj)
 
     def number_of_kinetic_constants(self) -> int:
         return lib.SBMLDoc_number_of_kinetic_costant(self.obj)

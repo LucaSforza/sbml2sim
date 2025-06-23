@@ -1,3 +1,15 @@
+# 23/06/2025
+
+## TODOs
+
+- Set the initial concentration of proteins using data obtained from the APIs.
+- Retrieve data for small compounds.
+- Convert iBAQ into mol/L
+
+## Optional TODOS
+
+- create unit measure
+
 # 22/06/2025
 
 ## TODOs
