@@ -104,6 +104,10 @@ def choose_tissue_for_replication(all_tissue_names: set[str], proteomics: dict[s
         most_common_tissues = {tissue for tissue, count in counter.items() if count == max_count}
         tissue_names = most_common_tissues
     return tissue_names
+
+def convert_ibaq_to_concentrations():
+    pass
+
 def main():
     file_path = parse_args()
     sim_output = "result.csv"
@@ -126,7 +130,6 @@ def main():
             tissues = ptc.get_tissue(protein)
             proteomics[species] = (protein,tissues)
             all_tissue_names.update(ptc.get_all_tissue_names(tissues))
-    
     tissue_names = choose_tissue_for_replication(all_tissue_names, proteomics)
     print(tissue_names)
     save_proteomics(proteomics)
@@ -134,39 +137,38 @@ def main():
     random.seed(random_seed)
     s2s.set_seed(random_seed)
     sbml.add_kinetic_laws_if_not_exists()
-    for i in range(sbml.get_num_compartements()):
-        name: str = sbml.get_name_compartement(i)
-        match name:
-            case "plasma membrane":
-                # Calcola il volume di una sfera di raggio 10 nanometri (nm)
-                # raggio_nm = 10
-                # raggio_m = raggio_nm * 1e-9  # converte in metri
-                # volume_m3 = (4/3) * 3.141592653589793 * (raggio_m ** 3)
-                # sbml.set_volume_compartement(i,volume_m3)
-                sbml.set_volume_compartement(i, 12.6)
-                pass
-            case "extracellular region":
-                # volume_entire_cell = 11 * 1e24  # nanometri cubi
-                # volume_extracellular = volume_entire_cell * 0.3
-                # sbml.set_volume_compartement(i, volume_extracellular)
-                sbml.set_volume_compartement(i, 2720)
-            case "cytosol":
-                volume_entire_cell = 2250
-                volume_cytosol = volume_entire_cell * 0.7
-                sbml.set_volume_compartement(i, volume_cytosol)
-                sbml.set_volume_compartement(i, 1000)
-                pass
-            case _:
-                print(f"[FATAL ERROR] compartement {name} doen't exists")
-                exit(1)
+    # for i in range(sbml.get_num_compartements()):
+    #     name: str = sbml.get_name_compartement(i)
+    #     match name:
+    #         case "plasma membrane":
+    #             # Calcola il volume di una sfera di raggio 10 nanometri (nm)
+    #             # raggio_nm = 10
+    #             # raggio_m = raggio_nm * 1e-9  # converte in metri
+    #             # volume_m3 = (4/3) * 3.141592653589793 * (raggio_m ** 3)
+    #             # sbml.set_volume_compartement(i,volume_m3)
+    #             sbml.set_volume_compartement(i, 12.6)
+    #             pass
+    #         case "extracellular region":
+    #             # volume_entire_cell = 11 * 1e24  # nanometri cubi
+    #             # volume_extracellular = volume_entire_cell * 0.3
+    #             # sbml.set_volume_compartement(i, volume_extracellular)
+    #             sbml.set_volume_compartement(i, 2720)
+    #         case "cytosol":
+    #             volume_entire_cell = 2250
+    #             volume_cytosol = volume_entire_cell * 0.7
+    #             sbml.set_volume_compartement(i, volume_cytosol)
+    #             sbml.set_volume_compartement(i, 1000)
+    #             pass
+    #         case _:
+    #             print(f"[FATAL ERROR] compartement {name} doen't exists")
+    #             exit(1)
     sbml.save_converted_file(file_path.replace(".","-modified."))
     new_sbml = sbml.replicate_model_per_tissue(tissue_names)
     new_sbml.random_kinetic_costant_value()
-    new_sbml.small_compound_start_random_concentration()
-    new_sbml.random_protein_concentrations()
+    new_sbml.random_start_concentration()
     new_sbml.add_time_to_model()
     new_sbml.add_avg_calculation_for_all_proteins()
-    new_sbml.simulate(sim_output, duration=1000.0)
     new_sbml.save_converted_file(file_path.replace(".","-tissues-modified."))
+    new_sbml.simulate(sim_output, duration=75.0)
     
     

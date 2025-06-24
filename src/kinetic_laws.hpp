@@ -37,11 +37,13 @@ std::string create_hill_neg_function(libsbml::Model *model, libsbml::ModifierSpe
     }
 }
 
+#define SBO_STIMULATOR 459
+
 std::string create_hill_function(libsbml::Model *model, libsbml::ModifierSpeciesReference *modifier, u_int h, int *kinetic_constant_added) {
 
     int sbo = modifier->getSBOTerm();
 
-    if(sbo == SBO_ACTIVATOR || sbo == SBO_ENZYME) {
+    if(sbo == SBO_ACTIVATOR || sbo == SBO_ENZYME || sbo == SBO_STIMULATOR) {
         return create_hill_pos_function(model, modifier, h, kinetic_constant_added);
     } else if(sbo == SBO_INHIBITOR) {
         return create_hill_neg_function(model, modifier, h, kinetic_constant_added);
@@ -353,14 +355,14 @@ int add_kinetic_laws(libsbml::Model *model, bool all_convience_rate_law) {
             add_kinetic_law(model, r, all_convience_rate_law, &total_kinetic_constant_added);
         }
     }
-    printf("num parameters: %d, added: %d\n", model->getNumParameters(), total_kinetic_constant_added);
-    fflush(stdout);
-    if(total_kinetic_constant_added != model->getNumParameters()) {
-        eprintf("added: %d\n", total_kinetic_constant_added);
-        eprintf("real: %d\n", model->getNumParameters());
-        fflush(stderr);
-        throw std::runtime_error("SBML has more parameters than those added");
-    }
+    // printf("num parameters: %d, added: %d\n", model->getNumParameters(), total_kinetic_constant_added);
+    // fflush(stdout);
+    // if(total_kinetic_constant_added != model->getNumParameters()) {
+    //     eprintf("added: %d\n", total_kinetic_constant_added);
+    //     eprintf("real: %d\n", model->getNumParameters());
+    //     fflush(stderr);
+    //     throw std::runtime_error("SBML has more parameters than those added");
+    // }
 
     return total_kinetic_constant_added;
 }

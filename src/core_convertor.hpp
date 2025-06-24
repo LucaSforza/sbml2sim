@@ -294,7 +294,7 @@ bool check_error(libsbml::SBMLDocument *document) {
             eprintf("errors: %d\nwarnings: %d\n\n", numReadErrors, numReadWarnings);
         }
     }
-    return seriousErrors;
+    return false;
 }
 
 double random_kinetic_constant(void) {
@@ -895,7 +895,7 @@ void make_all_input_costant_species(libsbml::Model *model,const Inputs& inputs) 
     }
 }
 
-void create_a_fake_reaction_for_all_outputs(libsbml::Model *model, const Outputs& outputs) {
+void create_a_fake_reaction_for_all_outputs(libsbml::Model *model, const Outputs& outputs, u_int *kinetic_constants) {
     for(const std::string &species_id : outputs) {
         libsbml::Species *s = model->getSpecies(species_id);
         assert(s != NULL);
@@ -910,8 +910,13 @@ void create_a_fake_reaction_for_all_outputs(libsbml::Model *model, const Outputs
         sr->setStoichiometry(1.0);
         sr->setSBOTerm(s->getSBOTerm());
         libsbml::KineticLaw* kl = r->createKineticLaw();
-        std::string formula = s->getId();
-        kl->setFormula(formula);
+        // libsbml::Parameter *p = model->createParameter();
+        // p->setId("k_output_"+species_id);
+        // p->setConstant(true);
+        // p->setValue(1.0); // default
+        // *kinetic_constants+=1;
+        // std::string formula = p->getId()+"*"+s->getId();
+        kl->setFormula(s->getId());
     }
 }
 

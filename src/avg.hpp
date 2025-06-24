@@ -14,13 +14,13 @@ void add_time(libsbml::Model *model) {
     time_rule->setFormula("1");
 }
 
-void add_avg_calculations_only_for_proteins(libsbml::Model *model, const SpeciesInformation& infos ) {
+void add_avg_calculations_only_for_proteins(libsbml::Model *model, const SpeciesInformation& infos, Outputs &outputs ) {
     u_int num_species = model->getNumSpecies();
 
     for(u_int i = 0; i < num_species; ++i) {
         libsbml::Species *s = model->getSpecies(i);
         
-        if(!infos.is_protein(s) || s->getBoundaryCondition() || s->getConstant()) continue;
+        if(!infos.is_protein(s) || outputs.find(s->getId()) == outputs.end() || s->getBoundaryCondition() || s->getConstant()) continue;
         
         std::string avg_param_id = "avg_" + s->getId();
         libsbml::Parameter* avgSpecies = model->createParameter();
@@ -40,13 +40,13 @@ void add_avg_calculations_only_for_proteins(libsbml::Model *model, const Species
     }
 }
 
-void add_avg_calculations(libsbml::Model *model) {
+void add_avg_calculations(libsbml::Model *model, Outputs &outputs) {
 
     u_int num_species = model->getNumSpecies();
 
     for(u_int i = 0; i < num_species; ++i) {
         libsbml::Species *s = model->getSpecies(i);
-        if(s->getBoundaryCondition() || s->getConstant()) continue;
+        if(s->getBoundaryCondition() || s->getConstant() || outputs.find(s->getId()) == outputs.end()) continue;
         std::string avg_param_id = "avg_" + s->getId();
         libsbml::Parameter* avgSpecies = model->createParameter();
         avgSpecies->setId(avg_param_id);

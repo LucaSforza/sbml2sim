@@ -75,7 +75,7 @@ public:
         this->inputs = collect_all_inputs(model);
         make_all_input_costant_species(model, inputs);
         this->outputs = collect_all_outputs(model);
-        create_a_fake_reaction_for_all_outputs(model, outputs);
+        create_a_fake_reaction_for_all_outputs(model, outputs, &this->total_kinetic_constant);
 
         for (const auto &input : this->inputs) {
             std::cout << "[INPUT] " << input << std::endl;
@@ -98,11 +98,11 @@ public:
     }
 
     void add_avg_calculations_for_all_species() {
-        add_avg_calculations(this->model);
+        add_avg_calculations(this->model, this->outputs);
     }
 
     void add_avg_calculation_for_all_proteins() {
-        add_avg_calculations_only_for_proteins(this->model, this->infos);
+        add_avg_calculations_only_for_proteins(this->model, this->infos, this->outputs);
     }
 
     /**
@@ -140,6 +140,7 @@ public:
         for (u_int i = 0; i < model->getNumSpecies(); ++i) {
             libsbml::Species *species = model->getSpecies(i);
             // Only set for floating species (not boundary or constant)
+            if(this->outputs.find(species->getId()) != this->outputs.end()) continue;
             double min_exp = 0;
             double max_exp = 3.0;
             double scale = static_cast<double>(rand()) / RAND_MAX;
