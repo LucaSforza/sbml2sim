@@ -43,6 +43,9 @@ def get_tissue_names_from_bto(proteomics: list[proteomic], btos: set[str]) -> se
             result.add(get_tissue_name(proteomic))
     return result
 
+def get_mol_weight(proteomic: proteomic) -> float:
+    return proteomic["mol_weight"]
+
 def print_proteomic(proteomic: proteomic, prefix: str = "") -> None:
     print(prefix, "Tissue name: ", get_tissue_name(proteomic))
     print(prefix, "Tissue id:   ", get_tissue_id(proteomic))
@@ -56,7 +59,16 @@ def get_tissue(uniprod_id: str) -> list[proteomic]:
         print(f"[ERROR] status code of the request: {response.status_code}")
         exit(1)
     print("[INFO] completed the request")
-    return response.json()['d']['results']
+    result = response.json()['d']['results']
+    res = requests.get(f"https://rest.uniprot.org/uniprotkb/{uniprod_id}")
+    if response.status_code != 200:
+        print(f"[ERROR] status code of the request: {response.status_code}")
+        exit(1)
+    data = res.json()
+    weight = data["sequence"]["molWeight"]
+    for p in result:
+        p['mol_weight'] = weight
+    return result
 
 # import reactome2py.content as content
 # import reactome2py.analysis as analysis

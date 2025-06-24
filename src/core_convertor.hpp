@@ -934,8 +934,8 @@ void create_a_fake_reaction_for_all_outputs(libsbml::Model *model, const Outputs
         p->setConstant(true);
         p->setValue(1.0); // default
         *kinetic_constants+=1;
-        std::string formula = p->getId()+"*"+s->getId();
-        kl->setFormula(s->getId());
+        std::string formula = p->getId();
+        kl->setFormula(formula);
     }
 }
 

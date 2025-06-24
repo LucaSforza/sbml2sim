@@ -39,19 +39,29 @@ def test_random_protein_compound_start_concentration(sbml: s2s.SBMLDoc):
     plot_results("rand-prot-com-"+RESULTS, "random_protein_compound_start_concentration.png")
     print("[INFO] random protein and compound simulation completed")
 
-def test_clone_model_per_tissue(sbml: s2s.SBMLDoc, tissues: Iterable[str], path: str):
+def test_clone_model_per_tissue(sbml: s2s.SBMLDoc, tissues: Iterable[str], path: str, concentrations: dict[str, dict[str, float]]):
+    
     new_sbml = sbml.replicate_model_per_tissue(tissues)
     new_sbml.add_time_to_model()
     new_sbml.add_avg_calculations_for_all_species()
     new_sbml.random_start_concentration()
     new_sbml.simulate(output_file="tissue-"+RESULTS, duration=DURATION)
-    new_sbml.save_converted_file(path.replace(".","-tissues-modified."))
     plot_results("tissue-"+RESULTS, "tissues.png")
+    new_sbml.save_converted_file(path.replace(".","-tissues-modified."))
+    for (species, ts) in concentrations.items():
+        for (tissue, value) in ts.items():
+            if tissue in tissues:
+                id = tissue+"_"+species
+                print(f"for species {id} the value is {value}")
+                new_sbml.set_initial_concentration(id, value)
+    new_sbml.save_converted_file(path.replace(".","-real-tissues-modified."))
+    new_sbml.simulate(output_file="real-tissue-"+RESULTS, duration=DURATION)
+    plot_results("real-tissue-"+RESULTS, "real-tissues.png")
     print("[INFO] clone model per tissue simulation completed")
 
-def test_all(sbml: s2s.SBMLDoc, tissues: Iterable[str], path: str):
+def test_all(sbml: s2s.SBMLDoc, tissues: Iterable[str], path: str, concentrations: dict[str, dict[str, float]]):
     print(f"[INFO] cloning SBML for each tissue: {tissues}")
-    test_clone_model_per_tissue(sbml, tissues, path)
+    test_clone_model_per_tissue(sbml, tissues, path, concentrations)
     sbml.add_time_to_model()
     sbml.add_avg_calculations_for_all_species()
     sbml.save_converted_file(path.replace(".","-modified."))
@@ -69,7 +79,22 @@ import math
 def volume(r: float) -> float:
     return (4.0/3.0)*math.pi*(r**3)
 
-# def convert_ibaq_to_concentrations(sbml: s2s.SBMLDoc)
+# @returns map species, concentration mol/L
+def convert_ibaq_to_concentrations(sbml: s2s.SBMLDoc, proteomics: dict[str,tuple[str, list[proteomic]]]) -> dict[str, dict[str,float]]:
+    result = {}
+    for species_id, (_, tissue_list) in proteomics.items():
+        compartment_id = sbml.get_compartement(species_id)
+        volume_liters = sbml.get_volume_compartement(compartment_id)
+        atomic_weight = ptc.get_mol_weight(tissue_list[0])
+        tissue_conc = {}
+        for prot in tissue_list:
+            ibaq = ptc.get_intensity(prot)
+            tissue_name = ptc.get_tissue_name(prot)
+            moles = ibaq / atomic_weight if atomic_weight > 0 else 0.0
+            concentration = moles / volume_liters if volume_liters > 0 else 0.0
+            tissue_conc[tissue_name] = concentration
+        result[species_id] = tissue_conc
+    return result
 
 def set_compartement_size(sbml: s2s.SBMLDoc):
     diameter_plasma_membrane = 10.0
@@ -121,7 +146,8 @@ def main():
     tissue_names = choose_tissue_for_replication(all_tissue_names, proteomics)
     sbml.add_kinetic_laws_if_not_exists()
     sbml.random_kinetic_costant_value()
-    test_all(sbml, tissue_names, sbml_path)
+    concentrations = convert_ibaq_to_concentrations(sbml, proteomics)
+    test_all(sbml, tissue_names, sbml_path, concentrations)
 
 if __name__ == "__main__":
     main() 

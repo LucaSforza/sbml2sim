@@ -8,6 +8,9 @@ docker run -it -e DISPLAY=$DISPLAY --net=host --name sbml2sim sbml2sim /venv-sbm
 ./take_file.sh rand-prot-com-results.csv
 ./take_file.sh rand-start-results.csv
 ./take_file.sh tissue-results.csv
+./take_file.sh real-tissues.png
+./take_file.sh real-tissue-results.csv
+./take_file.sh sbmls/$PATHWAY_ID-real-tissues-modified.sbml
 ./take_file.sh random_protein_compound_start_concentration.png
 ./take_file.sh tissues.png
 ./take_file.sh proteomics.json

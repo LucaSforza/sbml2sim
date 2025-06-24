@@ -122,6 +122,25 @@ class SBMLDoc:
     lib.SBMLDoc_get_name_compartement.restype = c_char_p
     lib.SBMLDoc_get_name_compartement.argtypes = [c_void_p, c_uint]
 
+    lib.SBMLDoc_get_volume_compartement.restype = c_double
+    lib.SBMLDoc_get_volume_compartement.argtypes = [c_void_p, c_char_p]
+
+    lib.SBMLDoc_get_compartement.restype = c_char_p
+    lib.SBMLDoc_get_compartement.argtypes = [c_void_p, c_char_p]
+    
+    lib.SBMLDoc_set_initial_concentration.restype = None
+    lib.SBMLDoc_set_initial_concentration.argtypes = [c_void_p, c_char_p, c_double]
+
+    def set_initial_concentration(self, species_id: str, value: float):
+        lib.SBMLDoc_set_initial_concentration(self.obj, species_id.encode('utf-8'), c_double(value))
+
+    def get_volume_compartement(self, id: str) -> float:
+        return lib.SBMLDoc_get_volume_compartement(self.obj, id.encode('utf-8'))
+
+    def get_compartement(self, species_id: str) -> str:
+        ptr = lib.SBMLDoc_get_compartement(self.obj, species_id.encode('utf-8'))
+        return ptr.decode('utf-8')
+
     def get_num_compartements(self) -> int:
         return lib.SBMLDoc_get_num_compartements(self.obj)
     

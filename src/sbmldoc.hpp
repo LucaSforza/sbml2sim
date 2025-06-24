@@ -224,6 +224,25 @@ public:
         return model->getNumCompartments();
     }
 
+    void set_initial_concentration(const char *species_id, double value) {
+        libsbml::Species *s = model->getSpecies(species_id);
+        if(s == NULL) { 
+            eprintf("[FATAL ERROR] species %s doens't exists\n", species_id);
+            exit(1);
+        }
+        bool was_constant = s->getConstant();
+        if(was_constant) {
+            s->setConstant(false);
+            s->setBoundaryCondition(false);
+        }
+        assert(s->setInitialConcentration(value) == libsbml::LIBSBML_OPERATION_SUCCESS);
+        if(was_constant) {
+            s->setConstant(true);
+            s->setBoundaryCondition(true);
+        }
+
+    }
+
     void set_volume_compartement(u_int id_compartement, double volume) {
         libsbml::Compartment *comp = model->getCompartment(id_compartement);
         if(comp == NULL) throw std::runtime_error("Compartement with id: "+std::to_string(id_compartement)+ "doens't exists");
@@ -377,7 +396,7 @@ public:
                                     parameter->setConstant(constant->getConstant());
                                 }
                             } else {
-                                eprintf("[FATAL ERROR] kinetic constant doen't exists: %s", name);
+                                eprintf("[FATAL ERROR] kinetic constant doen't exists: %s\n", name);
                                 exit(1);
                             }
                         } else {
@@ -422,6 +441,14 @@ public:
         // eprintf("[INFO] returning\n");
         // fflush(stderr);
         return result;
+    }
+
+    double get_volume_compartement(const char *id) const {
+        return this->model->getCompartment(id)->getSize();
+    }
+
+    const char *get_compartement(const char *species_id) const {
+        return this->model->getSpecies(species_id)->getCompartment().c_str();
     }
 };
 

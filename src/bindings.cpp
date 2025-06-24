@@ -128,4 +128,16 @@ extern "C" {
         _this->small_compound_start_random_concentration();
     }
 
+    double SBMLDoc_get_volume_compartement(const SBMLDoc *_this, const char *id) {
+        return _this->get_volume_compartement(id);
+    }
+
+    const char *SBMLDoc_get_compartement(const SBMLDoc *_this, const char *species_id) {
+        return _this->get_compartement(species_id);
+    }
+
+    void SBMLDoc_set_initial_concentration(SBMLDoc *_this, const char *species_id, double value) {
+        _this->set_initial_concentration(species_id, value);
+    }
+
 }
