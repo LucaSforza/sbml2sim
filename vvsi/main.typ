@@ -13,17 +13,17 @@
 #set math.equation(numbering: "(1)")
 
 #align(center, text(17pt)[
-  *Simulazione delle vie di segnalazione dell'EGFR nei tumori*
+  *Simulazione delle vie di segnalazione PI3K/AKT nei tumori*
 ])
 
-#image("R-HSA-1643713.svg")
+#image("R-HSA-2219528.svg")
 
 #align(center)[
   #set par(justify: false)
   *Abstract* \
   Questo report è riferito al corso di *Verifica e Validazione dei Sistemi Intelligenti*.
   
-  L'obbiettivo di questo progetto è quello di rendere simulabile (anche in piu' tessuti) il pathway di segnalazione dell'EGFR nei tumori (R-HSA-1643713).
+  L'obbiettivo di questo progetto è quello di rendere simulabile (anche in piu' tessuti) il pathway di segnalazione PI3K/AKT nei tumori (R-HSA-2219528).
 
   È stato preso il modello *qualitativo* di reactome ed è stato convertito in un modello *quantitativo* che ha come parametri le costanti cinetiche delle reazioni e la concentrazione iniziali delle specie del modello.
 
@@ -72,7 +72,7 @@ Reactome offre modelli biologici qualitativi e non quantitativi. Questo vuol dir
 
 Un modello qualitativo ha come obbiettivo non quello di essere simulabile, ma quello di descrivere il modello biologioco.
 
-Partendo dal modello qualitativo del pathway di segnalazione dell'EGFR questo progetto ha come obbiettivo quello di renderlo un modello *quantitativo* parametrico rispetto alle costanti cinetiche delle reazioni e le concentrazioni iniziali.
+Partendo dal modello qualitativo del pathway di segnalazione PI3K/AKT questo progetto ha come obbiettivo quello di renderlo un modello *quantitativo* parametrico rispetto alle costanti cinetiche delle reazioni e le concentrazioni iniziali.
 
 Nel progetto di *Intelligenza Artificiale* verranno trovate le costanti cinetiche e verranno impostati le concentrazioni iniziali delle varie entità chimiche del modello rispetto ai dati sperimentali reperiti online.
 
