@@ -3,3 +3,5 @@ build/
 proteomics*
 *-modified.sbml
 *.pdf
+*.csv
+*.png
