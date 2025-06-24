@@ -141,36 +141,36 @@ public:
             libsbml::Species *species = model->getSpecies(i);
             // Only set for floating species (not boundary or constant)
             if(this->outputs.find(species->getId()) != this->outputs.end()) continue;
-            double min_exp = 0;
-            double max_exp = 3.0;
+            double min_exp = -10;
+            double max_exp = -6;
             double scale = static_cast<double>(rand()) / RAND_MAX;
             double x = min_exp + scale * (max_exp - min_exp);
-            species->setInitialConcentration(x);
+            species->setInitialConcentration(pow(10, x));
         }
     }
 
     void proteins_start_random_concentration() {
-        double min_exp = 0;
-        double max_exp = 3.0;
+        double min_exp = -10;
+        double max_exp = -6;
         for (u_int i = 0; i < model->getNumSpecies(); ++i) {
             libsbml::Species *species = model->getSpecies(i);
             if(this->is_protein(species->getId().c_str())) {
                 double scale = static_cast<double>(rand()) / RAND_MAX;
                 double x = min_exp + scale * (max_exp - min_exp);
-                species->setInitialConcentration(x);
+                species->setInitialConcentration(pow(10,x));
             }
         }
     }
 
     void small_compound_start_random_concentration() {
-        double min_exp = 0;
-        double max_exp = 3.0;
+        double min_exp = -10;
+        double max_exp = -6;
         for (u_int i = 0; i < model->getNumSpecies(); ++i) {
             libsbml::Species *species = model->getSpecies(i);
             if(this->infos.is_compound(species->getId())) {
                 double scale = static_cast<double>(rand()) / RAND_MAX;
                 double x = min_exp + scale * (max_exp - min_exp);
-                species->setInitialConcentration(x);
+                species->setInitialConcentration(pow(10,x));
             }
         }
     }

@@ -61,6 +61,38 @@ def test_all(sbml: s2s.SBMLDoc, tissues: Iterable[str], path: str):
     test_random_start_concentration(sbml)
     print("[INFO] end tests")
 
+def nanometers_to_liters(x: float) -> float:
+    return x*(10**(-24))
+
+import math
+
+def volume(r: float) -> float:
+    return (4.0/3.0)*math.pi*(r**3)
+
+def set_compartement_size(sbml: s2s.SBMLDoc):
+    diameter_plasma_membrane = 10.0
+    diameter_cell = 10000.0 #nano meters
+    volume_cell = volume(diameter_cell)
+    volume_plasma_membrane = volume(diameter_plasma_membrane)
+    # nucleo occupa 20% del volume interno
+    volume_nucleoplasm = .2*(volume_cell - volume_plasma_membrane)
+    volume_cytosol = (volume_cell - volume_plasma_membrane) - volume_nucleoplasm
+    
+    for i in range(sbml.get_num_compartements()):
+        name: str = sbml.get_name_compartement(i)
+        match name:
+            case "plasma membrane":
+                sbml.set_volume_compartement(i, volume_plasma_membrane)
+                pass
+            case "cytosol":
+                sbml.set_volume_compartement(i, volume_cytosol)
+                pass
+            case "nucleoplasm":
+                sbml.set_volume_compartement(i, volume_nucleoplasm)
+            case _:
+                print(f"[FATAL ERROR] compartement {name} doen't exists")
+                exit(1)
+
 def main():
     random_seed = int(time.time() * 1000)
     random.seed(random_seed)
@@ -68,20 +100,7 @@ def main():
     
     sbml_path = sys.argv[1]
     sbml = s2s.SBMLDoc(sbml_path)
-    # for i in range(sbml.get_num_compartements()):
-    #     name: str = sbml.get_name_compartement(i)
-    #     match name:
-    #         case "plasma membrane":
-    #             sbml.set_volume_compartement(i, 12.6)
-    #             pass
-    #         case "extracellular region":
-    #             sbml.set_volume_compartement(i, 2720)
-    #         case "cytosol":
-    #             sbml.set_volume_compartement(i, 1000)
-    #             pass
-    #         case _:
-    #             print(f"[FATAL ERROR] compartement {name} doen't exists")
-    #             exit(1)
+    set_compartement_size(sbml)
     
     proteins: dict[str,str] = sbml.get_proteins_data()
     all_tissue_names = set()
