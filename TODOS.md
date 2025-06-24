@@ -1,3 +1,19 @@
+# 24/06/2025
+
+## TODOs
+
+- Set the initial concentration of proteins using data obtained from the APIs.
+- Retrieve data for small compounds.
+- Convert iBAQ into mol/L
+
+## Things Discovered
+
+- If a protein has hasVersion it means that is a modified species
+
+## Optional TODOS
+
+- create unit measure
+
 # 23/06/2025
 
 ## TODOs
