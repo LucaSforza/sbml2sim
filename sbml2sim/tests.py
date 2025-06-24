@@ -42,7 +42,7 @@ def test_random_protein_compound_start_concentration(sbml: s2s.SBMLDoc):
 def test_clone_model_per_tissue(sbml: s2s.SBMLDoc, tissues: Iterable[str], path: str):
     new_sbml = sbml.replicate_model_per_tissue(tissues)
     new_sbml.add_time_to_model()
-    new_sbml.add_avg_calculation_for_all_proteins()
+    new_sbml.add_avg_calculations_for_all_species()
     new_sbml.random_start_concentration()
     new_sbml.simulate(output_file="tissue-"+RESULTS, duration=DURATION)
     new_sbml.save_converted_file(path.replace(".","-tissues-modified."))
@@ -53,7 +53,7 @@ def test_all(sbml: s2s.SBMLDoc, tissues: Iterable[str], path: str):
     print(f"[INFO] cloning SBML for each tissue: {tissues}")
     test_clone_model_per_tissue(sbml, tissues, path)
     sbml.add_time_to_model()
-    sbml.add_avg_calculation_for_all_proteins()
+    sbml.add_avg_calculations_for_all_species()
     sbml.save_converted_file(path.replace(".","-modified."))
     print("[INFO] simulate SBML, every protein and compound as a random start concentration")
     test_random_protein_compound_start_concentration(sbml)
@@ -69,6 +69,8 @@ import math
 def volume(r: float) -> float:
     return (4.0/3.0)*math.pi*(r**3)
 
+# def convert_ibaq_to_concentrations(sbml: s2s.SBMLDoc)
+
 def set_compartement_size(sbml: s2s.SBMLDoc):
     diameter_plasma_membrane = 10.0
     diameter_cell = 10000.0 #nano meters
@@ -82,13 +84,13 @@ def set_compartement_size(sbml: s2s.SBMLDoc):
         name: str = sbml.get_name_compartement(i)
         match name:
             case "plasma membrane":
-                sbml.set_volume_compartement(i, volume_plasma_membrane)
+                sbml.set_volume_compartement(i, nanometers_to_liters(volume_plasma_membrane))
                 pass
             case "cytosol":
-                sbml.set_volume_compartement(i, volume_cytosol)
+                sbml.set_volume_compartement(i, nanometers_to_liters(volume_cytosol))
                 pass
             case "nucleoplasm":
-                sbml.set_volume_compartement(i, volume_nucleoplasm)
+                sbml.set_volume_compartement(i, nanometers_to_liters(volume_nucleoplasm))
             case _:
                 print(f"[FATAL ERROR] compartement {name} doen't exists")
                 exit(1)
