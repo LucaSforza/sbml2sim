@@ -1,10 +1,8 @@
 # 24/06/2025
 
 ## TODOs
-
-- Set the initial concentration of proteins using data obtained from the APIs.
+- Begin black-box optimization process
 - Retrieve data for small compounds.
-- Convert iBAQ into mol/L
 - Implement prof idea
     - for each input x set the value of x: x(t) = A + B sin(omega t + phi)
     - omega = 2 pi f where f in {10^-6,10^-5,...,10^-1}

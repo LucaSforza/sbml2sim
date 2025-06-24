@@ -910,7 +910,6 @@ void make_all_input_costant_species(libsbml::Model *model,const Inputs& inputs) 
         libsbml::Species *s = model->getSpecies(species_id);
         assert(s != NULL);
         s->setBoundaryCondition(true);
-        s->setConstant(true);
     }
 }
 

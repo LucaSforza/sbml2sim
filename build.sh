@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build --pull --rm -t sbml2sim .
+docker build --platform linux/amd64 --pull --rm -t sbml2sim .

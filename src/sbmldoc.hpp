@@ -230,17 +230,8 @@ public:
             eprintf("[FATAL ERROR] species %s doens't exists\n", species_id);
             exit(1);
         }
-        bool was_constant = s->getConstant();
-        if(was_constant) {
-            s->setConstant(false);
-            s->setBoundaryCondition(false);
-        }
-        assert(s->setInitialConcentration(value) == libsbml::LIBSBML_OPERATION_SUCCESS);
-        if(was_constant) {
-            s->setConstant(true);
-            s->setBoundaryCondition(true);
-        }
 
+        assert(s->setInitialConcentration(value) == libsbml::LIBSBML_OPERATION_SUCCESS);
     }
 
     void set_volume_compartement(u_int id_compartement, double volume) {

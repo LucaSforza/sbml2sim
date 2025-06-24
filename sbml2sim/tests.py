@@ -42,18 +42,15 @@ def test_random_protein_compound_start_concentration(sbml: s2s.SBMLDoc):
 def test_clone_model_per_tissue(sbml: s2s.SBMLDoc, tissues: Iterable[str], path: str, concentrations: dict[str, dict[str, float]]):
     
     new_sbml = sbml.replicate_model_per_tissue(tissues)
-    new_sbml.add_time_to_model()
-    new_sbml.add_avg_calculations_for_all_species()
-    new_sbml.random_start_concentration()
-    new_sbml.simulate(output_file="tissue-"+RESULTS, duration=DURATION)
-    plot_results("tissue-"+RESULTS, "tissues.png")
-    new_sbml.save_converted_file(path.replace(".","-tissues-modified."))
     for (species, ts) in concentrations.items():
         for (tissue, value) in ts.items():
             if tissue in tissues:
                 id = tissue+"_"+species
                 print(f"for species {id} the value is {value}")
                 new_sbml.set_initial_concentration(id, value)
+    new_sbml.small_compound_start_random_concentration()
+    new_sbml.add_time_to_model()
+    new_sbml.add_avg_calculations_for_all_species()
     new_sbml.save_converted_file(path.replace(".","-real-tissues-modified."))
     new_sbml.simulate(output_file="real-tissue-"+RESULTS, duration=DURATION)
     plot_results("real-tissue-"+RESULTS, "real-tissues.png")
