@@ -20,7 +20,7 @@ void add_avg_calculations_only_for_proteins(libsbml::Model *model, const Species
     for(u_int i = 0; i < num_species; ++i) {
         libsbml::Species *s = model->getSpecies(i);
         
-        if(!infos.is_protein(s) || outputs.find(s->getId()) == outputs.end() || s->getBoundaryCondition() || s->getConstant()) continue;
+        if(!infos.is_protein(s) || outputs.find(s->getId()) != outputs.end() || s->getBoundaryCondition() || s->getConstant()) continue;
         
         std::string avg_param_id = "avg_" + s->getId();
         libsbml::Parameter* avgSpecies = model->createParameter();
@@ -46,7 +46,7 @@ void add_avg_calculations(libsbml::Model *model, Outputs &outputs) {
 
     for(u_int i = 0; i < num_species; ++i) {
         libsbml::Species *s = model->getSpecies(i);
-        if(s->getBoundaryCondition() || s->getConstant() || outputs.find(s->getId()) == outputs.end()) continue;
+        if(s->getBoundaryCondition() || s->getConstant() || outputs.find(s->getId()) != outputs.end()) continue;
         std::string avg_param_id = "avg_" + s->getId();
         libsbml::Parameter* avgSpecies = model->createParameter();
         avgSpecies->setId(avg_param_id);

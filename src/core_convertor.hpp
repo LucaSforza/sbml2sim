@@ -394,9 +394,28 @@ void eliminate_drugs(libsbml::Model *model) {
     }
 }
 
+bool has_version(const libsbml::Species *s) {
+    if(!s->isSetAnnotation()) return false;
+    DFSExplorer explorer(s->getAnnotation());
+    const libsbml::XMLNode *node = NULL;
+    while((node = explorer.next()) != NULL) {
+        if(node->getName() == "hasVersion") {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool is_mutant(const libsbml::Species *s) {
+    if(!s->isSetNotes()) return false;
+    const std::string& notes = s->getNotesString();
+    return notes.find("mutant") != std::string::npos;
+}
+
 void register_atomic_species(libsbml::Model *model, SpeciesInformation& info) {
     for (u_int i = 0; i < model->getNumSpecies(); ++i) {
         libsbml::Species *s = model->getSpecies(i);
+        if(has_version(s) || is_mutant(s)) continue; // specie fosforata o mutata, non ci interessa
         if(is_protein(s)) {
             std::string id = extract_protein_id(s);
             info.register_protein(s, id);
@@ -910,12 +929,12 @@ void create_a_fake_reaction_for_all_outputs(libsbml::Model *model, const Outputs
         sr->setStoichiometry(1.0);
         sr->setSBOTerm(s->getSBOTerm());
         libsbml::KineticLaw* kl = r->createKineticLaw();
-        // libsbml::Parameter *p = model->createParameter();
-        // p->setId("k_output_"+species_id);
-        // p->setConstant(true);
-        // p->setValue(1.0); // default
-        // *kinetic_constants+=1;
-        // std::string formula = p->getId()+"*"+s->getId();
+        libsbml::Parameter *p = model->createParameter();
+        p->setId("k_output_"+species_id);
+        p->setConstant(true);
+        p->setValue(1.0); // default
+        *kinetic_constants+=1;
+        std::string formula = p->getId()+"*"+s->getId();
         kl->setFormula(s->getId());
     }
 }
