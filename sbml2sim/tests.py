@@ -75,6 +75,7 @@ def convert_ibaq_to_concentrations(sbml: s2s.SBMLDoc, proteomics: dict[str,tuple
     proteins_in_a_cell = 2.0*(10**(-10))
     result = {}
     
+    # calcola l'intensità totale del tessuto 
     total_intensity = 0.0
     for species_id, (_, tissue_list) in proteomics.items():
         for prot in tissue_list:
@@ -92,19 +93,21 @@ def convert_ibaq_to_concentrations(sbml: s2s.SBMLDoc, proteomics: dict[str,tuple
         for prot in tissue_list:
             if ptc.get_tissue_name(prot) == tissue:
                 intensity = ptc.get_intensity(prot)
+                # calcola la percentuale di presenza nel tessuto
                 f = intensity/total_intensity
-                m = f*proteins_in_a_cell
-                n = m/atomic_weight
-                tissue_conc = n/volume_liters
+                m = f*proteins_in_a_cell # calcola la mole della specie
+                n = m/atomic_weight # dividilo per peso atomico,cosi ad avere la mole delle singole proteine
+                tissue_conc = n/volume_liters # calcola la mole per litro
                 result[species_id] = tissue_conc
                 break
     return result
+
 def nanometers_to_liters(x: float) -> float:
     return x*(10**(-24))
 
-
 def volume(r: float) -> float:
     return (4.0/3.0)*math.pi*(r**3)
+
 def set_compartement_size(sbml: s2s.SBMLDoc):
     diameter_plasma_membrane = 10.0
     diameter_cell = 10000.0 #nano meters
