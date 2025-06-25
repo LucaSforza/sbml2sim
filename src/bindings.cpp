@@ -140,4 +140,11 @@ extern "C" {
         _this->set_initial_concentration(species_id, value);
     }
 
+    void SBMLDoc_input_start_random_concentration(SBMLDoc *_this) {
+        _this->input_start_random_concentration();
+    }
+
+    void SBMLDoc_set_zero_output_costant(SBMLDoc *_this) {
+        _this->set_zero_output_costant();
+    }
 }

@@ -75,7 +75,7 @@ public:
         this->inputs = collect_all_inputs(model);
         make_all_input_costant_species(model, inputs);
         this->outputs = collect_all_outputs(model);
-        create_a_fake_reaction_for_all_outputs(model, outputs, &this->total_kinetic_constant);
+        create_a_fake_reaction_for_all_outputs(model, outputs);
 
         for (const auto &input : this->inputs) {
             std::cout << "[INPUT] " << input << std::endl;
@@ -121,7 +121,37 @@ public:
      * This method updates the value of the kinetic constant parameter identified by the given index in the SBML model.
     */
     void set_kinetic_constants(int id, double value) {
-        this->model->getParameter(id)->setValue(value);
+        libsbml::Parameter* p = model->getParameter(id);
+        if (strncmp( p->getId().c_str(), "output_", 7) != 0) {
+            p->setValue(value);
+        } else {
+            printf("[FATAL ERROR] This is a constant output %s\n", p->getId().c_str());
+            exit(1);
+        }
+    }
+
+    // This is a parameter, so the id is refered to the id of the parameter
+    void set_constant_output(int id, double value) {
+        libsbml::Parameter* p = model->getParameter(id);
+        if (strncmp( p->getId().c_str(), "output_", 7) == 0) {
+            p->setValue(value);
+        } else {
+            printf("[FATAL ERROR] This is a kinetic constant %s\n", p->getId().c_str());
+            exit(1);
+        }
+    }
+    
+
+    void input_start_random_concentration() {
+        for(const std::string &species_id : this->inputs) {
+            libsbml::Species* s = model->getSpecies(species_id);
+            assert(s->getSBMLDocument() == this->doc);
+            double min_exp = -10;
+            double max_exp = -6;
+            double scale = static_cast<double>(rand()) / RAND_MAX; // TODO: non è statisticamente affidabile UNIX random engine
+            double x = min_exp + scale * (max_exp - min_exp);
+            s->setInitialConcentration(pow(10, x));
+        }
     }
     
     /**
@@ -175,14 +205,33 @@ public:
         }
     }
 
+    void set_zero_output_costant() {
+        for (u_int i = 0; i < this->model->getNumParameters(); ++i) {
+            libsbml::Parameter *p = this->model->getParameter(i);
+            // prendi tutti i parametri output e che non siano non costanti
+            if (!p->getConstant() || strncmp(p->getId().c_str(), "output_", 7) != 0)
+                continue;
+
+            this->set_constant_output(i, 0);
+        }
+    }
+
     void random_kinetic_costant_value() {
-        for (u_int i = 0; i < this->total_kinetic_constant; ++i) {
-            double min_exp = 0;
-            double max_exp = 1;
+        printf("[INFO] total kinetic constant: %d\n", this->total_kinetic_constant);
+        int count = 0;
+        for (u_int i = 0; i < this->model->getNumParameters(); ++i) {
+            libsbml::Parameter *p = this->model->getParameter(i);
+            // prendi tutti i parametri non output e che non siano non costanti
+            if (!p->getConstant() || strncmp(p->getId().c_str(), "output_", 7) == 0)
+                continue;
+            count++;
+            double min_exp = -6;
+            double max_exp = 6;
             double scale = static_cast<double>(rand()) / RAND_MAX;
             double x = min_exp + scale * (max_exp - min_exp);
-            this->set_kinetic_constants(i, x);
+            this->set_kinetic_constants(i, pow(10, x));
         }
+        assert(count == this->total_kinetic_constant);
     }
     
     /**
@@ -374,7 +423,7 @@ public:
                     assert(!next->isUnknown());
                     if(next->getType() == libsbml::AST_NAME) {
                         const char *name = next->getName();
-                        if(name[0] == 'k') {
+                        if(name[0] == 'k' || strncmp(name, "output_", 7) == 0) {
                             // printf("[INFO] costante cinetica: %s\n", name);
                             // costante cinetica
                             // crea la costante come parametro del new_model se non esiste

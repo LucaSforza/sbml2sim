@@ -913,7 +913,7 @@ void make_all_input_costant_species(libsbml::Model *model,const Inputs& inputs) 
     }
 }
 
-void create_a_fake_reaction_for_all_outputs(libsbml::Model *model, const Outputs& outputs, u_int *kinetic_constants) {
+void create_a_fake_reaction_for_all_outputs(libsbml::Model *model, const Outputs& outputs) {
     for(const std::string &species_id : outputs) {
         libsbml::Species *s = model->getSpecies(species_id);
         assert(s != NULL);
@@ -929,10 +929,9 @@ void create_a_fake_reaction_for_all_outputs(libsbml::Model *model, const Outputs
         sr->setSBOTerm(s->getSBOTerm());
         libsbml::KineticLaw* kl = r->createKineticLaw();
         libsbml::Parameter *p = model->createParameter();
-        p->setId("k_output_"+species_id);
+        p->setId("output_"+species_id);
         p->setConstant(true);
         p->setValue(1.0); // default
-        *kinetic_constants+=1;
         std::string formula = p->getId();
         kl->setFormula(formula);
     }

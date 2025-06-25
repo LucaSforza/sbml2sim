@@ -2,7 +2,7 @@ import json
 import os
 import random
 import time
-from typing import Iterable
+from typing import Any, Iterable
 import sys
 import math
 
@@ -20,7 +20,7 @@ RESULTS = "results.csv"
 def plot_results(csv_path: str, output_file_path: str):
     df = pd.read_csv(csv_path)
     for col in df.columns:
-        if col.startswith("avg_"):
+        if col != "time" and col != "get_time":
             plt.plot(df["time"], df[col], label=col)
     plt.legend()
     plt.savefig(output_file_path)
@@ -45,8 +45,10 @@ def test_clone_model_per_tissue(sbml: s2s.SBMLDoc, tissue: str, path: str, conce
     new_sbml = sbml.replicate_model_per_tissue([tissue])
     for (species, value) in concentrations.items():
         id = tissue+"_"+species
-        print(f"for species {id} the value is {value}")
+        print(f"for species {id} the mol/L is {value}")
         new_sbml.set_initial_concentration(id, value)
+    # TODO: add start concentration for input casual
+    new_sbml.input_start_random_concentration()
     new_sbml.small_compound_start_random_concentration()
     new_sbml.add_time_to_model()
     new_sbml.add_avg_calculations_for_all_species()
@@ -57,15 +59,16 @@ def test_clone_model_per_tissue(sbml: s2s.SBMLDoc, tissue: str, path: str, conce
 
 def test_all(sbml: s2s.SBMLDoc, tissue: str, path: str, concentrations: dict[str, dict[str, float]]):
     print(f"[INFO] cloning SBML for tissue: {tissue}")
-    test_clone_model_per_tissue(sbml, tissue, path, concentrations)
-    sbml.add_time_to_model()
-    sbml.add_avg_calculations_for_all_species()
     sbml.save_converted_file(path.replace(".","-modified."))
-    print("[INFO] simulate SBML, every protein and compound as a random start concentration")
-    test_random_protein_compound_start_concentration(sbml)
-    print("[INFO] simulate SBML, every species as a random start concentration")
-    test_random_start_concentration(sbml)
-    print("[INFO] end tests")
+    test_clone_model_per_tissue(sbml, tissue, path, concentrations)
+    # sbml.add_time_to_model()
+    # sbml.add_avg_calculations_for_all_species()
+    sbml.save_converted_file(path.replace(".","-modified."))
+    # print("[INFO] simulate SBML, every species as a random start concentration")
+    # test_random_start_concentration(sbml)
+    # print("[INFO] simulate SBML, every protein and compound as a random start concentration")
+    # test_random_protein_compound_start_concentration(sbml)
+    # print("[INFO] end tests")
 
 
 
@@ -102,6 +105,7 @@ def convert_ibaq_to_concentrations(sbml: s2s.SBMLDoc, proteomics: dict[str,tuple
                 break
     return result
 
+# TODO: questa cosa è stupida, semplicemente inserisci le unità di misura nel file SBML
 def nanometers_to_liters(x: float) -> float:
     return x*(10**(-24))
 
@@ -110,8 +114,9 @@ def volume(r: float) -> float:
 
 def set_compartement_size(sbml: s2s.SBMLDoc):
     diameter_plasma_membrane = 10.0
-    diameter_cell = 10000.0 #nano meters
-    volume_cell = volume(diameter_cell)
+    # ref: https://bionumbers.hms.harvard.edu/bionumber.aspx?id=115154&ver=1&trm=cell+size+breast+cancer+cell+human+&org=
+    diameter_cell = 1.76 * 10**12  # nanometers
+    volume_cell = 1.76 * 10**12  # nanometers
     volume_plasma_membrane = volume(diameter_plasma_membrane)
     # nucleo occupa 20% del volume interno
     volume_nucleoplasm = .2*(volume_cell - volume_plasma_membrane)
@@ -128,22 +133,15 @@ def set_compartement_size(sbml: s2s.SBMLDoc):
                 pass
             case "nucleoplasm":
                 sbml.set_volume_compartement(i, nanometers_to_liters(volume_nucleoplasm))
+            case "extracellular region":
+                sbml.set_volume_compartement(i, 7.0* 10**12)
             case _:
                 print(f"[FATAL ERROR] compartement {name} doen't exists")
                 exit(1)
 
-def main():
-    random_seed = int(time.time() * 1000)
-    random.seed(random_seed)
-    s2s.set_seed(random_seed)
-    
-    sbml_path = sys.argv[1]
-    sbml = s2s.SBMLDoc(sbml_path)
-    set_compartement_size(sbml)
-    
-    proteins: dict[str,str] = sbml.get_proteins_data()
-    all_tissue_names = set()
+def get_proteomics(proteins: dict[str,str]) -> tuple[Any, Any]:
     proteomics: dict[str,tuple[str, list[proteomic]]] = dict()
+    all_tissue_names = set()
     if os.path.exists("proteomics.json"):
         with open("proteomics.json", "r") as f:
             proteomics = json.load(f)
@@ -154,13 +152,37 @@ def main():
             tissues = ptc.get_tissue(protein)
             proteomics[species] = (protein,tissues)
             all_tissue_names.update(ptc.get_all_tissue_names(tissues))
-        save_proteomics(proteomics) 
+        save_proteomics(proteomics)
+    return (proteomics, all_tissue_names)
+
+def parse_args() -> tuple[str,str]:
+    import sys
+    if len(sys.argv) != 3:
+        print(sys.argv[0], "<reactome SBML> <tissue>")
+    sbml_path = sys.argv[1]
+    tissue = sys.argv[2]
+    return (sbml_path, tissue)
+
+def main():
+    random_seed = int(time.time() * 1000)
+    random.seed(random_seed)
+    s2s.set_seed(random_seed)
+    (sbml_path, tissue) = parse_args()
+    sbml = s2s.SBMLDoc(sbml_path)
+    set_compartement_size(sbml)
+    
+    proteins: dict[str,str] = sbml.get_proteins_data()
+
+    (proteomics, all_tissue_names) = get_proteomics(proteins)
+    if len(proteomics) == 0:
+        print("[FATAL ERROR] proteomics are void")
+        exit(1)
     tissue_names = choose_tissue_for_replication(all_tissue_names, proteomics)
-    tissue = "breast_cancer_cell"
     if not tissue in tissue_names:
         print("[FATAL ERROR] breast cancer cell not avaible")
     sbml.add_kinetic_laws_if_not_exists()
     sbml.random_kinetic_costant_value()
+    sbml.set_zero_output_costant()
     concentrations = convert_ibaq_to_concentrations(sbml, proteomics, tissue)
     test_all(sbml, tissue, sbml_path, concentrations)
 

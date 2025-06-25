@@ -131,6 +131,18 @@ class SBMLDoc:
     lib.SBMLDoc_set_initial_concentration.restype = None
     lib.SBMLDoc_set_initial_concentration.argtypes = [c_void_p, c_char_p, c_double]
 
+    lib.SBMLDoc_input_start_random_concentration.restype = None
+    lib.SBMLDoc_input_start_random_concentration.argtypes = [c_void_p]
+
+    lib.SBMLDoc_set_zero_output_costant.restype = None
+    lib.SBMLDoc_set_zero_output_costant.argtypes = [c_void_p]
+
+    def set_zero_output_costant(self):
+        lib.SBMLDoc_set_zero_output_costant(self.obj)
+        
+    def input_start_random_concentration(self):
+        lib.SBMLDoc_input_start_random_concentration(self.obj)
+
     def set_initial_concentration(self, species_id: str, value: float):
         lib.SBMLDoc_set_initial_concentration(self.obj, species_id.encode('utf-8'), c_double(value))
 
