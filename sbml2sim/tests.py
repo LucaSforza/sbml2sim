@@ -43,13 +43,12 @@ def test_random_protein_compound_start_concentration(sbml: s2s.SBMLDoc):
 def test_clone_model_per_tissue(sbml: s2s.SBMLDoc, tissue: str, path: str, concentrations: dict[str, float]):
     
     new_sbml = sbml.replicate_model_per_tissue([tissue])
+    new_sbml.random_start_concentration()
     for (species, value) in concentrations.items():
         id = tissue+"_"+species
         print(f"for species {id} the mol/L is {value}")
         new_sbml.set_initial_concentration(id, value)
     # TODO: add start concentration for input casual
-    new_sbml.input_start_random_concentration()
-    new_sbml.small_compound_start_random_concentration()
     new_sbml.add_time_to_model()
     new_sbml.add_avg_calculations_for_all_species()
     new_sbml.save_converted_file(path.replace(".","-real-tissues-modified."))
@@ -63,7 +62,6 @@ def test_all(sbml: s2s.SBMLDoc, tissue: str, path: str, concentrations: dict[str
     test_clone_model_per_tissue(sbml, tissue, path, concentrations)
     # sbml.add_time_to_model()
     # sbml.add_avg_calculations_for_all_species()
-    sbml.save_converted_file(path.replace(".","-modified."))
     # print("[INFO] simulate SBML, every species as a random start concentration")
     # test_random_start_concentration(sbml)
     # print("[INFO] simulate SBML, every protein and compound as a random start concentration")
