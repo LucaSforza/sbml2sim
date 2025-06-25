@@ -12,10 +12,10 @@ session = requests.Session()
 session.mount("https://", HTTPAdapter(max_retries=retries))
 
 def get_proteomic_string_request(uniprod_id: str) -> str:
-    return f"{API_URL}/proteinexpression.xsodata/InputParams(PROTEINFILTER='{uniprod_id}',MS_LEVEL=1,TISSUE_ID_SELECTION='',TISSUE_CATEGORY_SELECTION='tissue;fluid',SCOPE_SELECTION=1,GROUP_BY_TISSUE=1,CALCULATION_METHOD=0,EXP_ID=-1)/Results?$select=TISSUE_ID,TISSUE_NAME,UNNORMALIZED_INTENSITY&$format=json"
+    return f"{API_URL}/proteinexpression.xsodata/InputParams(PROTEINFILTER='{uniprod_id}',MS_LEVEL=1,TISSUE_ID_SELECTION='',TISSUE_CATEGORY_SELECTION='tissue;fluid',SCOPE_SELECTION=1,GROUP_BY_TISSUE=1,CALCULATION_METHOD=0,EXP_ID=-1)/Results?$select=TISSUE_ID,TISSUE_NAME,NORMALIZED_INTENSITY&$format=json"
 
 def get_intensity(proteomic: proteomic) -> float:
-    return float(proteomic['UNNORMALIZED_INTENSITY'])
+    return float(proteomic['NORMALIZED_INTENSITY'])
 
 def get_tissue_id(proteomic: proteomic) -> str:
     return proteomic['TISSUE_ID']
