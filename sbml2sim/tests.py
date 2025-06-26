@@ -80,6 +80,9 @@ def assign_concentrations_to_small_compound(sbml: s2s.SBMLDoc):
     # H2O https://hmdb.ca/metabolites/HMDB0002111
     # 55 mol/L
     
+    # ADP https://hmdb.ca/metabolites/HMDB0001341
+    # 2.7*(10**-4)
+    
     # PI(4,5)P2 https://pubmed.ncbi.nlm.nih.gov/33441034/ boh forse 0.005 mol/L
     
     compounds: dict[str, str] = sbml.get_compounds_data()
@@ -133,7 +136,12 @@ def convert_ibaq_to_concentrations(sbml: s2s.SBMLDoc, proteomics: dict[str,tuple
 def nanometers_to_liters(x: float) -> float:
     return x*(10**(-24))
 
-def volume(r: float) -> float:
+def volume(d: float) -> float:
+    """
+    Calcola il volume di una sfera dato il diametro d.
+    d è il diametro.
+    """
+    r = d / 2.0  # r ora rappresenta il diametro, quindi lo divido per 2 per ottenere il raggio
     return (4.0/3.0)*math.pi*(r**3)
 
 def set_compartement_size(sbml: s2s.SBMLDoc):
@@ -155,7 +163,7 @@ def set_compartement_size(sbml: s2s.SBMLDoc):
         elif name == "nucleoplasm":
             sbml.set_volume_compartement(i, nanometers_to_liters(volume_nucleoplasm))
         elif name == "extracellular region":
-            sbml.set_volume_compartement(i, 7.0* 10**12)
+            sbml.set_volume_compartement(i, nanometers_to_liters(7*10**12))
         else:
             print(f"[FATAL ERROR] compartement {name} doen't exists")
             exit(1)
@@ -191,7 +199,6 @@ def main():
     (sbml_path, tissue) = parse_args()
     sbml = s2s.SBMLDoc(sbml_path)
     set_compartement_size(sbml)
-    
     proteins: dict[str,str] = sbml.get_proteins_data()
 
     (proteomics, all_tissue_names) = get_proteomics(proteins)

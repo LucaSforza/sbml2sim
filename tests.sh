@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATHWAY_ID=R-HSA-2219528
+PATHWAY_ID=R-HSA-391251
 
 docker run -it -e DISPLAY=$DISPLAY --net=host --name sbml2sim sbml2sim /venv-sbml2sim/bin/python3 sbml2sim/tests.py sbmls/$PATHWAY_ID.sbml breast_cancer_cell
 
