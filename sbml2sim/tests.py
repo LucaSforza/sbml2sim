@@ -9,10 +9,10 @@ import math
 import pandas as pd
 import matplotlib.pyplot as plt
 
-import sbml2sim as s2s
+import s2s
 import proteomic as ptc
 from proteomic import proteomic
-from opt import choose_tissue_for_replication, save_proteomics
+from bioutils import *
 
 DURATION = 10.0
 RESULTS = "results.csv"
@@ -76,120 +76,7 @@ def test_all(sbml: s2s.SBMLDoc, tissue: str, path: str, concentrations: dict[str
     # test_random_protein_compound_start_concentration(sbml)
     # print("[INFO] end tests")
 
-AVOGRADO = 6.022 * 10**23
 
-def assign_concentrations_to_small_compound(sbml: s2s.SBMLDoc):
-    # compounds è una mappa species_id all'id CHEBI
-    # ATP https://hmdb.ca/metabolites/HMDB0000538
-    # ATP concentrazione uguale in tutti i compartimenti
-    # 0.00154 mol/L
-    
-    # H2O https://hmdb.ca/metabolites/HMDB0002111
-    # 55 mol/L
-    
-    # ADP https://hmdb.ca/metabolites/HMDB0001341
-    # 2.7*(10**-4)
-    
-    # PI(4,5)P2 https://pubmed.ncbi.nlm.nih.gov/33441034/ boh forse 0.005 mol/L
-    
-    compounds: dict[str, str] = sbml.get_compounds_data()
-    
-    for (species_id, chebi_id) in compounds.items():
-        chebi_id = int(chebi_id)
-        if chebi_id == 30616:
-            # ATP
-            sbml.set_initial_concentration(species_id, 0.00154)
-        elif chebi_id == 15377:
-            # Water
-            sbml.set_initial_concentration(species_id, 55)
-            pass
-    
-    pass
-
-# @returns map species, concentration mol/L
-def convert_ibaq_to_concentrations(sbml: s2s.SBMLDoc, proteomics: dict[str,tuple[str, list[proteomic]]] ,tissue: str) -> dict[str, float]:
-    # reference: https://book.bionumbers.org/how-many-proteins-are-in-a-cell/
-    proteins_in_a_cell = 2.0*(10**(-10))
-    result = {}
-    
-    # calcola l'intensità totale del tessuto 
-    total_intensity = 0.0
-    for species_id, (_, tissue_list) in proteomics.items():
-        for prot in tissue_list:
-            if ptc.get_tissue_name(prot) == tissue:
-                total_intensity += ptc.get_intensity(prot)
-    print(f"Total intensity for tissue '{tissue}': {total_intensity}")
-    
-    for species_id, (_, tissue_list) in proteomics.items():
-        compartment_id = sbml.get_compartement(species_id)
-        volume_liters = sbml.get_volume_compartement(compartment_id)
-        if volume_liters < 1e-15:
-            print(f"[WARNING] Volume sospetto per compartimento {compartment_id}: {volume_liters} L")
-        atomic_weight = ptc.get_mol_weight(tissue_list[0])
-        tissue_conc = None
-        for prot in tissue_list:
-            if ptc.get_tissue_name(prot) == tissue:
-                intensity = ptc.get_intensity(prot)
-                # calcola la percentuale di presenza nel tessuto
-                f = intensity/total_intensity
-                m = f*proteins_in_a_cell # calcola la mole della specie
-                n = m/atomic_weight # dividilo per peso atomico,cosi ad avere la mole delle singole proteine
-                tissue_conc = n/volume_liters # calcola la mole per litro
-                result[species_id] = tissue_conc
-                break
-    return result
-
-# TODO: questa cosa è stupida, semplicemente inserisci le unità di misura nel file SBML
-def nanometers_to_liters(x: float) -> float:
-    return x*(10**(-24))
-
-def volume(d: float) -> float:
-    """
-    Calcola il volume di una sfera dato il diametro d.
-    d è il diametro.
-    """
-    r = d / 2.0  # r ora rappresenta il diametro, quindi lo divido per 2 per ottenere il raggio
-    return (4.0/3.0)*math.pi*(r**3)
-
-def set_compartement_size(sbml: s2s.SBMLDoc):
-    diameter_plasma_membrane = 10.0
-    # ref: https://bionumbers.hms.harvard.edu/bionumber.aspx?id=115154&ver=1&trm=cell+size+breast+cancer+cell+human+&org=
-    diameter_cell = 1.76 * 10**12  # nanometers
-    volume_cell = 1.76 * 10**12  # nanometers
-    volume_plasma_membrane = volume(diameter_plasma_membrane)
-    # nucleo occupa 20% del volume interno
-    volume_nucleoplasm = .2*(volume_cell - volume_plasma_membrane)
-    volume_cytosol = (volume_cell - volume_plasma_membrane) - volume_nucleoplasm
-    
-    for i in range(sbml.get_num_compartements()):
-        name: str = sbml.get_name_compartement(i)
-        if name == "plasma membrane":
-            sbml.set_volume_compartement(i, nanometers_to_liters(volume_plasma_membrane))
-        elif name == "cytosol":
-            sbml.set_volume_compartement(i, nanometers_to_liters(volume_cytosol))
-        elif name == "nucleoplasm":
-            sbml.set_volume_compartement(i, nanometers_to_liters(volume_nucleoplasm))
-        elif name == "extracellular region":
-            sbml.set_volume_compartement(i, nanometers_to_liters(7*10**12))
-        else:
-            print(f"[FATAL ERROR] compartement {name} doen't exists")
-            exit(1)
-
-def get_proteomics(proteins: dict[str,str]) -> tuple[Any, Any]:
-    proteomics: dict[str,tuple[str, list[proteomic]]] = dict()
-    all_tissue_names = set()
-    if os.path.exists("proteomics.json"):
-        with open("proteomics.json", "r") as f:
-            proteomics = json.load(f)
-            for species, (protein, tissues) in proteomics.items():
-                all_tissue_names.update(ptc.get_all_tissue_names(tissues))
-    else:
-        for species, protein in proteins.items():
-            tissues = ptc.get_tissue(protein)
-            proteomics[species] = (protein,tissues)
-            all_tissue_names.update(ptc.get_all_tissue_names(tissues))
-        save_proteomics(proteomics)
-    return (proteomics, all_tissue_names)
 
 def parse_args() -> tuple[str,str]:
     import sys
@@ -205,7 +92,9 @@ def main():
     s2s.set_seed(random_seed)
     (sbml_path, tissue) = parse_args()
     sbml = s2s.SBMLDoc(sbml_path)
-    set_compartement_size(sbml)
+    # ref: https://bionumbers.hms.harvard.edu/bionumber.aspx?id=115154&ver=1&trm=cell+size+breast+cancer+cell+human+&org=
+    volume_cell_breast_cancer_cell = 1.76 * 10**12  # nanometers
+    set_compartement_size(sbml, volume_cell_breast_cancer_cell)
     proteins: dict[str,str] = sbml.get_proteins_data()
 
     (proteomics, all_tissue_names) = get_proteomics(proteins)
@@ -218,6 +107,7 @@ def main():
     sbml.add_kinetic_laws_if_not_exists()
     sbml.random_kinetic_costant_value()
     sbml.set_zero_output_costant()
+    
     concentrations = convert_ibaq_to_concentrations(sbml, proteomics, tissue)
     test_all(sbml, tissue, sbml_path, concentrations)
 
