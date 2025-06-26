@@ -302,6 +302,71 @@ public:
         return comp->getName().c_str();
     }
 
+    void set_parameter(const char *id_parameter, double value) {
+        libsbml::Parameter *param = model->getParameter(id_parameter);
+        if (param == nullptr) {
+            fprintf(stderr, "[FATAL ERROR] Parameter with id '%s' does not exist\n", id_parameter);
+            exit(1);
+        }
+        param->setValue(value);
+    }
+
+    void remove_all_assigment_rules() {
+        for (unsigned int i = 0; i < model->getNumRules(); ) {
+            libsbml::Rule* rule = model->getRule(i);
+            if (rule->isAssignment()) {
+                model->removeRule(i);
+                delete rule;
+                // Do not increment i, as the next rule shifts into this index
+            } else {
+                ++i;
+            }
+        }
+    }
+
+    void assigment_rule_for_inputs() {
+
+        // Create 3 constant parameters: input_constant_f, input_constant_k_1, input_constant_k_2
+        std::vector<std::string> param_names = {"f", "k_1", "k_2"};
+        std::vector<std::string> param_ids;
+        for (const auto &name : param_names) {
+            std::string param_id = "input_constant_" + name;
+            param_ids.push_back(param_id);
+            if (!model->getParameter(param_id)) {
+                libsbml::Parameter *param = model->createParameter();
+                param->setId(param_id);
+                param->setConstant(true);
+                param->setValue(0.0); // Default value, can be changed later
+            }
+        }
+
+        for (const std::string &input_id : this->inputs) {
+            libsbml::Species *species = model->getSpecies(input_id);
+            if (!species) {
+                std::cerr << "[FATAL ERROR] Species not found: " << input_id << std::endl;
+                exit(1);
+            }
+            // Create the assignment rule
+            libsbml::AssignmentRule *rule = model->createAssignmentRule();
+            rule->setVariable(input_id);
+            if(species->getInitialConcentration() == 0.0) {
+                eprintf("[FATAL ERROR] initial concentration for input species %s is zero", input_id.c_str());
+                exit(1);
+            } else if(std::isnan(species->getInitialConcentration())) {
+                eprintf("[FATAL ERROR] initial concentration for input species %s is NaN\n", input_id.c_str());
+                exit(1);
+            }
+            std::ostringstream oss;
+            oss.precision(15);
+            oss << std::scientific << species->getInitialConcentration();
+            std::string inital_concentration = oss.str();
+            std::string omega = "(2*pi*input_constant_f)";
+            std::string phi = "((input_constant_k_1*pi)/4)";
+            std::string variance_const = "((input_constant_k_2*"+inital_concentration+")/2)";
+            assert(rule->setFormula(inital_concentration+"+"+variance_const+"*sin("+omega+"*get_time"+"+"+phi+")") == libsbml::LIBSBML_OPERATION_SUCCESS);
+        }
+    }
+
     SBMLDoc *replicate_model_per_tissue(const char **tissues, size_t n_tissues) const {
         libsbml::SBMLDocument *doc_result = new libsbml::SBMLDocument();
         libsbml::Model *new_model = doc_result->createModel();

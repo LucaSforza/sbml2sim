@@ -40,6 +40,9 @@ def test_random_protein_compound_start_concentration(sbml: s2s.SBMLDoc):
     plot_results("rand-prot-com-"+RESULTS, "random_protein_compound_start_concentration.png")
     print("[INFO] random protein and compound simulation completed")
 
+def run_simulation_with_parameters(sbml: s2s.SBMLDoc, f: float, k_1: float, k_2: float):
+    pass
+
 def test_clone_model_per_tissue(sbml: s2s.SBMLDoc, tissue: str, path: str, concentrations: dict[str, float]):
     
     new_sbml = sbml.replicate_model_per_tissue([tissue])
@@ -52,6 +55,10 @@ def test_clone_model_per_tissue(sbml: s2s.SBMLDoc, tissue: str, path: str, conce
     # TODO: add start concentration for input casual
     new_sbml.add_time_to_model()
     new_sbml.add_avg_calculations_for_all_species()
+    new_sbml.assigment_rule_for_inputs()
+    new_sbml.set_parameter("input_constant_f", 1.0/10.0)
+    new_sbml.set_parameter("input_constant_k_1",1.0)
+    new_sbml.set_parameter("input_constant_k_2",1.0)
     new_sbml.save_converted_file(path.replace(".","-real-tissues-modified."))
     new_sbml.simulate(output_file="real-tissue-"+RESULTS, duration=DURATION)
     plot_results("real-tissue-"+RESULTS, "real-tissues.png")

@@ -151,4 +151,16 @@ extern "C" {
     void SBMLDoc_set_zero_output_costant(SBMLDoc *_this) {
         _this->set_zero_output_costant();
     }
+
+    void SBMLDoc_set_parameter(SBMLDoc *_this, const char *id_parameter, double value) {
+        _this->set_parameter(id_parameter, value);
+    }
+
+    void SBMLDoc_assigment_rule_for_inputs(SBMLDoc *_this) {
+        _this->assigment_rule_for_inputs();
+    }
+
+    void SBMLDoc_remove_all_assigment_rules(SBMLDoc *_this) {
+        _this->remove_all_assigment_rules();
+    }
 }

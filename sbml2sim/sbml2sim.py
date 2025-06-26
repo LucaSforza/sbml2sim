@@ -136,7 +136,25 @@ class SBMLDoc:
     
     lib.SBMLDoc_get_compounds_data.restype = c_void_p
     lib.SBMLDoc_get_compounds_data.argtypes = [c_void_p]
+    
+    lib.SBMLDoc_set_parameter.restype = None
+    lib.SBMLDoc_set_parameter.argtypes = [c_void_p, c_char_p, c_double]
 
+    lib.SBMLDoc_assigment_rule_for_inputs.restype = None
+    lib.SBMLDoc_assigment_rule_for_inputs.argtypes = [c_void_p]
+    
+    lib.SBMLDoc_remove_all_assigment_rules.restype = None
+    lib.SBMLDoc_remove_all_assigment_rules.argtypes = [c_void_p]
+
+    def remove_all_assigment_rules(self):
+        lib.SBMLDoc_remove_all_assigment_rules(self.obj)
+    
+    def set_parameter(self, id_parameter: str, value: float):
+        lib.SBMLDoc_set_parameter(self.obj, id_parameter.encode('utf-8'), c_double(value))
+
+    def assigment_rule_for_inputs(self):
+        lib.SBMLDoc_assigment_rule_for_inputs(self.obj)
+    
     def get_compounds_data(self) -> dict[str, str]:
         result = dict()
         compounds_ptr = lib.SBMLDoc_get_compounds_data(self.obj)

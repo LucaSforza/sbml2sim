@@ -892,6 +892,12 @@ bool is_output(const libsbml::Species *species, const libsbml::Model *model) {
                 return false;
             }
         }
+        // Check if species is a modifier in this reaction
+        for (u_int j = 0; j < reaction->getNumModifiers(); ++j) {
+            if (reaction->getModifier(j)->getSpecies() == species->getId()) {
+                return false;
+            }
+        }
     }
     return true;
 }
