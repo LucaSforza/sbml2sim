@@ -5,3 +5,6 @@ proteomics*
 *.pdf
 *.csv
 *.png
+*.cfg
+lib/
+bin/

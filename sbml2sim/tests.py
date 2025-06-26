@@ -14,7 +14,7 @@ import proteomic as ptc
 from proteomic import proteomic
 from opt import choose_tissue_for_replication, save_proteomics
 
-DURATION = 200.0
+DURATION = 10.0
 RESULTS = "results.csv"
 
 def plot_results(csv_path: str, output_file_path: str):
@@ -68,7 +68,33 @@ def test_all(sbml: s2s.SBMLDoc, tissue: str, path: str, concentrations: dict[str
     # test_random_protein_compound_start_concentration(sbml)
     # print("[INFO] end tests")
 
+AVOGRADO = 6.022 * 10**23
 
+def assign_concentrations_to_small_compound(sbml: s2s.SBMLDoc,tissue: str):
+    # compounds è una mappa species_id all'id CHEBI
+    # ATP https://hmdb.ca/metabolites/HMDB0000538
+    # ATP concentrazione uguale in tutti i compartimenti
+    # 0.00154 mol/L
+    
+    # H2O https://hmdb.ca/metabolites/HMDB0002111
+    # 55 mol/L
+    
+    # PI(4,5)P2 https://pubmed.ncbi.nlm.nih.gov/33441034/ boh forse 0.005 mol/L
+    
+    compounds: dict[str, int] = sbml.get_compounds_data()
+    
+    for (species_id, chebi_id) in compounds.items():
+        if tissue:
+            species_id = tissue+"_"+species_id
+        if chebi_id == 30616:
+            # ATP
+            sbml.set_initial_concentration(species_id, 0.00154)
+        elif chebi_id == 15377:
+            # Water
+            sbml.set_initial_concentration(species_id, 55)
+            pass
+    
+    pass
 
 # @returns map species, concentration mol/L
 def convert_ibaq_to_concentrations(sbml: s2s.SBMLDoc, proteomics: dict[str,tuple[str, list[proteomic]]] ,tissue: str) -> dict[str, float]:
@@ -122,20 +148,17 @@ def set_compartement_size(sbml: s2s.SBMLDoc):
     
     for i in range(sbml.get_num_compartements()):
         name: str = sbml.get_name_compartement(i)
-        match name:
-            case "plasma membrane":
-                sbml.set_volume_compartement(i, nanometers_to_liters(volume_plasma_membrane))
-                pass
-            case "cytosol":
-                sbml.set_volume_compartement(i, nanometers_to_liters(volume_cytosol))
-                pass
-            case "nucleoplasm":
-                sbml.set_volume_compartement(i, nanometers_to_liters(volume_nucleoplasm))
-            case "extracellular region":
-                sbml.set_volume_compartement(i, 7.0* 10**12)
-            case _:
-                print(f"[FATAL ERROR] compartement {name} doen't exists")
-                exit(1)
+        if name == "plasma membrane":
+            sbml.set_volume_compartement(i, nanometers_to_liters(volume_plasma_membrane))
+        elif name == "cytosol":
+            sbml.set_volume_compartement(i, nanometers_to_liters(volume_cytosol))
+        elif name == "nucleoplasm":
+            sbml.set_volume_compartement(i, nanometers_to_liters(volume_nucleoplasm))
+        elif name == "extracellular region":
+            sbml.set_volume_compartement(i, 7.0* 10**12)
+        else:
+            print(f"[FATAL ERROR] compartement {name} doen't exists")
+            exit(1)
 
 def get_proteomics(proteins: dict[str,str]) -> tuple[Any, Any]:
     proteomics: dict[str,tuple[str, list[proteomic]]] = dict()

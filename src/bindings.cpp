@@ -34,15 +34,19 @@ extern "C" {
         return &(_this->get_proteins_data());
     }
 
-    ProteinToId::const_iterator *Proteins_iterator(const ProteinToId *_this) {
-        return new ProteinToId::const_iterator(_this->cbegin());
+    const CompoundToId* SBMLDoc_get_compounds_data(const SBMLDoc *_this) {
+        return &(_this->get_compound_data());
     }
 
-    void Proteins_delete_iterator(ProteinToId::const_iterator *it) {
+    SpeciesToId::const_iterator *SpeciesToId_iterator(const SpeciesToId *_this) {
+        return new SpeciesToId::const_iterator(_this->cbegin());
+    }
+
+    void SpeciesToId_delete_iterator(SpeciesToId::const_iterator *it) {
         delete it;
     }
 
-    std::pair<std::string, std::string> *Proteins_iterator_next(ProteinToId::const_iterator *it) {
+    std::pair<std::string, std::string> *SpeciesToId_iterator_next(SpeciesToId::const_iterator *it) {
         if(it == nullptr) {
             return nullptr;
         }
@@ -56,7 +60,7 @@ extern "C" {
         }
     }
 
-    bool Proteins_iterator_end(const ProteinToId *_this,ProteinToId::const_iterator *it) {
+    bool SpeciesToId_iterator_end(const SpeciesToId *_this,SpeciesToId::const_iterator *it) {
         return(_this->cend() == *it);
     }
 

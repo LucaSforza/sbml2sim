@@ -257,6 +257,10 @@ public:
         return this->infos.get_protein_to_id();
     }
 
+    const CompoundToId &get_compound_data(void) const {
+        return this->infos.get_compound_to_id();
+    }
+
     /**
      * @brief Checks if the given species name corresponds to a protein.
      *

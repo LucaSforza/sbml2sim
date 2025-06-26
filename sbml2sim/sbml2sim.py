@@ -6,14 +6,14 @@ from ctypes import c_uint
 
 lib = cdll.LoadLibrary("build/libsbmlconverter.so")
 
-lib.Proteins_iterator.restype = c_void_p
-lib.Proteins_iterator.argtypes = [c_void_p]
+lib.SpeciesToId_iterator.restype = c_void_p
+lib.SpeciesToId_iterator.argtypes = [c_void_p]
 
-lib.Proteins_delete_iterator.restype = None
-lib.Proteins_delete_iterator.argtypes = [c_void_p]
+lib.SpeciesToId_delete_iterator.restype = None
+lib.SpeciesToId_delete_iterator.argtypes = [c_void_p]
 
-lib.Proteins_iterator_next.restype = c_void_p
-lib.Proteins_iterator_next.argtypes = [c_void_p]
+lib.SpeciesToId_iterator_next.restype = c_void_p
+lib.SpeciesToId_iterator_next.argtypes = [c_void_p]
 
 lib.Pair_delete.restype = None
 lib.Pair_delete.argtypes = [c_void_p]
@@ -27,8 +27,8 @@ lib.Pair_second_c_str.argtypes = [c_void_p]
 lib.SBMLDoc_replicate_model_per_tissue.restype = c_void_p
 lib.SBMLDoc_replicate_model_per_tissue.argtypes = [c_void_p, POINTER(c_char_p), c_size_t]
 
-lib.Proteins_iterator_end.restype = c_bool
-lib.Proteins_iterator_end.argtypes = [c_void_p, c_void_p]
+lib.SpeciesToId_iterator_end.restype = c_bool
+lib.SpeciesToId_iterator_end.argtypes = [c_void_p, c_void_p]
 
 lib.set_seed.restype = None
 lib.set_seed.argtypes = [c_uint]
@@ -41,13 +41,13 @@ def _list_to_pointer(string_list: Iterable[str]):
     pointer = array_type(*(s.encode('utf-8') for s in string_list))
     return POINTER(c_char_p)(pointer)
 
-def _iterate_proteins(proteins_ptr):
-    it = lib.Proteins_iterator(proteins_ptr)
+def _iterate_ids(SpeciesToId_ptr):
+    it = lib.SpeciesToId_iterator(SpeciesToId_ptr)
     try:
         while True:
-            if lib.Proteins_iterator_end(proteins_ptr, it):
+            if lib.SpeciesToId_iterator_end(SpeciesToId_ptr, it):
                 break
-            pair_ptr = lib.Proteins_iterator_next(it)
+            pair_ptr = lib.SpeciesToId_iterator_next(it)
             if not pair_ptr:
                 break
             key   = lib.Pair_first_c_str(pair_ptr).decode('utf-8')
@@ -58,7 +58,7 @@ def _iterate_proteins(proteins_ptr):
             
             yield key, value
     finally:  
-        lib.Proteins_delete_iterator(it)
+        lib.SpeciesToId_delete_iterator(it)
 
 class SBMLDoc:
     lib.SBMLDoc_new.restype = c_void_p
@@ -205,7 +205,7 @@ class SBMLDoc:
         result = dict()
         proteins_ptr = lib.SBMLDoc_get_proteins_data(self.obj)
         
-        for species, protein in _iterate_proteins(proteins_ptr):
+        for species, protein in _iterate_ids(proteins_ptr):
             result[species] = protein
             
         return result

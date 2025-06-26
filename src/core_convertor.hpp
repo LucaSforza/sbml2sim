@@ -25,12 +25,14 @@
 
 #define EPSILON (1e-6)
 
+using SpeciesToId = std::unordered_map<std::string, std::string>; 
+using IdToSpecies = std::unordered_map<std::string, std::vector<std::string>>; 
 
 // species id -> UniProdId
-using ProteinToId  = std::unordered_map<std::string, std::string>;
-using IdToProtein  = std::unordered_map<std::string, std::vector<std::string>>;
-using CompoundToId = std::unordered_map<std::string, std::string>;
-using IdToCompound = std::unordered_map<std::string, std::vector<std::string>>;
+using ProteinToId  = SpeciesToId;
+using IdToProtein  = IdToSpecies;
+using CompoundToId = SpeciesToId;
+using IdToCompound = IdToSpecies;
 
 class SpeciesInformation {
     ProteinToId p_to_id;
