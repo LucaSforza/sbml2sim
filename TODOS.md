@@ -1,12 +1,14 @@
-# 24/06/2025
+# 26/06/2025
 
 ## TODOs
 - Begin black-box optimization process
-- Implement prof idea
-    - for each input x set the value of x: x(t) = A + B sin(omega t + phi)
-    - omega = 2 pi f where f in {10^-6,10^-5,...,10^-1}
-    - phi = k pi 4 where k in {0, 1, 2, ..., 7}
-    - B = k A/2 where k in {0,1,...,4}
+    - use roadrunner only on python, the C++ library now only convert the SBML into a simulable one
+    - take the libSBML code and put in the repo, create a decent build system that build the library
+    - simulate the model in python
+    - create the utility function
+        - if floating points errors give a very hight penalty
+        - if the system is unstable give a hight penalty
+        - minimize the quadratic error of the outputs and internal species
 
 ## Optional TODOS
 - create unit measure
