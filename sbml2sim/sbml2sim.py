@@ -1,7 +1,7 @@
 from ctypes import cdll
 from ctypes import c_void_p, c_char_p, c_bool, c_int, c_double
 from ctypes import POINTER, c_size_t
-from typing import Iterable
+from typing import Generator, Iterable
 from ctypes import c_uint
 
 lib = cdll.LoadLibrary("build/libsbmlconverter.so")
@@ -41,7 +41,7 @@ def _list_to_pointer(string_list: Iterable[str]):
     pointer = array_type(*(s.encode('utf-8') for s in string_list))
     return POINTER(c_char_p)(pointer)
 
-def _iterate_ids(SpeciesToId_ptr):
+def _iterate_ids(SpeciesToId_ptr) -> Generator[tuple[str, str], None, None]:
     it = lib.SpeciesToId_iterator(SpeciesToId_ptr)
     try:
         while True:
@@ -50,14 +50,11 @@ def _iterate_ids(SpeciesToId_ptr):
             pair_ptr = lib.SpeciesToId_iterator_next(it)
             if not pair_ptr:
                 break
-            key   = lib.Pair_first_c_str(pair_ptr).decode('utf-8')
-            
+            key = lib.Pair_first_c_str(pair_ptr).decode('utf-8')
             value = lib.Pair_second_c_str(pair_ptr).decode('utf-8')
-            
             lib.Pair_delete(pair_ptr)
-            
             yield key, value
-    finally:  
+    finally:
         lib.SpeciesToId_delete_iterator(it)
 
 class SBMLDoc:
@@ -136,6 +133,17 @@ class SBMLDoc:
 
     lib.SBMLDoc_set_zero_output_costant.restype = None
     lib.SBMLDoc_set_zero_output_costant.argtypes = [c_void_p]
+    
+    lib.SBMLDoc_get_compounds_data.restype = c_void_p
+    lib.SBMLDoc_get_compounds_data.argtypes = [c_void_p]
+
+    def get_compounds_data(self) -> dict[str, str]:
+        result = dict()
+        compounds_ptr = lib.SBMLDoc_get_compounds_data(self.obj)
+        for species, compound in _iterate_ids(compounds_ptr):
+            result[species] = compound
+        print(result)
+        return result
 
     def set_zero_output_costant(self):
         lib.SBMLDoc_set_zero_output_costant(self.obj)

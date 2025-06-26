@@ -44,6 +44,7 @@ def test_clone_model_per_tissue(sbml: s2s.SBMLDoc, tissue: str, path: str, conce
     
     new_sbml = sbml.replicate_model_per_tissue([tissue])
     new_sbml.random_start_concentration()
+    assign_concentrations_to_small_compound(new_sbml)
     for (species, value) in concentrations.items():
         id = tissue+"_"+species
         print(f"for species {id} the mol/L is {value}")
@@ -70,7 +71,7 @@ def test_all(sbml: s2s.SBMLDoc, tissue: str, path: str, concentrations: dict[str
 
 AVOGRADO = 6.022 * 10**23
 
-def assign_concentrations_to_small_compound(sbml: s2s.SBMLDoc,tissue: str):
+def assign_concentrations_to_small_compound(sbml: s2s.SBMLDoc):
     # compounds è una mappa species_id all'id CHEBI
     # ATP https://hmdb.ca/metabolites/HMDB0000538
     # ATP concentrazione uguale in tutti i compartimenti
@@ -81,11 +82,10 @@ def assign_concentrations_to_small_compound(sbml: s2s.SBMLDoc,tissue: str):
     
     # PI(4,5)P2 https://pubmed.ncbi.nlm.nih.gov/33441034/ boh forse 0.005 mol/L
     
-    compounds: dict[str, int] = sbml.get_compounds_data()
+    compounds: dict[str, str] = sbml.get_compounds_data()
     
     for (species_id, chebi_id) in compounds.items():
-        if tissue:
-            species_id = tissue+"_"+species_id
+        chebi_id = int(chebi_id)
         if chebi_id == 30616:
             # ATP
             sbml.set_initial_concentration(species_id, 0.00154)

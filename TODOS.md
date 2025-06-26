@@ -2,6 +2,19 @@
 
 ## TODOs
 - Begin black-box optimization process
+- Implement prof idea
+    - for each input x set the value of x: x(t) = A + B sin(omega t + phi)
+    - omega = 2 pi f where f in {10^-6,10^-5,...,10^-1}
+    - phi = k pi 4 where k in {0, 1, 2, ..., 7}
+    - B = k A/2 where k in {0,1,...,4}
+
+## Optional TODOS
+- create unit measure
+
+# 24/06/2025
+
+## TODOs
+- Begin black-box optimization process
 - Retrieve data for small compounds.
 - Implement prof idea
     - for each input x set the value of x: x(t) = A + B sin(omega t + phi)
