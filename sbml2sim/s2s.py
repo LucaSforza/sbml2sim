@@ -170,8 +170,7 @@ class SBMLDoc:
     lib.SBMLDoc_string_vector_get.restype = c_char_p
     lib.SBMLDoc_string_vector_get.argtypes = [c_void_p, c_size_t]
 
-    def convert_to_sbml_string(self) -> str:
-        print("[INFO] starting che convertion to string")
+    def convert_to_string(self) -> str:
         sys.stdout.flush()
         sbml_ptr = lib.SBMLDoc_convert_to_sbml_string(self.obj)
         sbml_c_char_p = c_char_p(sbml_ptr)
@@ -216,6 +215,7 @@ class SBMLDoc:
     def get_num_compartements(self) -> int:
         return lib.SBMLDoc_get_num_compartements(self.obj)
     
+    # TODO: id must be a string in the future
     def set_volume_compartement(self, id: int, volume: float):
         lib.SBMLDoc_set_volume_compartement(self.obj, c_uint(id), c_double(volume))
     
@@ -258,7 +258,8 @@ class SBMLDoc:
         return lib.SBMLDoc_random_start_concentration(self.obj)
 
     def simulate(self, output_file = "simulation_results.csv", duration = 10.0):
-        lib.SBMLDoc_simulate(self.obj, output_file.encode('utf-8'), duration)
+        print("[DEPRECATED] SBMLDoc.simulate")
+        exit(1)
     
     def get_proteins_data(self) -> dict[str,str]:
         
@@ -316,32 +317,3 @@ def replicate_model_per_tissue(file_path: str, tissues: list[str]):
     result.obj = obj
     return result
 
-import numpy as np
-import roadrunner as rr
-
-
-def steady_state_residual(r: rr.RoadRunner) -> float:
-    # Prendi tutti i parametri che iniziano per 'avg_'
-    rates: rr._roadrunner.NamedArray = r.getRatesOfChangeNamedArray()
-    avg_params = [rates[k] for k in rates.colnames if k.startswith('avg_')]
-    if not avg_params:
-        # fallback: nessun parametro avg_, ritorna penalità massima
-        print("[FATAL ERROR] not found any avg parameter")
-        exit(1)
-    return np.linalg.norm(avg_params, ord=1)
-
-def penalty(r: rr.RoadRunner):
-    try:
-        # set_params_to_model(r, params)
-        r.simulate(0, 100, 1000)  # o più lungo
-    except Exception:
-        return math.inf  # grande penalità se il modello va in crash (errori numerici)
-    penalty = steady_state_residual(r)
-    return penalty
-
-# returns the penalty
-def simulate(sbml: SBMLDoc) -> float:
-    file_sbml = sbml.convert_to_sbml_string()
-    r = rr.RoadRunner(file_sbml)
-    print("[INFO] penalty: ", penalty(r))
-    return r

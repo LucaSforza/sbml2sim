@@ -901,12 +901,14 @@ bool is_output(const libsbml::Species *species, const libsbml::Model *model) {
     return true;
 }
 
-Outputs collect_all_outputs(const libsbml::Model *model) {
+Outputs collect_all_outputs(libsbml::Model *model) {
     Outputs result;
     for(u_int i = 0; i < model->getNumSpecies(); ++i) {
-        const libsbml::Species *species = model->getSpecies(i);
+        libsbml::Species *species = model->getSpecies(i);
         if(is_output(species, model)) {
             result.insert(species->getId());
+            species->setInitialConcentration(0.0);
+            species->setBoundaryCondition(true);
         }
     }
     return result;
@@ -939,7 +941,7 @@ void create_a_fake_reaction_for_all_outputs(libsbml::Model *model, const Outputs
         p->setId("output_"+species_id);
         p->setConstant(true);
         p->setValue(1.0); // default
-        std::string formula = p->getId();
+        std::string formula = sr->getId();// p->getId() + "*" + sr->getId();
         kl->setFormula(formula);
     }
 }

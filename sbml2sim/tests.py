@@ -10,6 +10,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 import s2s
+import simulate as sim
 import proteomic as ptc
 from proteomic import proteomic
 from bioutils import *
@@ -40,9 +41,6 @@ def test_random_protein_compound_start_concentration(sbml: s2s.SBMLDoc):
     plot_results("rand-prot-com-"+RESULTS, "random_protein_compound_start_concentration.png")
     print("[INFO] random protein and compound simulation completed")
 
-def run_simulation_with_parameters(sbml: s2s.SBMLDoc, f: float, k_1: float, k_2: float):
-    pass
-
 def test_clone_model_per_tissue(sbml: s2s.SBMLDoc, tissue: str, path: str, concentrations: dict[str, float]):
     
     new_sbml = sbml.replicate_model_per_tissue([tissue])
@@ -64,7 +62,7 @@ def test_clone_model_per_tissue(sbml: s2s.SBMLDoc, tissue: str, path: str, conce
     # plot_results("real-tissue-"+RESULTS, "real-tissues.png")
     print(new_sbml.get_kinetic_constants())
     print(new_sbml.get_output_constants())
-    s2s.simulate(new_sbml)
+    sim.simulate(new_sbml)
     print("[INFO] clone model per tissue simulation completed")
 
 def test_all(sbml: s2s.SBMLDoc, tissue: str, path: str, concentrations: dict[str, dict[str, float]]):

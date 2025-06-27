@@ -11,6 +11,13 @@ import uniprod
 
 AVOGRADO = 6.022 * 10**23
 
+ParameterId = str
+SpeciesId = str
+UniprodId = str
+
+TissuesData = list[proteomic]
+Proteomics = dict[SpeciesId,tuple[UniprodId, list[TissuesData]]]
+
 def assign_concentrations_to_small_compound(sbml: s2s.SBMLDoc):
     # compounds è una mappa species_id all'id CHEBI
     # ATP https://hmdb.ca/metabolites/HMDB0000538
@@ -31,16 +38,18 @@ def assign_concentrations_to_small_compound(sbml: s2s.SBMLDoc):
         chebi_id = int(chebi_id)
         if chebi_id == 30616:
             # ATP
+            print(f"[INFO] {species_id} is ATP")
             sbml.set_initial_concentration(species_id, 0.00154)
         elif chebi_id == 15377:
             # Water
+            print(f"[INFO] {species_id} is Water")
             sbml.set_initial_concentration(species_id, 55)
             pass
     
     pass
 
 # @returns map species, concentration mol/L
-def convert_ibaq_to_concentrations(sbml: s2s.SBMLDoc, proteomics: dict[str,tuple[str, list[proteomic]]] ,tissue: str) -> dict[str, float]:
+def convert_ibaq_to_concentrations(sbml: s2s.SBMLDoc, proteomics: Proteomics ,tissue: str) -> dict[SpeciesId, float]:
     # reference: https://book.bionumbers.org/how-many-proteins-are-in-a-cell/
     proteins_in_a_cell = 2.0*(10**(-10))
     result = {}
@@ -51,21 +60,29 @@ def convert_ibaq_to_concentrations(sbml: s2s.SBMLDoc, proteomics: dict[str,tuple
         for prot in tissue_list:
             if ptc.get_tissue_name(prot) == tissue:
                 total_intensity += ptc.get_intensity(prot)
-    print(f"Total intensity for tissue '{tissue}': {total_intensity}")
+                break
+    print(f"[INFO] total intensity for tissue '{tissue}': {total_intensity}")
     
     for species_id, (_, tissue_list) in proteomics.items():
         id = sbml.get_compartement(species_id)
         volume_liters = sbml.get_volume_compartement(id)
         atomic_weight = ptc.get_mol_weight(tissue_list[0])
+        print(f"[INFO] volume compartement {id}: {volume_liters}")
+        print(f"[INFO] atomic weight {species_id}: {atomic_weight}")
         tissue_conc = None
         for prot in tissue_list:
             if ptc.get_tissue_name(prot) == tissue:
                 intensity = ptc.get_intensity(prot)
+                print(f"[INFO] Intensity {species_id}: {intensity}")
                 # calcola la percentuale di presenza nel tessuto
                 f = intensity/total_intensity
+                print(f"[INFO] f: {species_id}: {f}")
                 m = f*proteins_in_a_cell # calcola la mole della specie
+                print(f"[INFO] m: {species_id}: {m}")
                 n = m/atomic_weight # dividilo per peso atomico,cosi ad avere la mole delle singole proteine
+                print(f"[INFO] n: {species_id}: {n}")
                 tissue_conc = n/volume_liters # calcola la mole per litro
+                print(f"[INFO] tissue concentration: {species_id}: {tissue_conc}")
                 result[species_id] = tissue_conc
                 break
     return result
@@ -94,19 +111,29 @@ def set_compartement_size(sbml: s2s.SBMLDoc, volume_cell_nanometers: float):
     for i in range(sbml.get_num_compartements()):
         name: str = sbml.get_name_compartement(i)
         if name == "plasma membrane":
-            sbml.set_volume_compartement(i, nanometers_to_liters(volume_plasma_membrane))
+            l = nanometers_to_liters(volume_plasma_membrane)
+            print(f"[INFO] {name} liters: {l}")
+            sbml.set_volume_compartement(i, l)
         elif name == "cytosol":
+            l = nanometers_to_liters(volume_cytosol)
+            print(f"[INFO] {name} liters: {l}")
             sbml.set_volume_compartement(i, nanometers_to_liters(volume_cytosol))
         elif name == "nucleoplasm":
-            sbml.set_volume_compartement(i, nanometers_to_liters(volume_nucleoplasm))
+            l = nanometers_to_liters(volume_nucleoplasm)
+            print(f"[INFO] {name} liters: {l}")
+            sbml.set_volume_compartement(i, l)
         elif name == "extracellular region":
-            sbml.set_volume_compartement(i, nanometers_to_liters(7*10**12))
+            l = nanometers_to_liters(7*10**12)
+            print(f"[INFO] {name} liters: {l}")
+            sbml.set_volume_compartement(i, l)
         else:
             print(f"[FATAL ERROR] compartement {name} doen't exists")
             exit(1)
+            
 
-def get_proteomics(proteins: dict[str,str]) -> tuple[Any, Any]:
-    proteomics: dict[str,tuple[str, list[proteomic]]] = dict()
+
+def get_proteomics(proteins: dict[SpeciesId,UniprodId]) -> Proteomics:
+    proteomics: dict[SpeciesId,tuple[UniprodId, list[TissuesData]]] = dict()
     all_tissue_names = set()
     if os.path.exists("proteomics.json"):
         with open("proteomics.json", "r") as f:
@@ -157,6 +184,8 @@ def get_map_protein_gene(protein_data: dict[str, str]) -> dict[str, str]:
                 final_result[_from] = name
     return final_result
 
+
+
 def save_proteomics(
     proteomics: dict[str, tuple[str, list[proteomic]]],
     file_name: str = "proteomics.json"
@@ -196,4 +225,16 @@ def choose_tissue_for_replication(all_tissue_names: set[str], proteomics: dict[s
         max_count = max(counter.values())
         most_common_tissues = {tissue for tissue, count in counter.items() if count == max_count}
         tissue_names = most_common_tissues
-    return tissue_names
+    return 
+
+def assign_concentrations(sbml: s2s.SBMLDoc,tissue_name: str, concentrations: dict[SpeciesId, float]):
+    print("[INFO] assign concentration to species")
+    assign_concentrations_to_small_compound(sbml)
+    for (species, value) in concentrations.items():
+        id = tissue_name+"_"+species
+        print(f"[INFO] for species {id} the mol/L is {value}")
+        if math.isnan(value) or math.isinf(value):
+            print(f"[FATAL ERROR] Concentration for species {id} is not a valid number: {value}")
+            print(f"[INFO] Concentrations:\n {concentrations}")
+            exit(1)
+        sbml.set_initial_concentration(id, value)

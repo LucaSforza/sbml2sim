@@ -8,3 +8,4 @@ proteomics*
 *.cfg
 lib/
 bin/
+parameters.json

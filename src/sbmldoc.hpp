@@ -73,7 +73,7 @@ public:
         this->inputs = collect_all_inputs(model);
         make_all_input_costant_species(model, inputs);
         this->outputs = collect_all_outputs(model);
-        create_a_fake_reaction_for_all_outputs(model, outputs);
+        // create_a_fake_reaction_for_all_outputs(model, outputs);
 
         for (const auto &input : this->inputs) {
             std::cout << "[INPUT] " << input << std::endl;

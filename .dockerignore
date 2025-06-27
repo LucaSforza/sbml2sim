@@ -1,0 +1,8 @@
+parameters.json
+*-modified.sbml
+*.pdf
+*.csv
+*.png
+*.cfg
+lib/
+bin/
