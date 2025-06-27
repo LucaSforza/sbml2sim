@@ -193,4 +193,8 @@ extern "C" {
         if (!vec || idx >= vec->size()) return nullptr;
         return (*vec)[idx].c_str();
     }
+
+    bool SBMLDoc_is_output(const SBMLDoc *_this, const char *species_id) {
+        return _this->is_output(species_id);
+    }
 }

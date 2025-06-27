@@ -145,21 +145,24 @@ def main():
     output_param_dict = {}
     for oc in output_constants:
         # Parameter: output constant
-        output_param_dict[oc] = 0 # ng.p.Scalar(lower=-4.0, upper=1.0)
+        output_param_dict[oc] = 0 # ng.p.Scalar(lower=-6.0, upper=1.0)
     param_dict = {
         "kinetic_constants": ng.p.Dict(**kinetic_param_dict),
         "output_constants": ng.p.Dict(**output_param_dict)
     }
     parametrization = ng.p.Dict(**param_dict)
-    optimizer = ng.optimizers.CMA(parametrization=parametrization, budget=100)
+    optimizer = ng.optimizers.CMA(parametrization=parametrization, budget=80_000)
 
     def ng_objective(ng_params):
         # hidden parameters sbml and concentrations
          return utility_function(ng_params, sbml, concentrations, TISSUE)
- 
+    print("[INFO] Start Opt")
+    start_opt = time.time()
     recommendation = optimizer.minimize(ng_objective)
+    end_opt = time.time()
     print("[INFO] Best parameters found:\n", recommendation.value)
     print("[INFO] Best utility found:", best_results)
+    print(f"[INFO] time:{end_opt - start_opt:.2f}")
     with open("parameters.json", "w") as f:
         json.dump(recommendation.value, f)
     result: dict[str, dict[ParameterId, float]] = recommendation.value

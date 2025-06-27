@@ -1,6 +1,16 @@
 # 26/06/2025
 
 ## TODOs
+- Divide the optimitation in 2 steps:
+    1. Search of the kinetic constants
+    2. Search of the output constants
+
+## Optional TODOS
+- create unit measure
+
+# 26/06/2025
+
+## TODOs
 - Begin black-box optimization process
     - use roadrunner only on python, the C++ library now only convert the SBML into a simulable one
     - take the libSBML code and put in the repo, create a decent build system that build the library

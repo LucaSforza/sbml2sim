@@ -169,6 +169,12 @@ class SBMLDoc:
 
     lib.SBMLDoc_string_vector_get.restype = c_char_p
     lib.SBMLDoc_string_vector_get.argtypes = [c_void_p, c_size_t]
+    
+    lib.SBMLDoc_is_output.restype = c_bool
+    lib.SBMLDoc_is_output.argtypes = [c_void_p, c_char_p]
+
+    def is_output(self, species_id: str) -> bool:
+        return lib.SBMLDoc_is_output(self.obj, species_id.encode('utf-8'))
 
     def convert_to_string(self) -> str:
         sys.stdout.flush()

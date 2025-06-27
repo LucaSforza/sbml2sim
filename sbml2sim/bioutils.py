@@ -117,7 +117,7 @@ def set_compartement_size(sbml: s2s.SBMLDoc, volume_cell_nanometers: float):
         elif name == "cytosol":
             l = nanometers_to_liters(volume_cytosol)
             print(f"[INFO] {name} liters: {l}")
-            sbml.set_volume_compartement(i, nanometers_to_liters(volume_cytosol))
+            sbml.set_volume_compartement(i, l)
         elif name == "nucleoplasm":
             l = nanometers_to_liters(volume_nucleoplasm)
             print(f"[INFO] {name} liters: {l}")
@@ -232,7 +232,6 @@ def assign_concentrations(sbml: s2s.SBMLDoc,tissue_name: str, concentrations: di
     assign_concentrations_to_small_compound(sbml)
     for (species, value) in concentrations.items():
         id = tissue_name+"_"+species
-        print(f"[INFO] for species {id} the mol/L is {value}")
         if math.isnan(value) or math.isinf(value):
             print(f"[FATAL ERROR] Concentration for species {id} is not a valid number: {value}")
             print(f"[INFO] Concentrations:\n {concentrations}")

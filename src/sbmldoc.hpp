@@ -581,6 +581,10 @@ public:
         }
         return output_constants;
     }
+
+    bool is_output(const char *species_id) const {
+        return this->outputs.find(species_id) != this->outputs.end();
+    }
 };
 
 #endif // SBMLDOC_HPP_
