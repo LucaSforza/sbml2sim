@@ -172,4 +172,25 @@ extern "C" {
     void deallocate_string(char *string) {
         free(string);
     }
+
+    const std::vector<std::string>* SBMLDoc_get_kinetic_constants(const SBMLDoc* _this) {
+        return new std::vector<std::string>(_this->get_kinetic_constants());
+    }
+
+    const std::vector<std::string>* SBMLDoc_get_output_constants(const SBMLDoc* _this) {
+        return new std::vector<std::string>(_this->get_output_constants());
+    }
+
+    void SBMLDoc_delete_string_vector(const std::vector<std::string>* vec) {
+        delete vec;
+    }
+
+    size_t SBMLDoc_string_vector_size(const std::vector<std::string>* vec) {
+        return vec->size();
+    }
+
+    const char* SBMLDoc_string_vector_get(const std::vector<std::string>* vec, size_t idx) {
+        if (!vec || idx >= vec->size()) return nullptr;
+        return (*vec)[idx].c_str();
+    }
 }

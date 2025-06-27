@@ -155,6 +155,21 @@ class SBMLDoc:
     lib.deallocate_string.restype = None
     lib.deallocate_string.argtypes = [c_void_p]
 
+    lib.SBMLDoc_get_kinetic_constants.restype = c_void_p
+    lib.SBMLDoc_get_kinetic_constants.argtypes = [c_void_p]
+
+    lib.SBMLDoc_get_output_constants.restype = c_void_p
+    lib.SBMLDoc_get_output_constants.argtypes = [c_void_p]
+
+    lib.SBMLDoc_delete_string_vector.restype = None
+    lib.SBMLDoc_delete_string_vector.argtypes = [c_void_p]
+
+    lib.SBMLDoc_string_vector_size.restype = c_size_t
+    lib.SBMLDoc_string_vector_size.argtypes = [c_void_p]
+
+    lib.SBMLDoc_string_vector_get.restype = c_char_p
+    lib.SBMLDoc_string_vector_get.argtypes = [c_void_p, c_size_t]
+
     def convert_to_sbml_string(self) -> str:
         print("[INFO] starting che convertion to string")
         sys.stdout.flush()
@@ -266,6 +281,28 @@ class SBMLDoc:
         result = SBMLDoc()
         result.obj = obj
         return result
+    
+    def get_kinetic_constants(self) -> list[str]:
+        result = []
+        ptr = lib.SBMLDoc_get_kinetic_constants(self.obj)
+        size = lib.SBMLDoc_string_vector_size(ptr)
+        for i in range(size):
+            s = lib.SBMLDoc_string_vector_get(ptr, i)
+            if s:
+                result.append(str(s.decode('utf-8')))
+        lib.SBMLDoc_delete_string_vector(ptr)
+        return result
+    
+    def get_output_constants(self) -> list[str]:
+        result = []
+        ptr = lib.SBMLDoc_get_output_constants(self.obj)
+        size = lib.SBMLDoc_string_vector_size(ptr)
+        for i in range(size):
+            s = lib.SBMLDoc_string_vector_get(ptr, i)
+            if s:
+                result.append(str(s.decode('utf-8')))
+        lib.SBMLDoc_delete_string_vector(ptr)
+        return result
 
     def __del__(self):
         if hasattr(self, 'obj') and self.obj:
@@ -284,17 +321,23 @@ import roadrunner as rr
 
 
 def steady_state_residual(r: rr.RoadRunner) -> float:
-    rates = r.getRatesOfChange()  # Se sono tutti zero, allora si è in un punto di stabilità
-    return np.linalg.norm(rates, ord=1) # somma di tutti i valori del vettore
+    # Prendi tutti i parametri che iniziano per 'avg_'
+    rates: rr._roadrunner.NamedArray = r.getRatesOfChangeNamedArray()
+    avg_params = [rates[k] for k in rates.colnames if k.startswith('avg_')]
+    if not avg_params:
+        # fallback: nessun parametro avg_, ritorna penalità massima
+        print("[FATAL ERROR] not found any avg parameter")
+        exit(1)
+    return np.linalg.norm(avg_params, ord=1)
 
 def penalty(r: rr.RoadRunner):
     try:
         # set_params_to_model(r, params)
         r.simulate(0, 100, 1000)  # o più lungo
-        penalty = steady_state_residual(r)
-        return penalty
     except Exception:
         return math.inf  # grande penalità se il modello va in crash (errori numerici)
+    penalty = steady_state_residual(r)
+    return penalty
 
 # returns the penalty
 def simulate(sbml: SBMLDoc) -> float:

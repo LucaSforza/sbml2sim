@@ -557,6 +557,30 @@ public:
     std::string convert_to_sbml_string() const {
         return libsbml::writeSBMLToString(this->doc);
     }
+
+    std::vector<std::string> get_kinetic_constants() const {
+        std::vector<std::string> kinetic_constants;
+        for (u_int i = 0; i < model->getNumParameters(); ++i) {
+            libsbml::Parameter* param = model->getParameter(i);
+            const std::string& id = param->getId();
+            if (!id.empty() && id[0] == 'k') {
+                kinetic_constants.push_back(id);
+            }
+        }
+        return kinetic_constants;
+    }
+
+    std::vector<std::string> get_output_constants() const {
+        std::vector<std::string> output_constants;
+        for (u_int i = 0; i < model->getNumParameters(); ++i) {
+            libsbml::Parameter* param = model->getParameter(i);
+            const std::string& id = param->getId();
+            if (!id.empty() && strncmp(id.c_str(), "output_", 7) == 0) {
+                output_constants.push_back(id);
+            }
+        }
+        return output_constants;
+    }
 };
 
 #endif // SBMLDOC_HPP_

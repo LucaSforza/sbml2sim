@@ -62,6 +62,8 @@ def test_clone_model_per_tissue(sbml: s2s.SBMLDoc, tissue: str, path: str, conce
     new_sbml.save_converted_file(path.replace(".","-real-tissues-modified."))
     # new_sbml.simulate(output_file="real-tissue-"+RESULTS, duration=DURATION)
     # plot_results("real-tissue-"+RESULTS, "real-tissues.png")
+    print(new_sbml.get_kinetic_constants())
+    print(new_sbml.get_output_constants())
     s2s.simulate(new_sbml)
     print("[INFO] clone model per tissue simulation completed")
 
