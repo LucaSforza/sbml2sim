@@ -60,8 +60,9 @@ def test_clone_model_per_tissue(sbml: s2s.SBMLDoc, tissue: str, path: str, conce
     new_sbml.set_parameter("input_constant_k_1",1.0)
     new_sbml.set_parameter("input_constant_k_2",1.0)
     new_sbml.save_converted_file(path.replace(".","-real-tissues-modified."))
-    new_sbml.simulate(output_file="real-tissue-"+RESULTS, duration=DURATION)
-    plot_results("real-tissue-"+RESULTS, "real-tissues.png")
+    # new_sbml.simulate(output_file="real-tissue-"+RESULTS, duration=DURATION)
+    # plot_results("real-tissue-"+RESULTS, "real-tissues.png")
+    s2s.simulate(new_sbml)
     print("[INFO] clone model per tissue simulation completed")
 
 def test_all(sbml: s2s.SBMLDoc, tissue: str, path: str, concentrations: dict[str, dict[str, float]]):

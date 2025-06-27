@@ -163,4 +163,13 @@ extern "C" {
     void SBMLDoc_remove_all_assigment_rules(SBMLDoc *_this) {
         _this->remove_all_assigment_rules();
     }
+
+    // DEALLOCATE THE STRING
+    char *SBMLDoc_convert_to_sbml_string(const SBMLDoc *_this ) {
+        return strdup(_this->convert_to_sbml_string().c_str());
+    }
+
+    void deallocate_string(char *string) {
+        free(string);
+    }
 }

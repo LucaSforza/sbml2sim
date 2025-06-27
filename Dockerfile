@@ -9,10 +9,10 @@ RUN apt-get update && apt-get install -y \
 
 RUN python3 -m venv /venv-sbml2sim
 RUN echo "source /venv-sbml2sim/bin/activate" >> ~/.bashrc
-RUN /venv-sbml2sim/bin/pip3 install nevergrad matplotlib requests reactome2py pandas 
+RUN /venv-sbml2sim/bin/pip3 install nevergrad matplotlib requests reactome2py pandas libroadrunner
 
 COPY . .
 
 COPY ./lib64/libroadrunner.so /lib
 
-RUN make -j4
+RUN make 

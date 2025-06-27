@@ -38,8 +38,6 @@ class SBMLDoc {
     Inputs inputs;
     Outputs outputs;
 
-    rr::RoadRunner rr;
-
 public:
 
     static SBMLDoc *replicate_model_per_tissue(const char *file_path, const char **tissues, size_t n_tissues) {
@@ -240,12 +238,8 @@ public:
      * @param horizon end time of the simulation
      */
     void simulate(const char *output_file, double horizon) {
-        std::string sbmlStr = libsbml::writeSBMLToStdString(this->doc);
-        rr.load(sbmlStr);
-        rr::SimulateOptions options = rr::SimulateOptions();
-        options.output_file = output_file;
-        options.duration = horizon;
-        rr.simulate(&options);
+       eprintf("DEPRECATED simualate SBMLDoc\n");
+       exit(1); 
     }
 
     /**
@@ -558,6 +552,10 @@ public:
 
     const char *get_compartement(const char *species_id) const {
         return this->model->getSpecies(species_id)->getCompartment().c_str();
+    }
+
+    std::string convert_to_sbml_string() const {
+        return libsbml::writeSBMLToString(this->doc);
     }
 };
 

@@ -5,7 +5,6 @@
 #include <assert.h>
 
 #include <sbml/SBMLDocument.h>
-#include <rr/rrRoadRunner.h>
 
 #include <string>
 #include <chrono>

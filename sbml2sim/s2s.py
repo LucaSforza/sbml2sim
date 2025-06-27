@@ -1,8 +1,11 @@
 from ctypes import cdll
 from ctypes import c_void_p, c_char_p, c_bool, c_int, c_double
 from ctypes import POINTER, c_size_t
+import math
 from typing import Generator, Iterable
 from ctypes import c_uint
+
+import sys
 
 lib = cdll.LoadLibrary("build/libsbmlconverter.so")
 
@@ -146,6 +149,22 @@ class SBMLDoc:
     lib.SBMLDoc_remove_all_assigment_rules.restype = None
     lib.SBMLDoc_remove_all_assigment_rules.argtypes = [c_void_p]
 
+    lib.SBMLDoc_convert_to_sbml_string.restype = c_void_p
+    lib.SBMLDoc_convert_to_sbml_string.argtypes = [c_void_p]
+
+    lib.deallocate_string.restype = None
+    lib.deallocate_string.argtypes = [c_void_p]
+
+    def convert_to_sbml_string(self) -> str:
+        print("[INFO] starting che convertion to string")
+        sys.stdout.flush()
+        sbml_ptr = lib.SBMLDoc_convert_to_sbml_string(self.obj)
+        sbml_c_char_p = c_char_p(sbml_ptr)
+        sbml_python_str = sbml_c_char_p.value.decode('utf-8')
+        sbml_python_str = str(sbml_python_str)  # clone the string before deallocation
+        lib.deallocate_string(sbml_ptr)
+        return sbml_python_str
+
     def remove_all_assigment_rules(self):
         lib.SBMLDoc_remove_all_assigment_rules(self.obj)
     
@@ -259,3 +278,27 @@ def replicate_model_per_tissue(file_path: str, tissues: list[str]):
     result = SBMLDoc()
     result.obj = obj
     return result
+
+import numpy as np
+import roadrunner as rr
+
+
+def steady_state_residual(r: rr.RoadRunner) -> float:
+    rates = r.getRatesOfChange()  # Se sono tutti zero, allora si è in un punto di stabilità
+    return np.linalg.norm(rates, ord=1) # somma di tutti i valori del vettore
+
+def penalty(r: rr.RoadRunner):
+    try:
+        # set_params_to_model(r, params)
+        r.simulate(0, 100, 1000)  # o più lungo
+        penalty = steady_state_residual(r)
+        return penalty
+    except Exception:
+        return math.inf  # grande penalità se il modello va in crash (errori numerici)
+
+# returns the penalty
+def simulate(sbml: SBMLDoc) -> float:
+    file_sbml = sbml.convert_to_sbml_string()
+    r = rr.RoadRunner(file_sbml)
+    print("[INFO] penalty: ", penalty(r))
+    return r
