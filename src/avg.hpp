@@ -51,11 +51,7 @@ void add_avg_calculations(libsbml::Model *model, Outputs &outputs) {
         libsbml::Parameter* avgSpecies = model->createParameter();
         avgSpecies->setId(avg_param_id);
         avgSpecies->setName("Average of " + s->getId());
-        if(!std::isnan(s->getInitialConcentration())) {
-            avgSpecies->setValue(s->getInitialConcentration());
-        } else {
-            avgSpecies->setValue(0.0);
-        }
+        avgSpecies->setValue(0.0);
         avgSpecies->setConstant(false);
         libsbml::RateRule* avg_rate_rule = model->createRateRule();
         avg_rate_rule->setVariable(avg_param_id);

@@ -907,8 +907,8 @@ Outputs collect_all_outputs(libsbml::Model *model) {
         libsbml::Species *species = model->getSpecies(i);
         if(is_output(species, model)) {
             result.insert(species->getId());
-            // species->setInitialConcentration(0.0);
-            // species->setBoundaryCondition(true);
+            species->setInitialConcentration(0.0);
+            species->setBoundaryCondition(true);
         }
     }
     return result;

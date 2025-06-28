@@ -72,7 +72,8 @@ def utility_function(
     ng_params: dict[str, dict[ParameterId, float]],
     sbml: s2s.SBMLDoc,
     concentrations: dict[SpeciesId, float],
-    tissue_name: str
+    tissue_name: str,
+    kinetic_constants: dict[ParameterId, float] | None = None,
 ) -> float:
     """
     Funzione di utilità che prende in input:
@@ -81,7 +82,9 @@ def utility_function(
     """
     global attempts, best_results
     start_time = time.time()
-    set_sbml_for_attempt(sbml, tissue_name, ng_params["kinetic_constants"], ng_params["output_constants"], concentrations)
+    if kinetic_constants is None:
+        kinetic_constants = ng_params["kinetic_constants"] 
+    set_sbml_for_attempt(sbml, tissue_name, kinetic_constants, ng_params["output_constants"], concentrations)
     attempts += 1
     print(f"[INFO] attempt: {attempts}")
     # print(f"[INFO] params:\n {ng_params}")
@@ -91,6 +94,7 @@ def utility_function(
     for f in [10**-1]: # [10**(-i) for i in range(1,6+1)]:
         for k_1 in [0]: # [k for k in range(0,7+1)]:
             for k_2 in [0]: # [k for k in range(0,7+1)]:
+                # TODO: controlla per ogni specie in concentrations che non sia input che la media di quella concentrazione si avvicina alla concentrazione
                 sim_result = sim.simulate(sbml, f, k_1, k_2)
                 if math.isnan(sim_result):
                     print("[FATAL ERORR] utility function returned NaN")
@@ -101,12 +105,12 @@ def utility_function(
                         exit(1)
                     else:
                         end_time = time.time()
-                        
-                        integration_errors += 1
+                        print(f"[INFO] Simulation {attempts} ended WITH errors in {end_time - start_time:.2f} seconds")
+                        return 10**30
                 result += sim_result
     end_time = time.time()
-    print(f"[INFO] Simulation {attempts} ended with errors: {integration_errors}/{1} in {end_time - start_time:.2f} seconds")
-    utility = result + integration_errors*10**9
+    print(f"[INFO] Simulation {attempts} ended WITHOUT errors in {end_time - start_time:.2f} seconds")
+    utility = result*10**4
     print(f"[INFO] utility: {utility}")
     if utility < best_results:
         best_results = utility
@@ -151,7 +155,7 @@ def main():
         "output_constants": ng.p.Dict(**output_param_dict)
     }
     parametrization = ng.p.Dict(**param_dict)
-    optimizer = ng.optimizers.CMA(parametrization=parametrization, budget=80_000)
+    optimizer = ng.optimizers.CMA(parametrization=parametrization, budget=10_000)
 
     def ng_objective(ng_params):
         # hidden parameters sbml and concentrations
@@ -169,3 +173,8 @@ def main():
     set_sbml_for_attempt(sbml, TISSUE, result["kinetic_constants"], result["output_constants"], concentrations)
     sbml.save_converted_file(file_path.replace(".", "-real-tissues-modified."))
     sim.simulate(sbml, 10**(-1), 0, 0, plot=True)
+    
+    sbml.set_outputs() # setta gli output in modo tale che aumentino di concentrazione
+    # TODO: ottimizza le costanti di output
+    
+    # TODO: simula il sistema con con costanti cinetiche e costanti di output corrette

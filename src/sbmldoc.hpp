@@ -585,6 +585,14 @@ public:
     bool is_output(const char *species_id) const {
         return this->outputs.find(species_id) != this->outputs.end();
     }
+
+    void set_outputs_constants(void) {
+        TODO("set_outputs_constants")
+    }
+
+    void set_outputs_variable(void) {
+        TODO("set_outputs_variable")
+    }
 };
 
 #endif // SBMLDOC_HPP_

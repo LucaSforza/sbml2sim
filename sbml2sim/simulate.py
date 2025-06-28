@@ -6,15 +6,25 @@ from s2s import SBMLDoc
 import pandas as pd
 
 
-def steady_state_residual(sbml, r: rr.RoadRunner) -> float:
+def steady_state_residual(sbml, r: rr.RoadRunner, sim) -> float:
     # Prendi tutti i parametri che iniziano per 'avg_'
-    rates: rr._roadrunner.NamedArray = r.getRatesOfChangeNamedArray()
-    avg_params = [rates[k] for k in rates.colnames if k.startswith('avg_') and not sbml.is_output(k.replace("avg_",""))]
-    if not avg_params:
-        # nessun parametro avg
+    t1_time = 0.8 * sim[-1, 0]  # tempo all'80%
+    t2_time = sim[-1, 0]        # tempo finale
+
+    # Trova l'indice del tempo più vicino a t1 e t2
+    t_idx_1 = np.argmin(np.abs(sim[:, 0] - t1_time))
+    t_idx_2 = len(sim) - 1  # ultimo punto
+
+    avg_indices = [i for i, name in enumerate(sim.colnames)
+                   if name.startswith("avg_") and not sbml.is_output(name.replace("avg_", ""))]
+
+    if not avg_indices:
         print("[FATAL ERROR] not found any avg parameter")
         exit(1)
-    return np.linalg.norm(avg_params, ord=1)
+
+    # Calcola le differenze assolute tra t2 e t1
+    diffs = [abs(sim[t_idx_2, i] - sim[t_idx_1, i]) for i in avg_indices]
+    return np.linalg.norm(diffs, ord=1)
 
 def penalty(sbml, r: rr.RoadRunner, plot= False):
     output_file = None
@@ -22,7 +32,7 @@ def penalty(sbml, r: rr.RoadRunner, plot= False):
         output_file = "simulation.csv"
     try:
         # set_params_to_model(r, params)
-        r.simulate(0, 100, output_file=output_file)  # o più lungo
+        sim = r.simulate(0, 100, output_file=output_file)  # o più lungo
         if plot:
             import matplotlib.pyplot as plt
 
@@ -37,7 +47,10 @@ def penalty(sbml, r: rr.RoadRunner, plot= False):
     except Exception as e:
         # print(f"[WARNING] RoadRunner failed (integration error is normal): {e}")
         return math.inf  # grande penalità se il modello va in crash (errori numerici)
-    penalty = steady_state_residual(sbml, r)
+    if not plot:
+        penalty = steady_state_residual(sbml, r, sim)
+    else:
+        penalty = 0
     return penalty
 
 
