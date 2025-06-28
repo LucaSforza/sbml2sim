@@ -11,4 +11,5 @@ proteomics*
 lib/
 bin/
 parameters.json
+parameters_kinetic_constants.json
 log

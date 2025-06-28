@@ -59,26 +59,28 @@ def penalty(sbml, r: rr.RoadRunner,concentration: dict[SpeciesId, float],tissue:
             plt.savefig(output_file_png)
     except Exception as e:
         # print(f"[WARNING] RoadRunner failed (integration error is normal): {e}")
-        return math.inf  # grande penalità se il modello va in crash (errori numerici)
+        return (math.inf, math.inf)  # grande penalità se il modello va in crash (errori numerici)
     if not plot:
         penalty = steady_state_residual(sbml, r, sim)
+        bio_pen = 0.0
         for specie_id, target_value in concentration.items():
             sim_id = f"{tissue}_{specie_id}"
             if sim_id in sim.colnames:
                 idx = sim.colnames.index(sim_id)
                 final_value = sim[-1, idx]
-                penalty += (final_value - target_value) ** 2
-            else:
-                print(f"[FATAL ERROR] species {sim_id} not found in simulation result")
-                exit(1)
+                bio_pen += (final_value - target_value) ** 2
+            # else:
+            #     print(f"[FATAL ERROR] species {sim_id} not found in simulation result")
+            #     exit(1)
         # penalty += check_for_inconsistency(sim)
     else:
-        penalty = 0
-    return penalty
+        penalty = 0.9
+        bio_pen = 0.0
+    return (penalty, bio_pen)
 
 
 # returns the penalty
-def simulate(sbml: SBMLDoc, f: float, k_1: float, k_2: float,concentration: dict[SpeciesId, float],tissue: str,  plot=False, output_file_name="simulation") -> float:
+def simulate(sbml: SBMLDoc, f: float, k_1: float, k_2: float,concentration: dict[SpeciesId, float],tissue: str,  plot=False, output_file_name="simulation") -> tuple[float,float]:
     # TODO: setta f, k_1 e k_2
     sbml.set_parameter("input_constant_f", f)
     sbml.set_parameter("input_constant_k_1", k_1)
