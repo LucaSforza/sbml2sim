@@ -19,8 +19,8 @@ docker run -it -e \
 PATHWAY_ID=$(basename "$file_path" .sbml)
 ./take_file.sh sbmls/$PATHWAY_ID-kinetic-constants.sbml
 ./take_file.sh sbmls/$PATHWAY_ID-output-constants.sbml
-./take_file.sh parameters_kinetic.json
-./take_file.sh parameters_output.json
+./take_file.sh parameters_kinetic_constants.json
+./take_file.sh parameters_output_constants.json
 ./take_file.sh kinetic.csv
 ./take_file.sh kinetic.png
 ./take_file.sh output.csv

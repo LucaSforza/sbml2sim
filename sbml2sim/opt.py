@@ -123,14 +123,20 @@ TISSUE="breast_cancer_cell" # TODO: param
 def search_for_kinetic_constants(sbml: s2s.SBMLDoc,file_path: str,  tissue: str, concentrations: dict[SpeciesId, float]) -> dict[ParameterId, float]:
     print("[INFO] Opt kinetic constants") 
     kinetic_constants: list[ParameterId] = sbml.get_kinetic_constants()
+    output_constants: list[ParameterId] = sbml.get_output_constants()
     
     # Build parametrization with separate dictionaries
     kinetic_param_dict = {}
     for kc in kinetic_constants:
         # Parameter: kinetic constant
         kinetic_param_dict[kc] = ng.p.Scalar(lower=-6.0, upper=6.0)
-    parametrization = ng.p.Dict(**{ "kinetic_constants": ng.p.Dict(**kinetic_param_dict) })
-    optimizer = ng.optimizers.NGOpt(parametrization=parametrization, budget=3_000)
+
+    output_param_dict = {}
+    for oc in output_constants:
+        # Parameter: output constant
+        output_param_dict[oc] = ng.p.Scalar(lower=-20.0, upper=0.0)
+    parametrization = ng.p.Dict(**{ "kinetic_constants": ng.p.Dict(**kinetic_param_dict), "output_constants": ng.p.Dict(**output_param_dict) })
+    optimizer = ng.optimizers.NGOpt(parametrization=parametrization, budget=10_000)
 
     def ng_objective(ng_params):
         # hidden parameters sbml and concentrations
@@ -152,11 +158,11 @@ def search_for_kinetic_constants(sbml: s2s.SBMLDoc,file_path: str,  tissue: str,
     with open("parameters_kinetic_constants.json", "w") as f:
         json.dump(recommendation.value, f)
     result: dict[str, dict[ParameterId, float]] = recommendation.value
-    set_sbml_for_attempt(sbml, TISSUE, result["kinetic_constants"], None, concentrations)
+    set_sbml_for_attempt(sbml, TISSUE, result["kinetic_constants"], result["output_constants"], concentrations)
     sbml.save_converted_file(file_path.replace(".", "-kinetic-constants."))
     sim.simulate(sbml, 10**(-1), 0, 0, plot=True, output_file_name="kinetic")
     return result
-
+"""
 def search_for_output_constants(sbml: s2s.SBMLDoc,file_path: str,  tissue: str, concentrations: dict[SpeciesId, float]) -> dict[ParameterId, float]:
     print("[INFO] Opt output constants")
     sbml.set_outputs_variable()
@@ -193,7 +199,7 @@ def search_for_output_constants(sbml: s2s.SBMLDoc,file_path: str,  tissue: str, 
     set_sbml_for_attempt(sbml, TISSUE, None, result["output_constants"], concentrations)
     sbml.save_converted_file(file_path.replace(".", "-output-constants."))
     sim.simulate(sbml, 10**(-1), 0, 0, plot=True, output_file_name="output") # TODO: modificare nome file
-    return result
+    return result """
 
 def main():
     global best_results, attempts
@@ -213,17 +219,17 @@ def main():
     # replica il modello per il tessuto del cancro al seno
     print("[INFO] init model")
     sbml = init_model(sbml, file_path, TISSUE, concentrations)
-    
+    sbml.set_outputs_variable()
     # le costanti cinetiche rappresentato un esponente x. Per avere il valore calcolcare 10^x
-    kinetic_constants = search_for_kinetic_constants(sbml, file_path, TISSUE, concentrations)
+    result = search_for_kinetic_constants(sbml, file_path, TISSUE, concentrations)
     best_results = math.inf
     attempts = 0
-    output_constants  = search_for_output_constants(sbml, file_path, TISSUE, concentrations)
+    # output_constants  = search_for_output_constants(sbml, file_path, TISSUE, concentrations)
     
     print("[INFO] kinetic costants: ")
-    print(kinetic_constants)
+    print(result["kinetic_constants"])
     print("[INFO] output constants")
-    print(output_constants)
+    print(result["output_constants"])
     
     # sbml.set_outputs() # setta gli output in modo tale che aumentino di concentrazione
     # TODO: ottimizza le costanti di output

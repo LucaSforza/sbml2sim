@@ -211,7 +211,6 @@ class SBMLDoc:
         compounds_ptr = lib.SBMLDoc_get_compounds_data(self.obj)
         for species, compound in _iterate_ids(compounds_ptr):
             result[species] = compound
-        print(result)
         return result
 
     def set_zero_output_costant(self):

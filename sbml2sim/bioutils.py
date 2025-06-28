@@ -38,11 +38,11 @@ def assign_concentrations_to_small_compound(sbml: s2s.SBMLDoc):
         chebi_id = int(chebi_id)
         if chebi_id == 30616:
             # ATP
-            print(f"[INFO] {species_id} is ATP")
+            # print(f"[INFO] {species_id} is ATP")
             sbml.set_initial_concentration(species_id, 0.00154)
         elif chebi_id == 15377:
             # Water
-            print(f"[INFO] {species_id} is Water")
+            # print(f"[INFO] {species_id} is Water")
             sbml.set_initial_concentration(species_id, 55)
             pass
     

@@ -3,6 +3,7 @@ import numpy as np
 import roadrunner as rr
 
 from s2s import SBMLDoc
+from bioutils import SpeciesId
 import pandas as pd
 
 
@@ -37,7 +38,7 @@ def check_for_inconsistency(sim) -> float:
     penalty_value = np.linalg.norm(values[values < -1e-1], ord=1)
     return penalty_value
 
-def penalty(sbml, r: rr.RoadRunner, plot= False, output_file_name="simulation"):
+def penalty(sbml, r: rr.RoadRunner,concentration: dict[SpeciesId, float],tissue: str, plot= False, output_file_name="simulation"):
     output_file_csv = None
     output_file_png = None
     if plot:
@@ -61,6 +62,15 @@ def penalty(sbml, r: rr.RoadRunner, plot= False, output_file_name="simulation"):
         return math.inf  # grande penalità se il modello va in crash (errori numerici)
     if not plot:
         penalty = steady_state_residual(sbml, r, sim)
+        for specie_id, target_value in concentration.items():
+            sim_id = f"{tissue}_{specie_id}"
+            if sim_id in sim.colnames:
+                idx = sim.colnames.index(sim_id)
+                final_value = sim[-1, idx]
+                penalty += (final_value - target_value) ** 2
+            else:
+                print(f"[FATAL ERROR] species {sim_id} not found in simulation result")
+                exit(1)
         # penalty += check_for_inconsistency(sim)
     else:
         penalty = 0
@@ -68,11 +78,11 @@ def penalty(sbml, r: rr.RoadRunner, plot= False, output_file_name="simulation"):
 
 
 # returns the penalty
-def simulate(sbml: SBMLDoc, f: float, k_1: float, k_2: float, plot=False, output_file_name="simulation") -> float:
+def simulate(sbml: SBMLDoc, f: float, k_1: float, k_2: float,concentration: dict[SpeciesId, float],tissue: str,  plot=False, output_file_name="simulation") -> float:
     # TODO: setta f, k_1 e k_2
     sbml.set_parameter("input_constant_f", f)
     sbml.set_parameter("input_constant_k_1", k_1)
     sbml.set_parameter("input_constant_k_2", k_2)
     file_sbml = sbml.convert_to_string()
     r = rr.RoadRunner(file_sbml)
-    return penalty(sbml, r, plot, output_file_name)
+    return penalty(sbml, r,concentration, tissue, plot, output_file_name)
