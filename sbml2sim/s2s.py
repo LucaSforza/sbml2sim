@@ -173,6 +173,18 @@ class SBMLDoc:
     lib.SBMLDoc_is_output.restype = c_bool
     lib.SBMLDoc_is_output.argtypes = [c_void_p, c_char_p]
 
+    lib.SBMLDoc_set_outputs_constants.restype = None
+    lib.SBMLDoc_set_outputs_constants.argtypes = [c_void_p]
+
+    lib.SBMLDoc_set_outputs_variable.restype = None
+    lib.SBMLDoc_set_outputs_variable.argtypes = [c_void_p]
+
+    def set_outputs_constants(self):
+        lib.SBMLDoc_set_outputs_constants(self.obj)
+
+    def set_outputs_variable(self):
+        lib.SBMLDoc_set_outputs_variable(self.obj)
+
     def is_output(self, species_id: str) -> bool:
         return lib.SBMLDoc_is_output(self.obj, species_id.encode('utf-8'))
 

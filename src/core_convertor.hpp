@@ -941,7 +941,7 @@ void create_a_fake_reaction_for_all_outputs(libsbml::Model *model, const Outputs
         p->setId("output_"+species_id);
         p->setConstant(true);
         p->setValue(1.0); // default
-        std::string formula = p->getId();
+        std::string formula = p->getId() + "*" + sr->getId();
         kl->setFormula(formula);
     }
 }

@@ -587,11 +587,19 @@ public:
     }
 
     void set_outputs_constants(void) {
-        TODO("set_outputs_constants");
+        for(const std::string& sid : this->outputs) {
+            libsbml::Species *s = model->getSpecies(sid);
+            s->setBoundaryCondition(true);
+        }
     }
 
     void set_outputs_variable(void) {
-        TODO("set_outputs_variable");
+        for(const std::string& sid : this->outputs) {
+            libsbml::Species *s = model->getSpecies(sid);
+            s->setBoundaryCondition(false);
+        }
+        create_a_fake_reaction_for_all_outputs(model, outputs);
+        add_avg_for_outputs(model, outputs);
     }
 };
 

@@ -61,4 +61,26 @@ void add_avg_calculations(libsbml::Model *model, Outputs &outputs) {
     }
 }
 
+void add_avg_for_outputs(libsbml::Model *model, Outputs &outputs) {
+    for (const std::string& output : outputs) {
+        const std::string& species_id = output;
+        libsbml::Species* s = model->getSpecies(species_id);
+        if (!s || s->getBoundaryCondition() || s->getConstant()) {
+            eprintf("[FATAL ERROR] the output %s is constant", s->getId().c_str());
+            exit(1);
+        }
+
+        std::string avg_param_id = "avg_" + species_id;
+        libsbml::Parameter* avgSpecies = model->createParameter();
+        avgSpecies->setId(avg_param_id);
+        avgSpecies->setName("Average of " + species_id);
+        avgSpecies->setValue(0.0);
+        avgSpecies->setConstant(false);
+
+        libsbml::RateRule* avg_rate_rule = model->createRateRule();
+        avg_rate_rule->setVariable(avg_param_id);
+        avg_rate_rule->setFormula("(" + s->getId() + " - " + avg_param_id+ ")/(get_time + " + std::to_string(EPSILON) + ")");
+    }
+}
+
 #endif // AVG_HPP_

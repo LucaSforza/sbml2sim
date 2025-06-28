@@ -197,4 +197,12 @@ extern "C" {
     bool SBMLDoc_is_output(const SBMLDoc *_this, const char *species_id) {
         return _this->is_output(species_id);
     }
+
+    void SBMLDoc_set_outputs_constants(SBMLDoc *_this) {
+        _this->set_outputs_constants();
+    }
+
+    void SBMLDoc_set_outputs_variable(SBMLDoc *_this) {
+        _this->set_outputs_variable();
+    }
 }

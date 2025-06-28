@@ -16,7 +16,7 @@ def steady_state_residual(sbml, r: rr.RoadRunner, sim) -> float:
     t_idx_2 = len(sim) - 1  # ultimo punto
 
     avg_indices = [i for i, name in enumerate(sim.colnames)
-                   if name.startswith("avg_") and not sbml.is_output(name.replace("avg_", ""))]
+                   if name.startswith("avg_")]
 
     if not avg_indices:
         print("[FATAL ERROR] not found any avg parameter")
@@ -24,7 +24,18 @@ def steady_state_residual(sbml, r: rr.RoadRunner, sim) -> float:
 
     # Calcola le differenze assolute tra t2 e t1
     diffs = [abs(sim[t_idx_2, i] - sim[t_idx_1, i]) for i in avg_indices]
-    return np.linalg.norm(diffs, ord=1)
+    result = np.linalg.norm(diffs, ord=1)
+    return result
+
+def check_for_inconsistency(sim) -> float:
+    # ritorna 10**30 moltiplicato per il numero di specie che hanno concentrazione negativa
+    names = [name for name in sim.colnames if not name.startswith("avg_") and name not in ("time", "get_time")]
+    # Trova gli indici delle specie rilevanti
+    indices = [i for i, name in enumerate(sim.colnames) if name in names]
+    # Prendi i valori all'ultimo tempo simulato
+    values = sim[-1, indices]
+    penalty_value = np.linalg.norm(values[values < -1e-1], ord=1)
+    return penalty_value
 
 def penalty(sbml, r: rr.RoadRunner, plot= False, output_file_name="simulation"):
     output_file_csv = None
@@ -39,7 +50,7 @@ def penalty(sbml, r: rr.RoadRunner, plot= False, output_file_name="simulation"):
             import matplotlib.pyplot as plt
 
             df = pd.read_csv(output_file_csv)
-            avg_cols = [col for col in df.columns if col.startswith('avg_') and not sbml.is_output(col.replace("avg_",""))]
+            avg_cols = [col for col in df.columns if col.startswith('avg_')]
             df[avg_cols].plot()
             plt.xlabel('Time')
             plt.ylabel('Value')
@@ -50,6 +61,7 @@ def penalty(sbml, r: rr.RoadRunner, plot= False, output_file_name="simulation"):
         return math.inf  # grande penalità se il modello va in crash (errori numerici)
     if not plot:
         penalty = steady_state_residual(sbml, r, sim)
+        # penalty += check_for_inconsistency(sim)
     else:
         penalty = 0
     return penalty

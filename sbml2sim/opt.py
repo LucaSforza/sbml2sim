@@ -95,6 +95,7 @@ def utility_function(
         for k_1 in [0]: # [k for k in range(0,7+1)]:
             for k_2 in [0]: # [k for k in range(0,7+1)]:
                 # TODO: controlla per ogni specie in concentrations che non sia input che la media di quella concentrazione si avvicina alla concentrazione
+                # TODO: per ogni avg che ritorna una concentrazione negativa metti un valore molto alto
                 sim_result = sim.simulate(sbml, f, k_1, k_2)
                 if math.isnan(sim_result):
                     print("[FATAL ERORR] utility function returned NaN")
@@ -106,7 +107,7 @@ def utility_function(
                     else:
                         end_time = time.time()
                         print(f"[INFO] Simulation {attempts} ended WITH errors in {end_time - start_time:.2f} seconds")
-                        return 10**30
+                        return math.inf
                 result += sim_result
     end_time = time.time()
     print(f"[INFO] Simulation {attempts} ended WITHOUT errors in {end_time - start_time:.2f} seconds")
@@ -154,16 +155,18 @@ def search_for_kinetic_constants(sbml: s2s.SBMLDoc,file_path: str,  tissue: str,
     set_sbml_for_attempt(sbml, TISSUE, result["kinetic_constants"], None, concentrations)
     sbml.save_converted_file(file_path.replace(".", "-kinetic-constants."))
     sim.simulate(sbml, 10**(-1), 0, 0, plot=True, output_file_name="kinetic")
+    return result
 
 def search_for_output_constants(sbml: s2s.SBMLDoc,file_path: str,  tissue: str, concentrations: dict[SpeciesId, float]) -> dict[ParameterId, float]:
     print("[INFO] Opt output constants")
+    sbml.set_outputs_variable()
     output_constants: list[ParameterId] = sbml.get_output_constants()
     
     # Build parametrization with separate dictionaries
     output_param_dict = {}
     for kc in output_constants:
         # Parameter: kinetic constant
-        output_param_dict[kc] = ng.p.Scalar(lower=-6.0, upper=1.0)
+        output_param_dict[kc] = ng.p.Scalar(lower=-20.0, upper=0.0)
     parametrization = ng.p.Dict(**{ "output_constants" : ng.p.Dict(**output_param_dict)})
     optimizer = ng.optimizers.NGOpt(parametrization=parametrization, budget=3_000)
     
@@ -190,8 +193,10 @@ def search_for_output_constants(sbml: s2s.SBMLDoc,file_path: str,  tissue: str, 
     set_sbml_for_attempt(sbml, TISSUE, None, result["output_constants"], concentrations)
     sbml.save_converted_file(file_path.replace(".", "-output-constants."))
     sim.simulate(sbml, 10**(-1), 0, 0, plot=True, output_file_name="output") # TODO: modificare nome file
+    return result
 
 def main():
+    global best_results, attempts
     file_path = parse_args()
 
     sbml: s2s.SBMLDoc = s2s.SBMLDoc(file_path)
@@ -212,7 +217,13 @@ def main():
     # le costanti cinetiche rappresentato un esponente x. Per avere il valore calcolcare 10^x
     kinetic_constants = search_for_kinetic_constants(sbml, file_path, TISSUE, concentrations)
     best_results = math.inf
-    # output_constants  = search_for_output_constants(sbml, file_path, TISSUE, concentrations)
+    attempts = 0
+    output_constants  = search_for_output_constants(sbml, file_path, TISSUE, concentrations)
+    
+    print("[INFO] kinetic costants: ")
+    print(kinetic_constants)
+    print("[INFO] output constants")
+    print(output_constants)
     
     # sbml.set_outputs() # setta gli output in modo tale che aumentino di concentrazione
     # TODO: ottimizza le costanti di output
