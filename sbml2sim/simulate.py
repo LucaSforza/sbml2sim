@@ -26,24 +26,25 @@ def steady_state_residual(sbml, r: rr.RoadRunner, sim) -> float:
     diffs = [abs(sim[t_idx_2, i] - sim[t_idx_1, i]) for i in avg_indices]
     return np.linalg.norm(diffs, ord=1)
 
-def penalty(sbml, r: rr.RoadRunner, plot= False):
-    output_file = None
+def penalty(sbml, r: rr.RoadRunner, plot= False, output_file_name="simulation"):
+    output_file_csv = None
+    output_file_png = None
     if plot:
-        output_file = "simulation.csv"
+        output_file_csv = output_file_name+".csv"
+        output_file_png = output_file_name+".png"
     try:
         # set_params_to_model(r, params)
-        sim = r.simulate(0, 100, output_file=output_file)  # o più lungo
+        sim = r.simulate(0, 100, output_file=output_file_csv)  # o più lungo
         if plot:
             import matplotlib.pyplot as plt
 
-            df = pd.read_csv(output_file)
+            df = pd.read_csv(output_file_csv)
             avg_cols = [col for col in df.columns if col.startswith('avg_') and not sbml.is_output(col.replace("avg_",""))]
             df[avg_cols].plot()
             plt.xlabel('Time')
             plt.ylabel('Value')
             plt.title('Simulation Results (avg_*)')
-            plt.legend()
-            plt.savefig("simulation.png")
+            plt.savefig(output_file_png)
     except Exception as e:
         # print(f"[WARNING] RoadRunner failed (integration error is normal): {e}")
         return math.inf  # grande penalità se il modello va in crash (errori numerici)
@@ -55,11 +56,11 @@ def penalty(sbml, r: rr.RoadRunner, plot= False):
 
 
 # returns the penalty
-def simulate(sbml: SBMLDoc, f: float, k_1: float, k_2: float, plot=False) -> float:
+def simulate(sbml: SBMLDoc, f: float, k_1: float, k_2: float, plot=False, output_file_name="simulation") -> float:
     # TODO: setta f, k_1 e k_2
     sbml.set_parameter("input_constant_f", f)
     sbml.set_parameter("input_constant_k_1", k_1)
     sbml.set_parameter("input_constant_k_2", k_2)
     file_sbml = sbml.convert_to_string()
     r = rr.RoadRunner(file_sbml)
-    return penalty(sbml, r, plot)
+    return penalty(sbml, r, plot, output_file_name)

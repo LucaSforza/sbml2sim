@@ -17,9 +17,13 @@ docker run -it -e \
     $PYTHON sbml2sim $file_path breast_cancer_cell
 
 PATHWAY_ID=$(basename "$file_path" .sbml)
-./take_file.sh sbmls/$PATHWAY_ID-real-tissues-modified.sbml
-./take_file.sh parameters.json
-./take_file.sh simulation.csv
-./take_file.sh simulation.png
+./take_file.sh sbmls/$PATHWAY_ID-kinetic-constants.sbml
+./take_file.sh sbmls/$PATHWAY_ID-output-constants.sbml
+./take_file.sh parameters_kinetic.json
+./take_file.sh parameters_output.json
+./take_file.sh kinetic.csv
+./take_file.sh kinetic.png
+./take_file.sh output.csv
+./take_file.sh output.png
 
 docker rm -f sbml2sim 2>/dev/null || true

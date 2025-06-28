@@ -587,11 +587,11 @@ public:
     }
 
     void set_outputs_constants(void) {
-        TODO("set_outputs_constants")
+        TODO("set_outputs_constants");
     }
 
     void set_outputs_variable(void) {
-        TODO("set_outputs_variable")
+        TODO("set_outputs_variable");
     }
 };
 

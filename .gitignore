@@ -2,6 +2,8 @@ __pycache__/
 build/
 proteomics*
 *-modified.sbml
+*-kinetic-constants.sbml
+*-output-constants.sbml
 *.pdf
 *.csv
 *.png

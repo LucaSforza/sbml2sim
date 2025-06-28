@@ -44,20 +44,23 @@ def init_model(sbml: s2s.SBMLDoc, file_path: str, tissue: str, concentrations: d
    
 def assign_parameters(
     sbml: s2s.SBMLDoc,
-    parameters: dict[ParameterId, float]
+    parameters: dict[ParameterId, float] | None
 ):
+    if parameters is None: return
     for (param_id, value) in parameters.items():
         sbml.set_parameter(param_id, 10**value)
  
 def set_sbml_for_attempt(
     sbml: s2s.SBMLDoc,
     tissue: str,
-    kinetic_constants: dict[ParameterId, float],
-    output_constants: dict[ParameterId, float],
+    kinetic_constants: dict[ParameterId, float] | None,
+    output_constants: dict[ParameterId, float] | None,
     concentrations: dict[SpeciesId, float],
 ):
     # genera casualmente le concentrazioni e riposiziona le concentrazioni
-    
+    if kinetic_constants is None and output_constants is None:
+        print("[FATAL ERROR] kinetic constants AND constants are None")
+        exit(1)
     sbml.random_start_concentration()
     assign_concentrations(sbml,tissue, concentrations)
     # TODO: reset initial value for avg non-constant parameters
@@ -73,7 +76,6 @@ def utility_function(
     sbml: s2s.SBMLDoc,
     concentrations: dict[SpeciesId, float],
     tissue_name: str,
-    kinetic_constants: dict[ParameterId, float] | None = None,
 ) -> float:
     """
     Funzione di utilità che prende in input:
@@ -82,9 +84,7 @@ def utility_function(
     """
     global attempts, best_results
     start_time = time.time()
-    if kinetic_constants is None:
-        kinetic_constants = ng_params["kinetic_constants"] 
-    set_sbml_for_attempt(sbml, tissue_name, kinetic_constants, ng_params["output_constants"], concentrations)
+    set_sbml_for_attempt(sbml, tissue_name, ng_params.value.get("kinetic_constants"), ng_params.value.get("output_constants"), concentrations)
     attempts += 1
     print(f"[INFO] attempt: {attempts}")
     # print(f"[INFO] params:\n {ng_params}")
@@ -119,6 +119,78 @@ def utility_function(
 
 TISSUE="breast_cancer_cell" # TODO: param
 
+def search_for_kinetic_constants(sbml: s2s.SBMLDoc,file_path: str,  tissue: str, concentrations: dict[SpeciesId, float]) -> dict[ParameterId, float]:
+    print("[INFO] Opt kinetic constants") 
+    kinetic_constants: list[ParameterId] = sbml.get_kinetic_constants()
+    
+    # Build parametrization with separate dictionaries
+    kinetic_param_dict = {}
+    for kc in kinetic_constants:
+        # Parameter: kinetic constant
+        kinetic_param_dict[kc] = ng.p.Scalar(lower=-6.0, upper=6.0)
+    parametrization = ng.p.Dict(**{ "kinetic_constants": ng.p.Dict(**kinetic_param_dict) })
+    optimizer = ng.optimizers.NGOpt(parametrization=parametrization, budget=3_000)
+
+    def ng_objective(ng_params):
+        # hidden parameters sbml and concentrations
+         return utility_function(ng_params, sbml, concentrations, tissue)
+    print("[INFO] Start Opt")
+    start_opt = time.time()
+    for _ in range(optimizer.budget):
+        x = optimizer.ask()
+        loss = ng_objective(x)
+        if loss < 1e-5:
+            optimizer.tell(x, loss)
+            break
+        optimizer.tell(x, loss)
+    end_opt = time.time()
+    recommendation = optimizer.provide_recommendation()
+    print("[INFO] Best parameters found:\n", recommendation.value)
+    print("[INFO] Best utility found:", best_results)
+    print(f"[INFO] time:{end_opt - start_opt:.2f}")
+    with open("parameters_kinetic_constants.json", "w") as f:
+        json.dump(recommendation.value, f)
+    result: dict[str, dict[ParameterId, float]] = recommendation.value
+    set_sbml_for_attempt(sbml, TISSUE, result["kinetic_constants"], None, concentrations)
+    sbml.save_converted_file(file_path.replace(".", "-kinetic-constants."))
+    sim.simulate(sbml, 10**(-1), 0, 0, plot=True, output_file_name="kinetic")
+
+def search_for_output_constants(sbml: s2s.SBMLDoc,file_path: str,  tissue: str, concentrations: dict[SpeciesId, float]) -> dict[ParameterId, float]:
+    print("[INFO] Opt output constants")
+    output_constants: list[ParameterId] = sbml.get_output_constants()
+    
+    # Build parametrization with separate dictionaries
+    output_param_dict = {}
+    for kc in output_constants:
+        # Parameter: kinetic constant
+        output_param_dict[kc] = ng.p.Scalar(lower=-6.0, upper=1.0)
+    parametrization = ng.p.Dict(**{ "output_constants" : ng.p.Dict(**output_param_dict)})
+    optimizer = ng.optimizers.NGOpt(parametrization=parametrization, budget=3_000)
+    
+    def ng_objective(ng_params):
+        # hidden parameters sbml and concentrations
+         return utility_function(ng_params, sbml, concentrations, tissue)
+    print("[INFO] Start Opt")
+    start_opt = time.time()
+    for _ in range(optimizer.budget):
+        x = optimizer.ask()
+        loss = ng_objective(x)
+        if loss < 1e-5:
+            optimizer.tell(x, loss)
+            break
+        optimizer.tell(x, loss)
+    end_opt = time.time()
+    recommendation = optimizer.provide_recommendation()
+    print("[INFO] Best parameters found:\n", recommendation.value)
+    print("[INFO] Best utility found:", best_results)
+    print(f"[INFO] time:{end_opt - start_opt:.2f}")
+    with open("parameters_output_constants.json", "w") as f:
+        json.dump(recommendation.value, f)
+    result: dict[str, dict[ParameterId, float]] = recommendation.value
+    set_sbml_for_attempt(sbml, TISSUE, None, result["output_constants"], concentrations)
+    sbml.save_converted_file(file_path.replace(".", "-output-constants."))
+    sim.simulate(sbml, 10**(-1), 0, 0, plot=True, output_file_name="output") # TODO: modificare nome file
+
 def main():
     file_path = parse_args()
 
@@ -136,45 +208,13 @@ def main():
     # replica il modello per il tessuto del cancro al seno
     print("[INFO] init model")
     sbml = init_model(sbml, file_path, TISSUE, concentrations)
-   
-    print("[INFO] get kinetic constants") 
-    kinetic_constants: list[ParameterId] = sbml.get_kinetic_constants()
-    output_constants: list[ParameterId] = sbml.get_output_constants()
     
-    # Build parametrization with separate dictionaries
-    kinetic_param_dict = {}
-    for kc in kinetic_constants:
-        # Parameter: kinetic constant
-        kinetic_param_dict[kc] = ng.p.Scalar(lower=-6.0, upper=6.0)
-    output_param_dict = {}
-    for oc in output_constants:
-        # Parameter: output constant
-        output_param_dict[oc] = 0 # ng.p.Scalar(lower=-6.0, upper=1.0)
-    param_dict = {
-        "kinetic_constants": ng.p.Dict(**kinetic_param_dict),
-        "output_constants": ng.p.Dict(**output_param_dict)
-    }
-    parametrization = ng.p.Dict(**param_dict)
-    optimizer = ng.optimizers.CMA(parametrization=parametrization, budget=10_000)
-
-    def ng_objective(ng_params):
-        # hidden parameters sbml and concentrations
-         return utility_function(ng_params, sbml, concentrations, TISSUE)
-    print("[INFO] Start Opt")
-    start_opt = time.time()
-    recommendation = optimizer.minimize(ng_objective)
-    end_opt = time.time()
-    print("[INFO] Best parameters found:\n", recommendation.value)
-    print("[INFO] Best utility found:", best_results)
-    print(f"[INFO] time:{end_opt - start_opt:.2f}")
-    with open("parameters.json", "w") as f:
-        json.dump(recommendation.value, f)
-    result: dict[str, dict[ParameterId, float]] = recommendation.value
-    set_sbml_for_attempt(sbml, TISSUE, result["kinetic_constants"], result["output_constants"], concentrations)
-    sbml.save_converted_file(file_path.replace(".", "-real-tissues-modified."))
-    sim.simulate(sbml, 10**(-1), 0, 0, plot=True)
+    # le costanti cinetiche rappresentato un esponente x. Per avere il valore calcolcare 10^x
+    kinetic_constants = search_for_kinetic_constants(sbml, file_path, TISSUE, concentrations)
+    best_results = math.inf
+    # output_constants  = search_for_output_constants(sbml, file_path, TISSUE, concentrations)
     
-    sbml.set_outputs() # setta gli output in modo tale che aumentino di concentrazione
+    # sbml.set_outputs() # setta gli output in modo tale che aumentino di concentrazione
     # TODO: ottimizza le costanti di output
     
     # TODO: simula il sistema con con costanti cinetiche e costanti di output corrette
