@@ -68,7 +68,14 @@ def penalty(sbml, r: rr.RoadRunner,concentration: dict[SpeciesId, float],tissue:
             if sim_id in sim.colnames:
                 idx = sim.colnames.index(sim_id)
                 final_value = sim[-1, idx]
+                # errore quadratico della quantità
                 bio_pen += (final_value - target_value) ** 2
+                # Somma anche l'errore quadratico dell'ordine di grandezza
+                if final_value > 0 and target_value > 0:
+                    log_err = (np.log10(final_value) - np.log10(target_value)) ** 2
+                    bio_pen += log_err
+                else:
+                    bio_pen += 10**3
             # else:
             #     print(f"[FATAL ERROR] species {sim_id} not found in simulation result")
             #     exit(1)

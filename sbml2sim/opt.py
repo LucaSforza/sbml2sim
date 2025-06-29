@@ -94,7 +94,6 @@ def utility_function(
     for f in [10**-1]: # [10**(-i) for i in range(1,6+1)]:
         for k_1 in [0]: # [k for k in range(0,7+1)]:
             for k_2 in [0]: # [k for k in range(0,7+1)]:
-                # TODO: controlla per ogni specie in concentrations che non sia input che la media di quella concentrazione si avvicina alla concentrazione
                 # TODO: per ogni avg che ritorna una concentrazione negativa metti un valore molto alto
                 (steady_pen, bio_pen) = sim.simulate(sbml, f, k_1, k_2, concentrations, tissue_name)
                 if math.isnan(steady_pen) or math.isnan(bio_pen):
@@ -108,7 +107,7 @@ def utility_function(
                         end_time = time.time()
                         print(f"[INFO] Simulation {attempts} ended WITH errors in {end_time - start_time:.2f} seconds")
                         return math.inf
-                result += bio_pen + steady_pen*10**4
+                result += bio_pen*10**20 + steady_pen*10**4
     end_time = time.time()
     print(f"[INFO] Simulation {attempts} ended WITHOUT errors in {end_time - start_time:.2f} seconds")
     utility = result
@@ -136,7 +135,7 @@ def search_for_kinetic_constants(sbml: s2s.SBMLDoc,file_path: str,  tissue: str,
         # Parameter: output constant
         output_param_dict[oc] = ng.p.Scalar(lower=-20.0, upper=0.0)
     parametrization = ng.p.Dict(**{ "kinetic_constants": ng.p.Dict(**kinetic_param_dict), "output_constants": ng.p.Dict(**output_param_dict) })
-    optimizer = ng.optimizers.NGOpt(parametrization=parametrization, budget=1000)
+    optimizer = ng.optimizers.NGOpt(parametrization=parametrization, budget=1_000)
 
     def ng_objective(ng_params):
         # hidden parameters sbml and concentrations
@@ -146,9 +145,6 @@ def search_for_kinetic_constants(sbml: s2s.SBMLDoc,file_path: str,  tissue: str,
     for _ in range(optimizer.budget):
         x = optimizer.ask()
         loss = ng_objective(x)
-        if loss < 1e-5:
-            optimizer.tell(x, loss)
-            break
         optimizer.tell(x, loss)
     end_opt = time.time()
     recommendation = optimizer.provide_recommendation()
