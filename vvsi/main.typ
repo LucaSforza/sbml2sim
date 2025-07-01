@@ -13,32 +13,30 @@
 #set math.equation(numbering: "(1)")
 
 #align(center, text(17pt)[
-  *Simulazione delle vie di segnalazione PI3K/AKT nei tumori*
+  *Simulazione del ripiegamento proteico mediato da chaperoni nel cancro* 
 ])
 
-#image("R-HSA-2219528.svg")
+#image("R-HSA-392499.svg")
 
-#align(center)[
-  #set par(justify: false)
-  *Abstract* \
-  Questo report è riferito al corso di *Verifica e Validazione dei Sistemi Intelligenti*.
-  
-  L'obbiettivo di questo progetto è quello di rendere simulabile (anche in piu' tessuti) il pathway di segnalazione PI3K/AKT nei tumori (R-HSA-2219528).
+= Introduzione
 
-  È stato preso il modello *qualitativo* di reactome ed è stato convertito in un modello *quantitativo* che ha come parametri le costanti cinetiche delle reazioni e la concentrazione iniziali delle specie del modello.
+La simulazione quantitativa di processi biologici complessi richiede modelli dinamici basati su leggi cinetiche con parametri precisi, come le costanti cinetiche delle reazioni.
 
-  Questo progetto verrà collegato con quello di *Intelligenza Artificiale* che avrà come obbiettivo quello di trovare le giuste costanti cinetiche partendo da concentrazioni iniziali prese da dati sperimentali.
-]
+Tuttavia, molti modelli biologici disponibili, come quelli di Reactome, sono qualitativi e non forniscono questi dati essenziali, limitando la possibilità di simulazioni realistiche.
 
+In questo lavoro, ci si concentra sulla trasformazione di un modello qualitativo di ripiegamento proteico mediato da chaperoni in un modello quantitativo utilizzabile per simulazioni dinamiche.
 
+Per superare la mancanza di dati sperimentali sulle costanti cinetiche, si utilizza un approccio di ottimizzazione black box per stimare questi parametri, vincolando il modello a dati di concentrazione proteica tipici del cancro al seno.
 
-= Formato SBML Livello 3 Versione 1 e descrizione del file SBML relativo al pathway di riferimento
+= Simulazione del modello
 
-I modelli di reactome sono scaricabili con il formato SBML (System Biology Markup Language) basato su XML.
+== Formato SBML Livello 3 Versione 1 e descrizione del file SBML relativo al pathway di riferimento
 
-Per questo progetto è stato utilizzato il livello 3 versione 1, poiché è quello che offre reactome tra i suoi modelli.
+I modelli di Reactome sono scaricabili con il formato SBML (System Biology Markup Language) basato su XML. // TODO: riferimento a SBML
 
-La parte piu' esterna di un file SBML è rappresentata dall'oggetto SBML:
+Per questo progetto è stato utilizzato il livello 3 versione 1, poiché è quello che offre Reactome tra i suoi modelli.
+
+La parte più esterna di un file SBML è rappresentata dall'oggetto SBML:
 
 ```XML
 <?xml version="1.0" encoding="UTF-8"?>
@@ -50,7 +48,7 @@ La parte piu' esterna di un file SBML è rappresentata dall'oggetto SBML:
 ```
 
 Esso ha come unica funzione quello di specificare il livello e la versione, ad esso è associato un ogetto di tipo "model"
-in cui è contenuto la descrizione del modello biologio.
+in cui è contenuto la descrizione del modello biologico.
 
 Un modello è semplicemente un container per altri oggetti, nel pathway di riferimento di questo progetto
 sono presenti solo tre tiplogie di oggetti: I compartienti, Le specie e le reazioni.
@@ -59,84 +57,74 @@ Un compartimento in SBML rapppresenta uno spazio delimitato dove sono localizzat
 
 Anche se i compartimenti sono opzionali, una specie ha l'obbligo di specificare il compartimento di appartenenza, quindi sono di fatto obbligatori.
 
-I compartimenti  nel pathway di riferimento sono: membrana plasmatica, fluido intracellulare e la regione extracellulare.
+I compartimenti  nel pathway di riferimento sono: membrana plasmatica e citosol.
+Sono state utilizzate come grandezze quantitative per questi compartimenti quelle del cancro al seno.
 
 Una specie in SBML rappresenta un insieme di entità indistinguibili tra di loro, possono partecipare a reazioni e sono localizzati in uno specifico compartimento.
-Perciò una specie non rappresenta necessariamente una singola entità chimica, infatti reactome utilizza varie astrazioni in tal senso come specificato nei paragrafi @qual e @astra.
 
-Una reazione in SBML descrive ogni tipo di processo che cambia la quantità di una o piu' specie. Una reazione in SBML necessariamente deve definire le sue proprietà strutturali, ovvero specificare i reagenti e/o i prodotti (volendo anche i modificatori). Una reazione può (ma non è obbligata) ad avere pure una sua descrizione *quantitativa* della reazione, ovvero una legge cinetica.
+Una reazione in SBML descrive ogni tipo di processo che cambia la quantità di una o più specie. Una reazione in SBML necessariamente deve definire le sue proprietà strutturali, ovvero specificare i reagenti e/o i prodotti (volendo anche i modificatori). Una reazione può (ma non è obbligata) ad avere pure una sua descrizione quantitativa della reazione, ovvero una legge cinetica.
+
+Le leggi cinetiche descrivono la velocità della reazione e da quelle si può ricavare il moto del sistema.
+
+
 
 == Differenza tra Modelli Qualitativi e Quantitativi <qual>
 
-Reactome offre modelli biologici qualitativi e non quantitativi. Questo vuol dire che per quanto riguarda le reazioni mancano le leggi cinetiche, per i vari compartimenti non è specificato il loro volume, non sono specificate le unità di misura,non sono specificate le concentrazioni iniziali delle specie e una specie può rappresentare un'astrazione e non una singola entità chimica, ma può rapprensentare (per esempio) un insieme di proteine.
+Reactome offre modelli biologici qualitativi e non quantitativi. Questo vuol dire che per quanto riguarda le reazioni mancano le leggi cinetiche, per i vari compartimenti non è specificato il loro volume, non sono specificate le unità di misura e non sono specificate le concentrazioni iniziali delle specie..
 
-Un modello qualitativo ha come obbiettivo non quello di essere simulabile, ma quello di descrivere il modello biologioco.
+Un modello qualitativo ha come obiettivo non quello di essere simulabile, ma quello di descrivere il modello biologico.
 
-Partendo dal modello qualitativo del pathway di segnalazione PI3K/AKT questo progetto ha come obbiettivo quello di renderlo un modello *quantitativo* parametrico rispetto alle costanti cinetiche delle reazioni e le concentrazioni iniziali.
+SBML può essere usato anche per descrivere modelli quantitativi.
 
-Nel progetto di *Intelligenza Artificiale* verranno trovate le costanti cinetiche e verranno impostati le concentrazioni iniziali delle varie entità chimiche del modello rispetto ai dati sperimentali reperiti online.
+Un modello biologico può essere visto come un sistema dinamico non lineare tempo invariante.
 
-== Astrazioni usate da Reactome <astra>
+Lo stato del sistema se $n$ sono le specie è $x = mat(S_1;...;S_n) in RR^n$.
 
-Reactome per ogni specie nelle note specifica che la tipologia della specie. Cercando delle parole chiave nelle note si possono discriminare le varie specie in: proteine, metaboliti, Reactome Complex, DefinedSet e farmaci.
+Dove $S_i$ è la concentrazione della specie $i$.
 
-Dato che l'obbiettivo è quello di stimare le costanti cinetiche delle reazioni dal modello sono stati eliminati i farmaci.
+Invece il moto è descritto dalle leggi cinetiche delle reazioni, che a loro volta descrivono la velocità di una reazione.
 
-Un altro approccio sarebbe stato quello di tenere i farmaci e tenere la concentrazione a 0, ma qualsiasi costante cinetica avrebbe potuto essere canditata per una soluzione, quindi ho preferito eliminare queste specie e queste reazioni.
+Sia $S$ la concentrazione di una singola specie. $v_1,...,v_k$ è la velocità delle reazioni dove $S$ è reagente e $v'_1,...,v'_m$ è la velocità delle reazioni dove $S$ è prodotto. // TODO: riferimento system biology
 
-I defined set sono un insieme di entità che sono indistinguibili tra di loro. Queste entità possono essere proteine, metaboliti o farmaci. Sono stati eliminati dai defined set tutti i farmaci.
+Allora:
 
-I Reactome Complex sono un insieme di metaboliti, proteine e farmaci legati tra di loro. Quindi senza uno dei componenti non esisterebbe il Reactome Complex. Quindi se tra un elemento si trova un farmaco l'intero complesso viene eliminato.
+$
+  (d S)/(d t) = sum_(i=1)^m v'_i - sum_(j=1)^k v_i
+$
 
-Quello che rimangono solo le proteine e i metaboliti che sono specie "atomiche".
-
-Tra le proteine come specie atomiche non sono però presenti tutte le proteine del pathway (lo stesso vale per i metaboliti). Questo perché gli altri sono presenti nei Reactome Complex e nei DefinedSet.
-
-Purtroppo però non possiamo scomporre i DefinedSet nei sui singoli componenti, poiché tra la descrizione dei componenti non è presente di che tipo sono. Perché una proetina può essere mutata, fosforata, ecc... Per la mancanza di questi dati ho deciso di tenere i DefinedSet come sono naturalmente definiti nel file SBML.
-
-I complessi neanche posso dividerli nei sui singoli componenti, perché vengono formati tramite le reazioni, quindi per non modificare il loro significato biologico li ho tenuto le specie Reactome Complex.
-
-Questo per la simulazione del pathway cambia poco, ma è importante per il progetto di Intelligenza Artificiale. I dati dei DefinedSet e dei Reactome Complex mancano totalemente i dati, esistono solo per le proteine semplici e neache per tutte, ma solo delle proteine normali, quindi non mutate e non fosforate.
-
-= Leggi Cinetiche
+== Leggi Cinetiche
 
 Dato che i modelli di Reactome sono qualitativi e non quantitativi mancano totalmente le leggi cinetiche.Le legge utilizzata è quella di Michelis-Mentent. Quindi la velocità $v$ di una reazione $R$ è definita come segue:
 
-Siano $A_1,A_2,...,A_n$ i reagenti e $S_1,S_2,...,S_m$ i modificatori.
+Siano $A_1, A_2, ..., A_n$ le specie reagenti, $n_i$ la stechiometria del reagente $i$ e $M_1, M_2, ..., M_m$ le specie modificatrici.
 
 $
-  v = Pi_(i=1)^m H(S_i) dot K_R dot Pi_(i=1)^n A_i
+  v = product_(i=1)^m H(M_i) dot K_R dot product_(i=1)^n A_i^(n_i)
 $
 
-$K_R$ è la costante cinetica della reazione che è aggiunto come parametro del modello.
+$K_R$ rappresenta la costante cinetica specifica della reazione $R$ ed è aggiunta come parametro del modello.
 
-$H(S_i)$ è la hill function che è definita come segue:
+$H(S)$ è la hill function che è definita come segue:
 
 $
-  H(S) = cases(
+  H( S) = cases(
     (S^h)/(K_(a,R)^h + S^h) "se "S" è attivatore",
     (K_(i,R)^h)/(K_i^h + S^h) "se "S" è un inibitore" ,
   )
 $
 
-Posso capire se $S$ è un inibitore oppure no dall'identificatore SBO (System Biology Ontology) scritto nel tag SBML del modificatore.
+Tramite i file SBML posso ottenere come informazione se $S$ è un inibitore oppure no dall'identificatore SBO (System Biology Ontology).
 
 $K_(a,R)$ e $K_(i,R)$ sono delle nuove costanti aggiunte ai parametri del modello.
 
-= Clonazione del modello per i tessuti
+== Calcolo medie del valore delle concentrazioni
 
-Una feature utile per questo progetto è quella di clonare il modello per vari tessuti. Questo viene fatto perché quando verrà utilizzato questo progetto per il progetto di *Intelligenza Artificiale* il modello deve essere clonato per ogni tessuto per cui si hanno i dati proteometici.
-
-Quindi viene clonato il modello per ogni tessuto specificato, ma le costanti cinetiche per ogni reazione rimangono identiche attraverso i tessuti. Questo perché una reazione chimica se è veloce lo è sempre indipendentemente dal tessuto in cui viene simulato.
-
-= Calcolo medie del valore delle concentrazioni
-
-Per il progetto di *Intelligenza Artificiale* è necessario sapere la concentrazione media delle specie alla fine della simulazione, questo dato serve per due motivi:
+Per stimare le costanti cinetiche è necessario sapere la concentrazione media delle specie alla fine della simulazione, questo dato serve per due motivi:
 
 + Verificare che la concentrazione media è quella che ci si aspettava (per le proteine).
 + Verificare che il sistema sia stabile.
 
-Quindi ho aggiunto un modulo che aggiunge dei parametri non costani al modello SBML che rappresentano la concentrazione media di una specie.
+Per questo motivo, ho aggiunto un modulo che introduce nel modello SBML dei parametri variabili che rappresentano la concentrazione media di ciascuna specie.
 
 Sia $x_S$ la concentrazione media della specie $S$. Allora la sua dinamica è definita come segue:
 
@@ -148,15 +136,17 @@ Dove $epsilon$ è un numero sufficientemente piccolo, per gli scopi di questo pr
 
 L'equazione differenziale @din se simulata con un orizzonte abbastanza grande il valore di $x_S$ combacerà con il vero valore medio della concentrazione $S$.
 
-In piu' abbiamo che $x_S (0) = S(0)$.
+In più abbiamo che $x_S (0) = S(0)$.
 
-= Input e Output
+== Input e Output
 
-Un pathway normalmente ha delle specie di Input e delle specie di Output. Riconoscerle è abbastanza semplice; Se una specie 
+Un modello biologico normalmente ha delle specie di Input e delle specie di Output. Riconoscerle è abbastanza semplice; Se una specie 
 appare solo come reagente delle reazioni allora è un Input. Se una specie appare solo come prodotto allora è un Output.
 
-Perciò ogni specie input viene impostata come costante, invece ogni specie di output viene aggiunta una reazione di degradazione in modo tale che non crescano. La concentrazione degli output quindi si aggirerà sullo zero, ma tanto la loro concentrazione non influenzano le altri reazioni, quindi non cambia il significato biologico del modello.
+Pertanto, per ogni specie di input la concentrazione viene mantenuta costante durante la simulazione, mentre per ogni specie di output la concentrazione iniziale è posta a zero e rimane costante, simulando così la rimozione continua dell'output dal sistema.
+
+= Stima delle costanti cinetiche
 
 = Risultati
 
-Ecco un pò di simulazioni con concentrazione iniziale casuale di ogni specie, concentrazione iniziale solo di proteine e di metaboliti ed anche una simulazione in vari tessuti del corpo.
+// TODO
