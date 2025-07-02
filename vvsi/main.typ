@@ -158,7 +158,7 @@ Dovremmo dare un dominio a queste variabili, anche perché l'ottimizzatore riesc
 
 Se $theta_i$ è una singola costante cinetica, allora un range di valori ragionevole è $theta_i in [10^(-6), 10^6]$.
 
-Tuttavia, questo approccio presenta una criticità: le costanti cinetiche possono variare su diversi ordini di grandezza. Di conseguenza, un intervallo ampio come $[10^(-6), 10^6]$ può causare problemi all'ottimizzatore, il quale tende a esplorare maggiormente le regioni dell'intervallo con valori elevati, trascurando invece le zone vicine allo zero. Questo squilibrio nella distribuzione dei punti esplorati può compromettere l'efficacia della ricerca.
+Tuttavia, questo approccio presenta una problema: le costanti cinetiche possono variare su diversi ordini di grandezza. Di conseguenza, un intervallo ampio come $[10^(-6), 10^6]$ può causare problemi all'ottimizzatore, il quale tende a esplorare maggiormente le regioni dell'intervallo con valori elevati, trascurando invece le zone vicine allo zero. Questo squilibrio nella distribuzione dei punti esplorati può compromettere l'efficacia della ricerca.
 
 Per superare questa limitazione, è possibile adottare un'ottimizzazione in scala logaritmica.
 
@@ -171,7 +171,7 @@ $d$ è il numero di costanti cinetiche e ciascuna costante è poi ricostruita co
 
 == Loss function
 
-L'ottimizzatore deve indovinare quindi un vettore $theta in [-6, 6]^d$ che minimizza una cerca loss function.
+L'ottimizzatore deve indovinare quindi un vettore $theta in [-6, 6]^d$ che minimizza una loss function da definire.
 
 La loss function deve codificare l'utilità dei parametri scelti.
 
@@ -180,14 +180,9 @@ I requisiti per le costanti cinetiche da scegliere sono i seguenti:
 + Il sistema deve terminare in uno stato di stabilità.
 + Il valore delle proteine di cui si conoscono le concentrazione medie devono combaciare con il valore delle concentrazioni simulate.
 
-=== Dati sperimentali
-
-// TODO: provenienza dei dati
-// TODO: iBAQ e conversione in mol/L
-
-Prima di poter 
-
 === Modellazione della Loss function
+
+Sia $n$ il numero di specie nel modello.
 
 Sia $theta in [-6, 6]^d subset RR^d$ il vettore degli esponenti delle costanti cinetiche:
 
@@ -203,10 +198,14 @@ Sia $T$ l'orizzonte della simulazione.
 
 $x(t, theta)$ lo stato del sistema al tempo $t$ con i parametri del sistema $theta$.
 
-$accent(x, hat)(t, theta)$ = $x(T, theta) + epsilon$ dove $epsilon$ è un errore casuale // TODO: dire meglio
+$accent(x, hat)(t, theta)$ = $x(T, theta) + epsilon$ dove $epsilon$ è un errore casuale 
+L'errore casuale avviene poiché per le specie in input di cui non si conoscono le concentrazioni medie
+viene assegnato un valore casuale in un certo range realistico.
 
+Quindi le costanti cincetiche da trovare devono rispettare i vincoli un qualsiasi valore
+per le specie in input.
+// TODO: dire meglio
 
-// TODO: il sistema deve essere stabile
 
 Le costanti cinetiche, per essere realistiche, devono portare lo stato del sistema in un punto di equilibrio.
 
@@ -217,7 +216,7 @@ Sis $accent(m, hat)_i (t, theta)$ la concentrazione media della specie $i$ al te
 Sia $phi in [0,1]$ un iper-parametro del modello
 
 $
-  LL_1(theta) =  sum_(i=1)^d (accent(m, hat)_i (phi dot T, theta) - accent(m, hat)_i (T, theta))^2
+  LL_1(theta) =  sum_(i=1)^n (accent(m, hat)_i (phi dot T, theta) - accent(m, hat)_i (T, theta))^2
 $
 
 Per i test ho usato come iper-parametro $phi = 0.80$.
@@ -251,10 +250,15 @@ $
 
 Dove $p$ è un altro iper-parametro del modello.
 
+Questi iper-parametri sono stati scelti uguali per tutti i test // TODO: dire meglio
+, però in futuro potrebbero essere scelti tramite il processo di model selection per scegliere gli iper-parametri che convergono piu' velocemente.
+
+// TODO: dire qua la scelta degli iper-parametri
+
 
 == Funzionamento dell'ottimizzazione Black-Box di Nevergrad
 
-
+// TODO: leggere articoli
 
 = Risultati
 

@@ -1,0 +1,1 @@
+# TODO: implementa per eliminare tutti i file ignorati

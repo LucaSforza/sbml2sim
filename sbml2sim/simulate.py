@@ -86,6 +86,7 @@ def penalty(sbml, r: rr.RoadRunner,concentration: dict[SpeciesId, float],tissue:
     return (penalty, bio_pen)
 
 
+# TODO: da rifare completamente
 # returns the penalty
 def simulate(sbml: SBMLDoc, f: float, k_1: float, k_2: float,concentration: dict[SpeciesId, float],tissue: str,  plot=False, output_file_name="simulation") -> tuple[float,float]:
     # TODO: setta f, k_1 e k_2
