@@ -1,4 +1,4 @@
-#set page(header: align(right)[Luca Sforza 2050030])
+#set page(header: align(right)[Luca Sforza 2050030], numbering: "1")
 
 #set heading(numbering: "1.")
 
@@ -259,12 +259,58 @@ Il parametro $p$ regola il bilanciamento tra stabilità del sistema e aderenza a
 
 // TODO: dire quale iper-parametro ho scelto per p
 
+#import "@preview/lovelace:0.3.0": *
 
 == Funzionamento dell'ottimizzazione Black-Box di Nevergrad
+// TODO: leggere articoli
+
+La suite di ottimizzatori usati per questo progetto è Nevergrad, sviluppato da Meta.
+
+Nevergrad utilizza una vasta gamma di ottimizzatori utilizzabili. Uno di questo è *Wizard* che opera come meta-euristica su quale algoritmo di ottimizzazione va usato, selezionando anche gli iper-parametri.
+
+Inoltre gli ottimizzatori di Nevegrad si basano sul patter _ask and tell_.
+
+Ossia ogni ottimizzatore ha un intefaccia in cui permettono di richiedere dei parametri
+che rappresenta il tentativo di ottimizzare la funzione. ($theta <- "optimizer"."ask()"$).
+
+Invece la _tell_ permette di informare l'ottimizzatore la _loss_ dei parametri scelti.($"optimizer"."tell"(theta, LL(theta))$)
+
+Per valutare le performance lo si può fare con $LL("optimizer"."recommend")$.
+
+Per ottimizzare la funzione è stato usato il seguente algoritmo.
+#figure(
+pseudocode-list[
+  + *for* $i$ *in* range(*budget*) *do*
+    + $theta <- "optimizer"."ask"()$;
+    + $"optimizer"."tell"(theta, LL(theta))$
+  + *end for*;
+]
+)
+
+Ma si potrebbe fare di meglio con il seguente algoritmo (non implementato per questo progetto, solo un idea).
+
+#figure(
+pseudocode-list[
+  + *for* $i$ *in* range(*budget*) *do*
+    + DecisionSet $<- emptyset.rev$
+    + *for* $"_"$ *in* range(*parallel degree*) *do*
+      + DesionSet $<-$ DesionSet $union {"optimizer"."ask"()}$
+    + *end for*;
+    + Values $<- {(theta, LL(theta)) | theta in "DecisionSet"}$ $"#"$ calcolato in parallelo
+    + $"optimizer"."tell"("Values")$
+  + *end for*;
+]
+)
+
+Questo algoritmo ha due vantaggi rispetto al precedente:
+
++ La funzione di _loss_ può essere parallelizzata. RoadRunner (simulatore di sistemi biologici) permette di eseguire in parallelo piu' modelli.
++ *Wizard* può scegliere un algoritmo diverso per ottimizzare che sfrutta il fatto di poter richiedere più parametri contemporaneamente rispetto dal grado di parallelismo (numero di soluzione che possono essere calcolate contemporaneamente).
+
+
+
 
 #pagebreak()
-
-// TODO: leggere articoli
 
 = Risultati
 #figure(
@@ -304,3 +350,8 @@ Tuttavia, non tutte le specie chimiche riescono a raggiungere esattamente i valo
 )
 
 Da questo ultimo plot si può visualizzare la stabilità del sistema. All'inizio della simulazione non è stabile, ma arriva velocemente ad un punto di stabilità.
+
+#figure(
+  image("log.png", width: 80%),
+  caption: [Andamento della funzione di utilità (loss) durante i tentativi dell’ottimizzatore.]
+)
