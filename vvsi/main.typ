@@ -24,9 +24,11 @@
 
 La simulazione quantitativa di processi biologici complessi richiede modelli dinamici basati su leggi cinetiche con parametri precisi, come le costanti cinetiche delle reazioni.
 
-Tuttavia, molti modelli biologici disponibili, come quelli di Reactome, sono qualitativi e non forniscono questi dati essenziali, limitando la possibilità di simulazioni realistiche.
+Tuttavia, molti modelli biologici disponibili, come quelli di Reactome, // TODO: riferimento reactome
+sono qualitativi e non forniscono questi dati essenziali, limitando la possibilità di simulazioni realistiche.
 
-In questo lavoro, ci si concentra sulla trasformazione di un modello qualitativo di ripiegamento proteico mediato da chaperoni in un modello quantitativo utilizzabile per simulazioni dinamiche.
+In questo lavoro, ci si concentra sulla trasformazione di un modello qualitativo di ripiegamento proteico mediato da chaperoni // TODO: riferimento
+in un modello quantitativo utilizzabile per simulazioni dinamiche.
 
 Per superare la mancanza di dati sperimentali sulle costanti cinetiche, si utilizza un approccio di ottimizzazione black box per stimare questi parametri, vincolando il modello a dati di concentrazione proteica tipici del cancro al seno.
 
@@ -88,7 +90,7 @@ Invece il moto è descritto dalle leggi cinetiche delle reazioni, che a loro vol
 
 Sia $S$ la concentrazione di una singola specie. $v_1,...,v_k$ è la velocità delle reazioni dove $S$ è reagente e $v'_1,...,v'_m$ è la velocità delle reazioni dove $S$ è prodotto. // TODO: riferimento system biology
 
-Allora:
+Allora: // TODO: riferimento system biology
 
 $
   (d S)/(d t) = sum_(i=1)^m v'_i - sum_(j=1)^k v_i
@@ -100,14 +102,14 @@ Dato che i modelli di Reactome sono qualitativi e non quantitativi mancano total
 Quindi la velocità $v$ di una reazione $R$ è definita come segue:
 
 Siano $A_1, A_2, ..., A_n$ le specie reagenti, $n_i$ la stechiometria del reagente $i$ e $M_1, M_2, ..., M_m$ le specie modificatrici.
-
+// TODO: riferimento system biology mass action
 $
   v = product_(i=1)^m H(M_i) dot K_R dot product_(i=1)^n A_i^(n_i)
 $
 
 $K_R$ rappresenta la costante cinetica specifica della reazione $R$ ed è aggiunta come parametro del modello.
 
-$H(S)$ è la hill function che è definita come segue:
+$H(S)$ è la hill function che è definita come segue: // TODO: riferimento hill function
 
 $
   H( S) = cases(
@@ -255,7 +257,7 @@ $
 
 Dove $p$ è un iper-parametro che bilancia l'importanza relativa tra la stabilità del sistema ($LL_1$) e l'aderenza ai dati sperimentali ($LL_2$).
 
-Il parametro $p$ regola il bilanciamento tra stabilità del sistema e aderenza ai dati sperimentali: valori di $p$ prossimi a 1 privilegiano la stabilità, mentre valori vicini a 0 danno maggiore importanza alla corrispondenza con i dati sperimentali. La funzione $LL_3$ agisce come vincolo rigido, penalizzando con $+infinity$ le soluzioni che generano errori numerici, e pertanto non necessita di un coefficiente di ponderazione.
+Valori di $p$ prossimi a 1 privilegiano la stabilità, mentre valori vicini a 0 danno maggiore importanza alla corrispondenza con i dati sperimentali. La funzione $LL_3$ agisce come vincolo rigido, penalizzando con $+infinity$ le soluzioni che generano errori numerici, e pertanto non necessita di un coefficiente di ponderazione.
 
 // TODO: dire quale iper-parametro ho scelto per p
 
@@ -264,7 +266,7 @@ Il parametro $p$ regola il bilanciamento tra stabilità del sistema e aderenza a
 == Funzionamento dell'ottimizzazione Black-Box di Nevergrad
 // TODO: leggere articoli
 
-La suite di ottimizzatori usati per questo progetto è Nevergrad, sviluppato da Meta.
+La suite di ottimizzatori usati per questo progetto è Nevergrad, sviluppato da Meta. // TODO: riferimento articolo
 
 Nevergrad utilizza una vasta gamma di ottimizzatori utilizzabili. Uno di questo è *Wizard* che opera come meta-euristica su quale algoritmo di ottimizzazione va usato, selezionando anche gli iper-parametri.
 
@@ -294,7 +296,7 @@ pseudocode-list[
   + *for* $i$ *in* range(*budget*) *do*
     + DecisionSet $<- emptyset.rev$
     + *for* $"_"$ *in* range(*parallel degree*) *do*
-      + DesionSet $<-$ DesionSet $union {"optimizer"."ask"()}$
+      + DecisionSet $<-$ DecisionSet $union {"optimizer"."ask"()}$
     + *end for*;
     + Values $<- {(theta, LL(theta)) | theta in "DecisionSet"}$ $"#"$ calcolato in parallelo
     + $"optimizer"."tell"("Values")$
@@ -307,6 +309,59 @@ Questo algoritmo ha due vantaggi rispetto al precedente:
 + La funzione di _loss_ può essere parallelizzata. RoadRunner (simulatore di sistemi biologici) permette di eseguire in parallelo piu' modelli.
 + *Wizard* può scegliere un algoritmo diverso per ottimizzare che sfrutta il fatto di poter richiedere più parametri contemporaneamente rispetto dal grado di parallelismo (numero di soluzione che possono essere calcolate contemporaneamente).
 
+#pagebreak()
+
+== Algoritmi utilizzati da Nevergrad
+
+Tra gli algoritmi che *Wizard* può scegliere ce ne sono veramente tanti, ma ecco una breve descrizione dei principali algoritmi e come vengono scelti da Wizard.
+
+=== Random Search // TODO: ref: https://en.wikipedia.org/wiki/Random_search
+
+Questo è il piu' semplice algoritmo di black box utilizzabile. Semplicemente esegue esperimenti sulla funzione
+obbiettivo usando parametri casuali e da come raccomandation i parametri che minimizzano la loss function.
+
+#figure(
+  pseudocode-list[
+    + ask(*self*: _optimizer_) $->$ _Parameter_:
+      + *if* *self*.raccomandation *is* *None* *then* *return* parametro casuale
+      + Sia *self*.r iper-parametro del modello che è il raggio di una ipersfera
+      + *return* parametro casuale all'interno dell'ipersfera di raggio *self*.r con centro *self*.raccomandation
+    + tell(*self*: _optimizer_, $theta$: _Parameter_, loss: _Real_):
+      + *if* *self*.raccomandation.loss > loss *then*
+        + *self*.raccomandation = $theta$
+  ]
+)
+
+
+=== Bayesian Optimization // TODO: ref BoTorch
+
+Questa tecnica di ottimizzazione è composta da 2 componenti:
++ Un surrogato probabilistico $f$ rispetto alla vera funzione $f_"true"$ da ottimizzare (generalmente un processo gaussiano)
++ Una funzione di acquisizione $alpha$ che ottimizza il surrogato probabilistico al posto della funzione vera.
+
+// TODO: descrivi i processi gaussiani
+
+Un processo gaussiano è un modello probabilistico utilizzato per approssimare funzioni sconosciute in modo non parametrico.
+
+Sia $DD = {(x_i, y_i) | i in [1, n]}$ il dataset degli $n$ esperimenti osservati, dove $y_i = f_"true" (x_i) + epsilon$ e $epsilon$ rappresenta il rumore.
+
+L'obiettivo è stimare il valore della funzione per un nuovo input $x$, cioè calcolare la distribuzione predittiva $P(y| x, DD)$ che si assume essere una gaussiana.
+
+Un processo gaussiano inoltre assume che ogni insieme finito di punti $(x_1, ..., x_n)$ abbia una distribuzione congiunta gaussiana, specificata da una media e una funzione di covarianza (kernel). Questo permette di stimare la media e la varianza della funzione nei punti non osservati, fornendo sia una previsione che una misura di incertezza.
+
+// TODO: scrivi la ask e la tell
+
+#figure(
+  pseudocode-list[
+    + ask(*self*: _optimizer_) $->$ _Parameter_:
+      + *return* *self*.$alpha$(*self*.GaussianProcess);
+    + tell(*self*: _optimizer_, $theta$: _Parameter_, loss: _Real_):
+      + *self*.GaussianProcess.$DD$ = *self*.GaussianProcess.$DD union {(theta, "loss")}$
+  ]
+)
+
+
+=== OnePlusOne // TODO: ref: https://algorithmafternoon.com/strategies/one_plus_one_evolution_strategy/
 
 
 

@@ -15,6 +15,20 @@ def plot_concentration(csv: pd.DataFrame, tissue_concentration: dict[str, float]
     plt.legend()
     plt.savefig(stripped_name+".png")
     plt.clf()
+    
+def plot_utility(log_file_path: str):
+    attempt = 0
+    with open(log_file_path) as f:
+        for line in f.readlines():
+            if line.startswith("[INFO] utility:"):
+                attempt += 1
+                utility = float(line.split(":")[-1])
+                plt.scatter(attempt, utility, color='blue', s=5)
+        plt.yscale("log")
+        plt.xlabel("attempt")
+        plt.ylabel("utility")
+        plt.savefig("log.png")
+        plt.clf()
 
 def main():
     # TODO: riplotta kinetic.png
@@ -46,15 +60,16 @@ def main():
 
     print(f"[INFO] start plotting all concentration")
     for col in csv.columns:
-        if not col.startswith("avg_"):
+        if col.startswith("avg_"):
             plt.plot(csv["time"], csv[col])
             plt.title(f"Concentration over time")
             plt.xlabel("Time")
             plt.ylabel("mol/L")
-            plt.yscale('log')
+            # plt.yscale('log')
     plt.savefig("kinetic_log.png")
     plt.clf()       
     
 # TODO: ristampa kinetic.png con meno cose nella leggenda e in base logaritmica
 if "__main__" == __name__:
     main()
+    # plot_utility("log")
