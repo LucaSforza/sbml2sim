@@ -8,6 +8,8 @@
   justify: true,
 )
 
+#set figure(supplement: "Plot")
+
 #set ref(supplement: none)
 
 #set math.equation(numbering: "(1)")
@@ -202,25 +204,26 @@ $accent(x, hat)(t, theta)$ = $x(T, theta) + epsilon$ dove $epsilon$ è un errore
 L'errore casuale avviene poiché per le specie in input di cui non si conoscono le concentrazioni medie
 viene assegnato un valore casuale in un certo range realistico.
 
-Quindi le costanti cincetiche da trovare devono rispettare i vincoli un qualsiasi valore
-per le specie in input.
+Quindi le costanti cincetiche da trovare devono minimizzare la loss function per un qualsiasi valore
+per le specie in input di cui non si hanno i dati.
 // TODO: dire meglio
 
 
 Le costanti cinetiche, per essere realistiche, devono portare lo stato del sistema in un punto di equilibrio.
 
-Quindi dobbiamo costruire una funzione di utilità che penalizza i sistemi instabili.
+Dobbiamo quindi definire una funzione di utilità che penalizzi i sistemi che non raggiungono uno stato stazionario.
 
-Sis $accent(m, hat)_i (t, theta)$ la concentrazione media della specie $i$ al temp $t$ con i parametri del sistema $theta$.
+Sia $accent(m, hat)_i (t, theta)$ la concentrazione media della specie $i$ al tempo $t$ con i parametri $theta$.
 
-Sia $phi in [0,1]$ un iper-parametro del modello
+Introduciamo un iper-parametro $phi in [0,1]$ che rappresenta la frazione dell’orizzonte temporale $T$ considerata per valutare la stabilità.
+
+Definiamo quindi:
 
 $
   LL_1(theta) =  sum_(i=1)^n (accent(m, hat)_i (phi dot T, theta) - accent(m, hat)_i (T, theta))^2
 $
 
-Per i test ho usato come iper-parametro $phi = 0.80$.
-Questo perché non ha senso vincolare che la concentrazione media sia sempre zero, perché è normale all'inizio può cambiare il valore // TODO: migliora
+Per i test, ho scelto $phi approx 0.80$, in modo da valutare la variazione delle concentrazioni medie tra la fase finale e quella immediatamente precedente della simulazione. Questo permette di ignorare le fluttuazioni iniziali dovute alle condizioni iniziali e concentrarsi sulla stabilità asintotica del sistema.
 
 Adesso dobbiamo vincolare il valore delle specie di cui si conosce la concentrazione media.
 
@@ -231,7 +234,7 @@ $
   LL_2(theta) = sum_((S_i, y) in DD) (accent(x,hat)_i (T, theta) - y)^2
 $
 
-La simulazione potrebbe portare ad errori di integrazione numerica, questo accade perché le costanti cinetiche sono troppo veloci e le concentrazioni delle specie scende $-infinity$ o $+infinity$ molto velocemente.
+Durante la simulazione possono verificarsi errori di integrazione numerica, tipicamente quando le costanti cinetiche assumono valori troppo elevati, causando una variazione troppo rapida delle concentrazioni delle specie che tendono rapidamente a $-infinity$ o $+infinity$.
 
 Le costanti cinetiche scelte non devono avere questa caratteristica quindi la terza funzione di loss sarà o 0 oppure $+infinity$.
 
@@ -242,24 +245,62 @@ $
   )
 $
 
-La los function finale è:
+#pagebreak()
+
+La loss function finale è:
 
 $
-LL(theta) = p dot L_1(theta) + (1 - p)L_2(theta) + L_3(theta)
+LL(theta) = p dot LL_1(theta) + (1 - p) dot LL_2(theta) + LL_3(theta)
 $
 
-Dove $p$ è un altro iper-parametro del modello.
+Dove $p$ è un iper-parametro che bilancia l'importanza relativa tra la stabilità del sistema ($LL_1$) e l'aderenza ai dati sperimentali ($LL_2$).
 
-Questi iper-parametri sono stati scelti uguali per tutti i test // TODO: dire meglio
-, però in futuro potrebbero essere scelti tramite il processo di model selection per scegliere gli iper-parametri che convergono piu' velocemente.
+Il parametro $p$ regola il bilanciamento tra stabilità del sistema e aderenza ai dati sperimentali: valori di $p$ prossimi a 1 privilegiano la stabilità, mentre valori vicini a 0 danno maggiore importanza alla corrispondenza con i dati sperimentali. La funzione $LL_3$ agisce come vincolo rigido, penalizzando con $+infinity$ le soluzioni che generano errori numerici, e pertanto non necessita di un coefficiente di ponderazione.
 
-// TODO: dire qua la scelta degli iper-parametri
+// TODO: dire quale iper-parametro ho scelto per p
 
 
 == Funzionamento dell'ottimizzazione Black-Box di Nevergrad
 
+#pagebreak()
+
 // TODO: leggere articoli
 
 = Risultati
+#figure(
+  grid(
+    columns: 1,
+    rows: 3,
+    //gutter: 2mm,
+    grid(
+      columns: 3,
+      image("breast_cancer_cell_species_379537.png"),
+      image("breast_cancer_cell_species_379538.png"),
+      
+    ),
+    grid(
+      columns: 2,
+      image("breast_cancer_cell_species_379539.png"),
+      image("breast_cancer_cell_species_379540.png"),
+    ),
+      image("breast_cancer_cell_species_379546.png", width: 55%)
+  ),
+   caption: [Concentrazione delle specie vincolate dalla loss function $LL_2$ rispetto ai dati sperimentali],
+)
 
-// TODO
+All'inizio della simulazione, i valori delle concentrazioni vengono impostati uguali a quelli ottenuti dai dati sperimentali.
+Questo approccio serve a far partire il simulatore già vicino a uno stato di equilibrio.
+Partire vicino all'equilibrio rende più semplice e veloce il processo di ottimizzazione, perché il simulatore deve fare meno aggiustamenti per trovare i parametri migliori.
+
+Tuttavia, non tutte le specie chimiche riescono a raggiungere esattamente i valori sperimentali. Questo è normale, perché l'ottimizzazione black box è una tecnica che non assicura l'ottimalità, quindi può non trovare la soluzione perfetta per tutte le specie.
+
+#figure(
+  grid(
+    columns: 2,
+    image("kinetic2.png"),
+    image("kinetic_log.png")
+  ),
+  caption: [Concentrazioni medie di tutte le specie presenti nel sistema: a sinistra scala lineare, a destra scala logaritmica.]
+)
+
+Da questo ultimo plot si può visualizzare la stabilità del sistema. All'inizio della simulazione non è stabile, ma arriva velocemente ad un punto di stabilità.
