@@ -8,7 +8,7 @@
   justify: true,
 )
 
-#set figure(supplement: "Plot")
+#set figure(supplement: "Plot", numbering: none)
 
 #set ref(supplement: none)
 
@@ -220,7 +220,7 @@ Introduciamo un iper-parametro $phi in [0,1]$ che rappresenta la frazione dell�
 Definiamo quindi:
 
 $
-  LL_1(theta) =  sum_(i=1)^n (accent(m, tilde)_i (phi dot T, theta) - accent(m, tilde)_i (T, theta))^2
+  cal(L)_1(theta) =  sum_(i=1)^n (accent(m, tilde)_i (phi dot T, theta) - accent(m, tilde)_i (T, theta))^2
 $
 
 Per i test, ho scelto $phi approx 0.80$, in modo da valutare la variazione delle concentrazioni medie tra la fase finale e quella immediatamente precedente della simulazione. Questo permette di ignorare le fluttuazioni iniziali dovute alle condizioni iniziali e concentrarsi sulla stabilità asintotica del sistema.
@@ -228,10 +228,10 @@ Per i test, ho scelto $phi approx 0.80$, in modo da valutare la variazione delle
 Adesso dobbiamo vincolare il valore delle specie di cui si conosce la concentrazione media.
 
 Sia: $
-DD = {(S_i, y) | S_i "si conoscono le concentrazioni" and "y è la concentrazione mol/L"}$
+cal(D) = {(S_i, y) | S_i "si conoscono le concentrazioni" and "y è la concentrazione mol/L"}$
 
 $
-  LL_2(theta) = sum_((S_i, y) in DD) (log_10 (accent(x,tilde)_i (T, theta)) - log_10 (y))^2
+  cal(L)_2(theta) = sum_((S_i, y) in cal(D)) (log_10 (accent(x,tilde)_i (T, theta)) - log_10 (y))^2
 $
 
 Ho adottato un errore quadratico sulla scala logaritmica per la funzione di loss $LL_2$ al fine di confrontare in modo coerente le concentrazioni simulate con i dati osservati. Questo approccio consente di trattare in maniera naturale quantità che variano su piu' ordini di grandezza.
@@ -241,7 +241,7 @@ Durante la simulazione possono verificarsi errori di integrazione numerica, tipi
 Le costanti cinetiche scelte non devono avere questa caratteristica quindi la terza funzione di loss sarà o 0 oppure $+infinity$.
 
 $
-  LL_3(theta) = cases(
+  cal(L)_3(theta) = cases(
     +infinity "se il sistema ha ottenuto errori di integrazione numerica",
     0 "altrimenti"
   )
@@ -250,12 +250,12 @@ $
 La loss function finale è:
 
 $
-LL(theta) = S dot [ space p dot LL_1(theta) + (1 - p) dot LL_2(theta) space] + LL_3(theta)
+cal(L)(theta) = S dot [ space p dot cal(L)_1(theta) + (1 - p) dot cal(L)_2(theta) space] + cal(L)_3(theta)
 $
 
-Dove $p in [0,1]$ è un iper-parametro che bilancia l'importanza relativa tra la stabilità del sistema ($LL_1$) e l'aderenza ai dati sperimentali ($LL_2$). Invece $S in RR$ è il fattore di scala.
+Dove $p in [0,1]$ è un iper-parametro che bilancia l'importanza relativa tra la stabilità del sistema ($cal(L)_1$) e l'aderenza ai dati sperimentali ($cal(L)_2$). Invece $S in RR$ è il fattore di scala.
 
-Valori di $p$ prossimi a 1 privilegiano la stabilità, mentre valori vicini a 0 danno maggiore importanza alla corrispondenza con i dati sperimentali. La funzione $LL_3$ agisce come vincolo rigido, penalizzando con $+infinity$ le soluzioni che generano errori numerici, e pertanto non necessita di un coefficiente di ponderazione.
+Valori di $p$ prossimi a 1 privilegiano la stabilità, mentre valori vicini a 0 danno maggiore importanza alla corrispondenza con i dati sperimentali. La funzione $cal(L)_3$ agisce come vincolo rigido, penalizzando con $+infinity$ le soluzioni che generano errori numerici, e pertanto non necessita di un coefficiente di ponderazione.
 
 Per questo progetto ho scelto $S = 10^4$ e $p = 0.1$, quindi ho privileggiato l'aderenza ai dati sperimentali.
 
@@ -272,7 +272,7 @@ Inoltre gli ottimizzatori di Nevegrad si basano sul patter _ask and tell_.
 Ossia ogni ottimizzatore ha un intefaccia in cui permettono di richiedere dei parametri
 che rappresenta il tentativo di ottimizzare la funzione. ($theta <- "optimizer"."ask()"$).
 
-Invece la _tell_ permette di informare l'ottimizzatore la _loss_ dei parametri scelti.($"optimizer"."tell"(theta, LL(theta))$)
+Invece la _tell_ permette di informare l'ottimizzatore la _loss_ dei parametri scelti.($"optimizer"."tell"(theta, cal(L)(theta))$)
 
 Per valutare le performance lo si può fare con $LL("optimizer"."recommend")$.
 
@@ -281,7 +281,7 @@ Per ottimizzare la funzione è stato usato il seguente algoritmo.
 pseudocode-list[
   + *for* $i$ *in* range(*budget*) *do*
     + $theta <- "optimizer"."ask"()$;
-    + $"optimizer"."tell"(theta, LL(theta))$
+    + $"optimizer"."tell"(theta, cal(L)(theta))$
   + *end for*;
 ]
 )
@@ -295,7 +295,7 @@ pseudocode-list[
     + *for* $"_"$ *in* range(*parallel degree*) *do*
       + DecisionSet $<-$ DecisionSet $union {"optimizer"."ask"()}$
     + *end for*;
-    + Values $<- {(theta, LL(theta)) | theta in "DecisionSet"}$ $"#"$ calcolato in parallelo
+    + Values $<- {(theta, cal(L)(theta)) | theta in "DecisionSet"}$ $"#"$ calcolato in parallelo
     + $"optimizer"."tell"("Values")$
   + *end for*;
 ]
@@ -308,9 +308,9 @@ Questo algoritmo ha due vantaggi rispetto al precedente:
 + La funzione di _loss_ può essere parallelizzata. RoadRunner (simulatore di sistemi biologici) permette di eseguire in parallelo piu' modelli.
 + *Wizard* può scegliere un algoritmo diverso per ottimizzare che sfrutta il fatto di poter richiedere più parametri contemporaneamente rispetto dal grado di parallelismo (numero di soluzione che possono essere calcolate contemporaneamente).
 
-== Algoritmi utilizzati da Nevergrad
+== Alcuni algoritmi utilizzati da Nevergrad
 
-Tra gli algoritmi che *Wizard* può scegliere ce ne sono veramente tanti, ma ecco una breve descrizione dei principali algoritmi e come vengono scelti da Wizard.
+Tra gli algoritmi che *Wizard* può scegliere ce ne sono veramente tanti, ma ecco una breve descrizione dei principali algoritmi.
 
 === Random Search
 
@@ -329,8 +329,37 @@ La random search @wikipedia-randomsearch è uno degli algoritmi di ottimizzazion
 )
 
 
-=== OnePlusOne // TODO: ref: https://algorithmafternoon.com/strategies/one_plus_one_evolution_strategy/
+=== OnePlusOne 
 
+L'algoritmo OnePlusOne Evolution Strategy @one_plus_one_es è una strategia euristica di ottimizzazione iterativa basata su mutazioni casuali.
+
+L'idea è molto semplice: si parte da una soluzione casuale iniziale, e ad ogni iterazione viene generata una nuova soluzione mutata a partire da quella attuale (chiamato anche _parent_). Se la nuova soluzione ha una loss inferiore rispetto a quella precedente, allora viene accettata come nuova raccomandation.
+
+La mutazione è un disturbo sulle variabili di decisione $cal(N) (0,sigma)$ e $sigma$ cambia dinamicamente durante l'esecuzione dell'algoritmo in base al successo delle mutazioni precedenti, secondo una regola euristica chiamata 1/5th success rule.
+
+Secondo questa regola, se più di 1 mutazione su 5 viene accettata (cioè migliora la loss), allora l'algoritmo aumenta il passo di mutazione $sigma$ per esplorare più velocemente. Se invece meno di 1 su 5 migliora, $sigma$ viene ridotto, per favorire l'esplorazione locale.
+
+#figure(
+pseudocode-list[
+  + ask(*self*: _optimizer_) $->$ _Parameter_:
+    + *if* *self*.raccomandation *is* *None* *then* *return* parametro casuale
+    + *return* parametro mutato da *self*.raccomandation con deviazione standard $sigma$
+  + tell(*self*: _optimizer_, $theta$: _Parameter_, loss: _Real_):
+    + *if* loss < *self*.raccomandation.loss *then*
+      + *self*.raccomandation = $theta$
+      + aggiungi 1 alla finestra di successi
+    + *else*:
+      + aggiungi 0 alla finestra di successi
+    + *end if*;
+    + *if* è il momento di aggiornare $sigma$ *then*
+      + *if* frequenza di successi > 1/5 *then* aumenta $sigma$
+      + *else* diminuisci $sigma$
+    + *end if*;
+]
+)
+)
+
+L'algoritmo OnePlusOne è particolarmente utile quando lo spazio dei parametri è continuo e di dimensione moderata, ed è stato ampiamente usato nel contesto dell'ottimizzazione evolutiva. Il suo vantaggio principale è la capacità di adattarsi automaticamente alla scala del problema, migliorando progressivamente l'efficienza della ricerca.
 
 
 #pagebreak()
