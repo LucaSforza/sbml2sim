@@ -231,8 +231,10 @@ Sia: $
 DD = {(S_i, y) | S_i "si conoscono le concentrazioni" and "y è la concentrazione mol/L"}$
 
 $
-  LL_2(theta) = sum_((S_i, y) in DD) (accent(x,tilde)_i (T, theta) - y)^2
+  LL_2(theta) = sum_((S_i, y) in DD) (log_10 (accent(x,tilde)_i (T, theta)) - log_10 (y))^2
 $
+
+Ho adottato un errore quadratico sulla scala logaritmica per la funzione di loss $LL_2$ al fine di confrontare in modo coerente le concentrazioni simulate con i dati osservati. Questo approccio consente di trattare in maniera naturale quantità che variano su piu' ordini di grandezza.
 
 Durante la simulazione possono verificarsi errori di integrazione numerica, tipicamente quando le costanti cinetiche assumono valori troppo elevati, causando una variazione troppo rapida delle concentrazioni delle specie che tendono rapidamente a $-infinity$ o $+infinity$.
 
@@ -248,21 +250,20 @@ $
 La loss function finale è:
 
 $
-LL(theta) = p dot LL_1(theta) + (1 - p) dot LL_2(theta) + LL_3(theta)
+LL(theta) = S dot [ space p dot LL_1(theta) + (1 - p) dot LL_2(theta) space] + LL_3(theta)
 $
 
-Dove $p$ è un iper-parametro che bilancia l'importanza relativa tra la stabilità del sistema ($LL_1$) e l'aderenza ai dati sperimentali ($LL_2$).
+Dove $p in [0,1]$ è un iper-parametro che bilancia l'importanza relativa tra la stabilità del sistema ($LL_1$) e l'aderenza ai dati sperimentali ($LL_2$). Invece $S in RR$ è il fattore di scala.
 
 Valori di $p$ prossimi a 1 privilegiano la stabilità, mentre valori vicini a 0 danno maggiore importanza alla corrispondenza con i dati sperimentali. La funzione $LL_3$ agisce come vincolo rigido, penalizzando con $+infinity$ le soluzioni che generano errori numerici, e pertanto non necessita di un coefficiente di ponderazione.
 
-// TODO: dire quale iper-parametro ho scelto per p
+Per questo progetto ho scelto $S = 10^4$ e $p = 0.1$, quindi ho privileggiato l'aderenza ai dati sperimentali.
 
 #import "@preview/lovelace:0.3.0": *
 
 == Funzionamento dell'ottimizzazione Black-Box di Nevergrad
-// TODO: leggere articoli
 
-La suite di ottimizzatori usati per questo progetto è Nevergrad, sviluppato da Meta. // TODO: riferimento articolo
+La suite di ottimizzatori usati per questo progetto è Nevergrad @nevergrad, sviluppato da Meta.
 
 Nevergrad utilizza una vasta gamma di ottimizzatori utilizzabili. Uno di questo è *Wizard* che opera come meta-euristica su quale algoritmo di ottimizzazione va usato, selezionando anche gli iper-parametri.
 
@@ -299,6 +300,8 @@ pseudocode-list[
   + *end for*;
 ]
 )
+
+#pagebreak()
 
 Questo algoritmo ha due vantaggi rispetto al precedente:
 
