@@ -14,6 +14,7 @@
 
 #set math.equation(numbering: "(1)")
 
+
 #align(center, text(17pt)[
   *Simulazione del ripiegamento proteico mediato da chaperoni nel cancro* 
 ])
@@ -24,10 +25,10 @@
 
 La simulazione quantitativa di processi biologici complessi richiede modelli dinamici basati su leggi cinetiche con parametri precisi, come le costanti cinetiche delle reazioni.
 
-Tuttavia, molti modelli biologici disponibili, come quelli di Reactome, // TODO: riferimento reactome
+Tuttavia, molti modelli biologici disponibili, come quelli di Reactome @milacic2024reactome,
 sono qualitativi e non forniscono questi dati essenziali, limitando la possibilità di simulazioni realistiche.
 
-In questo lavoro, ci si concentra sulla trasformazione di un modello qualitativo di ripiegamento proteico mediato da chaperoni // TODO: riferimento
+In questo lavoro, ci si concentra sulla trasformazione di un modello qualitativo di ripiegamento proteico mediato da chaperoni @reactome_protein_folding
 in un modello quantitativo utilizzabile per simulazioni dinamiche.
 
 Per superare la mancanza di dati sperimentali sulle costanti cinetiche, si utilizza un approccio di ottimizzazione black box per stimare questi parametri, vincolando il modello a dati di concentrazione proteica tipici del cancro al seno.
@@ -36,7 +37,7 @@ Per superare la mancanza di dati sperimentali sulle costanti cinetiche, si utili
 
 == Formato SBML Livello 3 Versione 1 e descrizione del file SBML relativo al pathway di riferimento
 
-I modelli di Reactome sono scaricabili con il formato SBML (System Biology Markup Language) basato su XML. // TODO: riferimento a SBML
+I modelli di Reactome sono scaricabili con il formato SBML (System Biology Markup Language) basato su XML @hucka2003sbml.
 
 Per questo progetto è stato utilizzato il livello 3 versione 1, poiché è quello che offre Reactome tra i suoi modelli.
 
@@ -86,30 +87,31 @@ Lo stato del sistema se $n$ sono le specie è $x = mat(S_1;...;S_n) in RR^n$.
 
 Dove $S_i$ è la concentrazione della specie $i$.
 
-Invece il moto è descritto dalle leggi cinetiche delle reazioni, che a loro volta descrivono la velocità di una reazione.
+Invece il moto è descritto dalle leggi cinetiche delle reazioni, che a loro volta descrivono la velocità di una reazione @klipp2009systems[cap. 3].
 
-Sia $S$ la concentrazione di una singola specie. $v_1,...,v_k$ è la velocità delle reazioni dove $S$ è reagente e $v'_1,...,v'_m$ è la velocità delle reazioni dove $S$ è prodotto. // TODO: riferimento system biology
+Sia $R = {1,...,n}$ l'insieme degli identificatori delle reazioni, sia $S$ la concentrazione di una singola specie. $v_i$ è la velocità della reazione $i in R$. $R_S subset.eq R$ è l'insieme delle reazioni dove $S$ è reagente. $P_S subset.eq R$ è l'insieme delle reazioni dove $S$ è prodotto. $n^S_i$ è la stechiometria di $S$ nella reazione $i in R$. 
 
-Allora: // TODO: riferimento system biology
+Allora:
 
 $
-  (d S)/(d t) = sum_(i=1)^m v'_i - sum_(j=1)^k v_i
+  (d S)/(d t) = sum_(i in P_S) n^S_i v_i - sum_(j in R_S) n^S_j v_j
 $
 
 == Leggi Cinetiche
 
-Dato che i modelli di Reactome sono qualitativi e non quantitativi mancano totalmente le leggi cinetiche. Le legge utilizzata è quella di Michelis-Mentent. // TODO: non è la mass action?
+Dato che i modelli di Reactome sono qualitativi e non quantitativi mancano totalmente le leggi cinetiche. Le legge utilizzata è la mass action rule, la velocità di una reazione è proporzionale alla concentrazione dei reagenti. Ad essa è stata aggiunta la _hill function_ per modellare i modificatori delle reazioni.
 Quindi la velocità $v$ di una reazione $R$ è definita come segue:
 
 Siano $A_1, A_2, ..., A_n$ le specie reagenti, $n_i$ la stechiometria del reagente $i$ e $M_1, M_2, ..., M_m$ le specie modificatrici.
-// TODO: riferimento system biology mass action
+
 $
   v = product_(i=1)^m H(M_i) dot K_R dot product_(i=1)^n A_i^(n_i)
 $
+#pagebreak()
 
 $K_R$ rappresenta la costante cinetica specifica della reazione $R$ ed è aggiunta come parametro del modello.
 
-$H(S)$ è la hill function che è definita come segue: // TODO: riferimento hill function
+$H(S)$ è la hill function che è definita come segue:
 
 $
   H( S) = cases(
@@ -171,8 +173,6 @@ Invece di ottimizzare direttamente i valori delle costanti cinetiche, si ottimiz
 In questo modo, il problema viene riformulato come la ricerca di un vettore $theta in [-6, 6]^d$, dove
 $d$ è il numero di costanti cinetiche e ciascuna costante è poi ricostruita come $k_i = 10^(theta_i)$.
 
-#pagebreak()
-
 == Loss function
 
 L'ottimizzatore deve indovinare quindi un vettore $theta in [-6, 6]^d$ che minimizza una loss function da definire.
@@ -202,27 +202,25 @@ Sia $T$ l'orizzonte della simulazione.
 
 $x(t, theta)$ lo stato del sistema al tempo $t$ con i parametri del sistema $theta$.
 
-$accent(x, hat)(t, theta)$ = $x(T, theta) + epsilon$ dove $epsilon$ è un errore casuale 
-L'errore casuale avviene poiché per le specie in input di cui non si conoscono le concentrazioni medie
-viene assegnato un valore casuale in un certo range realistico.
+$accent(x, tilde)(t, theta)$ = $x(t, theta) + epsilon$ dove $epsilon$ è un disturbo casuale. 
+Il disturbo avviene perché alcune specie in input non si conoscono le concentrazioni medie,
+quindi viene assegnato un valore casuale in un certo range realistico.
 
 Quindi le costanti cincetiche da trovare devono minimizzare la loss function per un qualsiasi valore
 per le specie in input di cui non si hanno i dati.
-// TODO: dire meglio
 
-
-Le costanti cinetiche, per essere realistiche, devono portare lo stato del sistema in un punto di equilibrio.
+Inoltre le costanti cinetiche, per essere realistiche, devono portare lo stato del sistema in uno stato di equilibrio.
 
 Dobbiamo quindi definire una funzione di utilità che penalizzi i sistemi che non raggiungono uno stato stazionario.
 
-Sia $accent(m, hat)_i (t, theta)$ la concentrazione media della specie $i$ al tempo $t$ con i parametri $theta$.
+Sia $accent(m, tilde)_i (t, theta)$ la concentrazione media della specie $i$ al tempo $t$ con i parametri $theta$.
 
 Introduciamo un iper-parametro $phi in [0,1]$ che rappresenta la frazione dell’orizzonte temporale $T$ considerata per valutare la stabilità.
 
 Definiamo quindi:
 
 $
-  LL_1(theta) =  sum_(i=1)^n (accent(m, hat)_i (phi dot T, theta) - accent(m, hat)_i (T, theta))^2
+  LL_1(theta) =  sum_(i=1)^n (accent(m, tilde)_i (phi dot T, theta) - accent(m, tilde)_i (T, theta))^2
 $
 
 Per i test, ho scelto $phi approx 0.80$, in modo da valutare la variazione delle concentrazioni medie tra la fase finale e quella immediatamente precedente della simulazione. Questo permette di ignorare le fluttuazioni iniziali dovute alle condizioni iniziali e concentrarsi sulla stabilità asintotica del sistema.
@@ -233,7 +231,7 @@ Sia: $
 DD = {(S_i, y) | S_i "si conoscono le concentrazioni" and "y è la concentrazione mol/L"}$
 
 $
-  LL_2(theta) = sum_((S_i, y) in DD) (accent(x,hat)_i (T, theta) - y)^2
+  LL_2(theta) = sum_((S_i, y) in DD) (accent(x,tilde)_i (T, theta) - y)^2
 $
 
 Durante la simulazione possono verificarsi errori di integrazione numerica, tipicamente quando le costanti cinetiche assumono valori troppo elevati, causando una variazione troppo rapida delle concentrazioni delle specie che tendono rapidamente a $-infinity$ o $+infinity$.
@@ -246,8 +244,6 @@ $
     0 "altrimenti"
   )
 $
-
-#pagebreak()
 
 La loss function finale è:
 
@@ -309,16 +305,13 @@ Questo algoritmo ha due vantaggi rispetto al precedente:
 + La funzione di _loss_ può essere parallelizzata. RoadRunner (simulatore di sistemi biologici) permette di eseguire in parallelo piu' modelli.
 + *Wizard* può scegliere un algoritmo diverso per ottimizzare che sfrutta il fatto di poter richiedere più parametri contemporaneamente rispetto dal grado di parallelismo (numero di soluzione che possono essere calcolate contemporaneamente).
 
-#pagebreak()
-
 == Algoritmi utilizzati da Nevergrad
 
 Tra gli algoritmi che *Wizard* può scegliere ce ne sono veramente tanti, ma ecco una breve descrizione dei principali algoritmi e come vengono scelti da Wizard.
 
-=== Random Search // TODO: ref: https://en.wikipedia.org/wiki/Random_search
+=== Random Search
 
-Questo è il piu' semplice algoritmo di black box utilizzabile. Semplicemente esegue esperimenti sulla funzione
-obbiettivo usando parametri casuali e da come raccomandation i parametri che minimizzano la loss function.
+La random search @wikipedia-randomsearch è uno degli algoritmi di ottimizzazione black box più semplici. All'inizio seleziona un parametro casuale nello spazio delle soluzioni. Successivamente, ad ogni iterazione, genera nuovi parametri casuali all'interno di un'ipersfera di raggio $r$ centrata sull'attuale soluzione migliore (raccomandation). Se la loss calcolata sui nuovi parametri è inferiore a quella corrente, la raccomandation viene aggiornata con i nuovi valori trovati.
 
 #figure(
   pseudocode-list[
@@ -329,34 +322,6 @@ obbiettivo usando parametri casuali e da come raccomandation i parametri che min
     + tell(*self*: _optimizer_, $theta$: _Parameter_, loss: _Real_):
       + *if* *self*.raccomandation.loss > loss *then*
         + *self*.raccomandation = $theta$
-  ]
-)
-
-
-=== Bayesian Optimization // TODO: ref BoTorch
-
-Questa tecnica di ottimizzazione è composta da 2 componenti:
-+ Un surrogato probabilistico $f$ rispetto alla vera funzione $f_"true"$ da ottimizzare (generalmente un processo gaussiano)
-+ Una funzione di acquisizione $alpha$ che ottimizza il surrogato probabilistico al posto della funzione vera.
-
-// TODO: descrivi i processi gaussiani
-
-Un processo gaussiano è un modello probabilistico utilizzato per approssimare funzioni sconosciute in modo non parametrico.
-
-Sia $DD = {(x_i, y_i) | i in [1, n]}$ il dataset degli $n$ esperimenti osservati, dove $y_i = f_"true" (x_i) + epsilon$ e $epsilon$ rappresenta il rumore.
-
-L'obiettivo è stimare il valore della funzione per un nuovo input $x$, cioè calcolare la distribuzione predittiva $P(y| x, DD)$ che si assume essere una gaussiana.
-
-Un processo gaussiano inoltre assume che ogni insieme finito di punti $(x_1, ..., x_n)$ abbia una distribuzione congiunta gaussiana, specificata da una media e una funzione di covarianza (kernel). Questo permette di stimare la media e la varianza della funzione nei punti non osservati, fornendo sia una previsione che una misura di incertezza.
-
-// TODO: scrivi la ask e la tell
-
-#figure(
-  pseudocode-list[
-    + ask(*self*: _optimizer_) $->$ _Parameter_:
-      + *return* *self*.$alpha$(*self*.GaussianProcess);
-    + tell(*self*: _optimizer_, $theta$: _Parameter_, loss: _Real_):
-      + *self*.GaussianProcess.$DD$ = *self*.GaussianProcess.$DD union {(theta, "loss")}$
   ]
 )
 
@@ -410,3 +375,7 @@ Da questo ultimo plot si può visualizzare la stabilità del sistema. All'inizio
   image("log.png", width: 80%),
   caption: [Andamento della funzione di utilità (loss) durante i tentativi dell’ottimizzatore.]
 )
+
+#pagebreak()
+
+#bibliography("refs.bib", title: "Bibliografia")
