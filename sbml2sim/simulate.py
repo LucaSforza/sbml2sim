@@ -88,11 +88,7 @@ def penalty(sbml, r: rr.RoadRunner,concentration: dict[SpeciesId, float],tissue:
 
 # TODO: da rifare completamente
 # returns the penalty
-def simulate(sbml: SBMLDoc, f: float, k_1: float, k_2: float,concentration: dict[SpeciesId, float],tissue: str,  plot=False, output_file_name="simulation") -> tuple[float,float]:
-    # TODO: setta f, k_1 e k_2
-    sbml.set_parameter("input_constant_f", f)
-    sbml.set_parameter("input_constant_k_1", k_1)
-    sbml.set_parameter("input_constant_k_2", k_2)
+def simulate(sbml: SBMLDoc,concentration: dict[SpeciesId, float],tissue: str,  plot=False, output_file_name="simulation") -> tuple[float,float]:
     file_sbml = sbml.convert_to_string()
     r = rr.RoadRunner(file_sbml)
     return penalty(sbml, r,concentration, tissue, plot, output_file_name)

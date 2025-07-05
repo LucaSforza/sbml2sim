@@ -76,6 +76,8 @@ def utility_function(
     sbml: s2s.SBMLDoc,
     concentrations: dict[SpeciesId, float],
     tissue_name: str,
+    p: float,
+    S: float,
 ) -> float:
     """
     Funzione di utilità che prende in input:
@@ -91,23 +93,21 @@ def utility_function(
     # Le chiavi di ng_params sono sempre 'f', 'k_1', 'k_2'
     result = 0.0
     integration_errors = 0
-    for f in [10**-1]: # [10**(-i) for i in range(1,6+1)]:
-        for k_1 in [0]: # [k for k in range(0,7+1)]:
-            for k_2 in [0]: # [k for k in range(0,7+1)]:
-                # TODO: per ogni avg che ritorna una concentrazione negativa metti un valore molto alto
-                (steady_pen, bio_pen) = sim.simulate(sbml, f, k_1, k_2, concentrations, tissue_name)
-                if math.isnan(steady_pen) or math.isnan(bio_pen):
-                    print("[FATAL ERORR] utility function returned NaN")
-                    exit(1)
-                if math.isinf(steady_pen):
-                    if steady_pen < 0:
-                        print("[FATAL ERROR] Negative infinity returned by simulate function. An unexpected error occurred.")
-                        exit(1)
-                    else:
-                        end_time = time.time()
-                        print(f"[INFO] Simulation {attempts} ended WITH errors in {end_time - start_time:.2f} seconds")
-                        return math.inf
-                result += bio_pen*10**20 + steady_pen*10**4
+
+    (steady_pen, bio_pen) = sim.simulate(sbml, concentrations, tissue_name)
+    if math.isnan(steady_pen) or math.isnan(bio_pen):
+        print("[FATAL ERORR] utility function returned NaN")
+        exit(1)
+    if math.isinf(steady_pen):
+        if steady_pen < 0:
+            print("[FATAL ERROR] Negative infinity returned by simulate function. An unexpected error occurred.")
+            exit(1)
+        else:
+            end_time = time.time()
+            print(f"[INFO] Simulation {attempts} ended WITH errors in {end_time - start_time:.2f} seconds")
+            return math.inf
+
+    result += bio_pen*(1 - p)*S + steady_pen*p*S
     end_time = time.time()
     print(f"[INFO] Simulation {attempts} ended WITHOUT errors in {end_time - start_time:.2f} seconds")
     utility = result
@@ -135,11 +135,11 @@ def search_for_kinetic_constants(sbml: s2s.SBMLDoc,file_path: str,  tissue: str,
         # Parameter: output constant
         output_param_dict[oc] = ng.p.Scalar(lower=-20.0, upper=0.0)
     parametrization = ng.p.Dict(**{ "kinetic_constants": ng.p.Dict(**kinetic_param_dict), "output_constants": ng.p.Dict(**output_param_dict) })
-    optimizer = ng.optimizers.NGOpt(parametrization=parametrization, budget=1_000)
+    optimizer = ng.optimizers.NGOpt(parametrization=parametrization, budget=3_000)
 
     def ng_objective(ng_params):
         # hidden parameters sbml and concentrations
-         return utility_function(ng_params, sbml, concentrations, tissue)
+         return utility_function(ng_params, sbml, concentrations, tissue, 0.1, 10**4)
     print("[INFO] Start Opt")
     start_opt = time.time()
     for _ in range(optimizer.budget):
@@ -158,44 +158,6 @@ def search_for_kinetic_constants(sbml: s2s.SBMLDoc,file_path: str,  tissue: str,
     sbml.save_converted_file(file_path.replace(".", "-kinetic-constants."))
     sim.simulate(sbml, 10**(-1), 0, 0,concentrations, tissue,  plot=True, output_file_name="kinetic")
     return result
-"""
-def search_for_output_constants(sbml: s2s.SBMLDoc,file_path: str,  tissue: str, concentrations: dict[SpeciesId, float]) -> dict[ParameterId, float]:
-    print("[INFO] Opt output constants")
-    sbml.set_outputs_variable()
-    output_constants: list[ParameterId] = sbml.get_output_constants()
-    
-    # Build parametrization with separate dictionaries
-    output_param_dict = {}
-    for kc in output_constants:
-        # Parameter: kinetic constant
-        output_param_dict[kc] = ng.p.Scalar(lower=-20.0, upper=0.0)
-    parametrization = ng.p.Dict(**{ "output_constants" : ng.p.Dict(**output_param_dict)})
-    optimizer = ng.optimizers.NGOpt(parametrization=parametrization, budget=3_000)
-    
-    def ng_objective(ng_params):
-        # hidden parameters sbml and concentrations
-         return utility_function(ng_params, sbml, concentrations, tissue)
-    print("[INFO] Start Opt")
-    start_opt = time.time()
-    for _ in range(optimizer.budget):
-        x = optimizer.ask()
-        loss = ng_objective(x)
-        if loss < 1e-5:
-            optimizer.tell(x, loss)
-            break
-        optimizer.tell(x, loss)
-    end_opt = time.time()
-    recommendation = optimizer.provide_recommendation()
-    print("[INFO] Best parameters found:\n", recommendation.value)
-    print("[INFO] Best utility found:", best_results)
-    print(f"[INFO] time:{end_opt - start_opt:.2f}")
-    with open("parameters_output_constants.json", "w") as f:
-        json.dump(recommendation.value, f)
-    result: dict[str, dict[ParameterId, float]] = recommendation.value
-    set_sbml_for_attempt(sbml, TISSUE, None, result["output_constants"], concentrations)
-    sbml.save_converted_file(file_path.replace(".", "-output-constants."))
-    sim.simulate(sbml, 10**(-1), 0, 0, plot=True, output_file_name="output") # TODO: modificare nome file
-    return result """
 
 def main():
     global best_results, attempts
@@ -207,7 +169,6 @@ def main():
     set_compartement_size(sbml, volume_cell_breast_cancer_cell)
     proteins: dict[SpeciesId,UniprodId] = sbml.get_proteins_data()
     
-    # TODO: remove all_tissue_names
     (proteomics, _) = get_proteomics(proteins) # APIs
 
     concentrations: dict[SpeciesId, float] = convert_ibaq_to_concentrations(sbml, proteomics, TISSUE)
@@ -215,19 +176,10 @@ def main():
     # replica il modello per il tessuto del cancro al seno
     print("[INFO] init model")
     sbml = init_model(sbml, file_path, TISSUE, concentrations)
-    # sbml.set_outputs_variable()
     # le costanti cinetiche rappresentato un esponente x. Per avere il valore calcolcare 10^x
     result = search_for_kinetic_constants(sbml, file_path, TISSUE, concentrations)
-    best_results = math.inf
-    attempts = 0
-    # output_constants  = search_for_output_constants(sbml, file_path, TISSUE, concentrations)
     
     print("[INFO] kinetic costants: ")
     print(result["kinetic_constants"])
     print("[INFO] output constants")
     print(result["output_constants"])
-    
-    # sbml.set_outputs() # setta gli output in modo tale che aumentino di concentrazione
-    # TODO: ottimizza le costanti di output
-    
-    # TODO: simula il sistema con con costanti cinetiche e costanti di output corrette

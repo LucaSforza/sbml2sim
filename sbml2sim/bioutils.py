@@ -225,7 +225,7 @@ def choose_tissue_for_replication(all_tissue_names: set[str], proteomics: dict[s
         max_count = max(counter.values())
         most_common_tissues = {tissue for tissue, count in counter.items() if count == max_count}
         tissue_names = most_common_tissues
-    return 
+    return tissue_names 
 
 def assign_concentrations(sbml: s2s.SBMLDoc,tissue_name: str, concentrations: dict[SpeciesId, float]):
     print("[INFO] assign concentration to species")

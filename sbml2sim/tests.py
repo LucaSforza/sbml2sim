@@ -53,30 +53,16 @@ def test_clone_model_per_tissue(sbml: s2s.SBMLDoc, tissue: str, path: str, conce
     # TODO: add start concentration for input casual
     new_sbml.add_time_to_model()
     new_sbml.add_avg_calculations_for_all_species()
-    new_sbml.assigment_rule_for_inputs()
-    new_sbml.set_parameter("input_constant_f", 1.0/10.0)
-    new_sbml.set_parameter("input_constant_k_1",1.0)
-    new_sbml.set_parameter("input_constant_k_2",1.0)
     new_sbml.save_converted_file(path.replace(".","-real-tissues-modified."))
-    # new_sbml.simulate(output_file="real-tissue-"+RESULTS, duration=DURATION)
-    # plot_results("real-tissue-"+RESULTS, "real-tissues.png")
     print(new_sbml.get_kinetic_constants())
     print(new_sbml.get_output_constants())
-    sim.simulate(new_sbml)
+    sim.simulate(new_sbml, concentrations, tissue, plot=True)
     print("[INFO] clone model per tissue simulation completed")
 
 def test_all(sbml: s2s.SBMLDoc, tissue: str, path: str, concentrations: dict[str, dict[str, float]]):
     print(f"[INFO] cloning SBML for tissue: {tissue}")
     sbml.save_converted_file(path.replace(".","-modified."))
     test_clone_model_per_tissue(sbml, tissue, path, concentrations)
-    # sbml.add_time_to_model()
-    # sbml.add_avg_calculations_for_all_species()
-    # print("[INFO] simulate SBML, every species as a random start concentration")
-    # test_random_start_concentration(sbml)
-    # print("[INFO] simulate SBML, every protein and compound as a random start concentration")
-    # test_random_protein_compound_start_concentration(sbml)
-    # print("[INFO] end tests")
-
 
 
 def parse_args() -> tuple[str,str]:

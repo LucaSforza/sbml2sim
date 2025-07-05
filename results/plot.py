@@ -55,7 +55,7 @@ def main():
     csv = pd.read_csv("kinetic.csv")
     for col in csv.columns:
         stripped_col = col.strip("[]")
-        if col in tissue_concentration.keys():
+        if stripped_col in tissue_concentration.keys():
             plot_concentration(csv, tissue_concentration, col, stripped_col)
 
     print(f"[INFO] start plotting all concentration")
@@ -66,7 +66,7 @@ def main():
             plt.xlabel("Time")
             plt.ylabel("mol/L")
             # plt.yscale('log')
-    plt.savefig("kinetic_log.png")
+    plt.savefig("kinetic2.png")
     plt.clf()       
     
 # TODO: ristampa kinetic.png con meno cose nella leggenda e in base logaritmica
