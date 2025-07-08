@@ -5,6 +5,8 @@ import roadrunner as rr
 from s2s import SBMLDoc
 from bioutils import SpeciesId
 import pandas as pd
+import argparse
+import sys
 
 
 def steady_state_residual(sbml, r: rr.RoadRunner, sim) -> float:
@@ -92,3 +94,33 @@ def simulate(sbml: SBMLDoc,concentration: dict[SpeciesId, float],tissue: str,  p
     file_sbml = sbml.convert_to_string()
     r = rr.RoadRunner(file_sbml)
     return penalty(sbml, r,concentration, tissue, plot, output_file_name)
+
+def run(sbml: SBMLDoc, plot=False,only_avg=False, output_file="simulation") -> None:
+    file_sbml = sbml.convert_to_string()
+    r = rr.RoadRunner(file_sbml)
+    output_file_csv = output_file+".csv"
+    output_file_png = output_file+".png"
+    sim = r.simulate(0, 100, output_file=output_file_csv)
+    if plot:
+        import matplotlib.pyplot as plt
+
+        df = pd.read_csv(output_file_csv)
+        cols = [col for col in df.columns if col.find("time") == -1 and (not only_avg or col.startswith('avg_')) and (only_avg or not col.startswith('avg_')) and not sbml.is_output(col.replace("avg_","",1))]
+        df[cols].plot()
+        plt.xlabel('Time')
+        plt.ylabel('Value')
+        plt.title('Simulation Results')
+        plt.savefig(output_file_png)
+        
+def parse_args():
+    parser = argparse.ArgumentParser(description="Simulate SBML model and plot results.")
+    parser.add_argument("input_file", help="Path to the SBML input file")
+    parser.add_argument("--plot", action="store_true", help="Plot the simulation results")
+    parser.add_argument("--only-avg", action="store_true", help="Plot only avg_* columns")
+    parser.add_argument("--output-file", default="simulation", help="Base name for output files (csv/png)")
+    return parser.parse_args()
+
+if __name__ == "__main__":
+    args = parse_args()
+    sbml = SBMLDoc(args.input_file)
+    run(sbml, plot=args.plot, only_avg=args.only_avg, output_file=args.output_file)

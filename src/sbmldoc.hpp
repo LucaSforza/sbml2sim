@@ -50,11 +50,6 @@ public:
         return document.replicate_model_per_tissue(tissues, n_tissues);
     }
 
-    enum Flags {
-        all_convience_rate_law = 1 << 0,
-        avg_for_only_proteins = 1 << 1
-    };
-
     SBMLDoc() { }
 
     /**
@@ -598,7 +593,8 @@ public:
             libsbml::Species *s = model->getSpecies(sid);
             s->setBoundaryCondition(false);
         }
-        create_a_fake_reaction_for_all_outputs(model, outputs);
+        // TODO: create a method for creating a fake reaction for all outputs
+        // create_a_fake_reaction_for_all_outputs(model, outputs);
         add_avg_for_outputs(model, outputs);
     }
 };

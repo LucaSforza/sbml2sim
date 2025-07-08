@@ -1,3 +1,9 @@
+# 7/06/2025
+
+## TODOs:
+- create scripts for simulating an SBML model
+- implement prof idea: TODO: write prof idea
+
 # 26/06/2025
 
 ## TODOs
