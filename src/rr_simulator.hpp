@@ -7,11 +7,20 @@
 
 class rr_Simulator : public Simulator {
 
-    rr::RoadRunner simulator; 
+    rr::RoadRunner simulator;
 
 public:
     virtual ~rr_Simulator() override = default;
-    SimulationResult simulate(Parameters& param) {
+
+    rr_Simulator(SBMLDoc *doc) {
+        simulator(doc->convert_to_sbml_string());
+    }
+
+    void set_parameter(const char *id, double value) override {
+        this->simulator.setGlobalParameterByName(id, value);
+    }
+
+    SimulationResult simulate(const std::unordered_map<SpeciesId>& ids) override {
 
     }
 };

@@ -22,6 +22,7 @@
 #define SBO_ENZYME 13
 
 #define EPSILON (1e-6)
+#define LITTLE_EPSILON (1e-12)
 
 using SpeciesId = std::string;
 using ParameterId = std::string;
