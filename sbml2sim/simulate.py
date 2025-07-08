@@ -1,4 +1,5 @@
 import math
+from typing import Any
 import numpy as np
 import roadrunner as rr
 
@@ -7,6 +8,8 @@ from bioutils import SpeciesId
 import pandas as pd
 import argparse
 import sys
+
+SimulationResult=Any
 
 
 def steady_state_residual(sbml, r: rr.RoadRunner, sim) -> float:
@@ -95,7 +98,8 @@ def simulate(sbml: SBMLDoc,concentration: dict[SpeciesId, float],tissue: str,  p
     r = rr.RoadRunner(file_sbml)
     return penalty(sbml, r,concentration, tissue, plot, output_file_name)
 
-def run(sbml: SBMLDoc, plot=False,only_avg=False, output_file="simulation") -> None:
+# returns the result of the simulation
+def run(sbml: SBMLDoc, plot=False,only_avg=False, output_file="simulation") -> SimulationResult:
     file_sbml = sbml.convert_to_string()
     r = rr.RoadRunner(file_sbml)
     output_file_csv = output_file+".csv"
@@ -111,6 +115,36 @@ def run(sbml: SBMLDoc, plot=False,only_avg=False, output_file="simulation") -> N
         plt.ylabel('Value')
         plt.title('Simulation Results')
         plt.savefig(output_file_png)
+    return sim
+
+EPSILON=1e-12
+
+def protein_order_penalty(
+    sbml: SBMLDoc,
+    sim_concentration: dict[SpeciesId, float],
+    concentration: dict[SpeciesId, float]
+) -> float:
+    """
+    Computes a penalty based on the order of protein concentrations.
+    The penalty increases if the simulated order of protein concentrations does not match the expected order.
+    """
+    # Filter and sort simulated concentrations for proteins
+    # TODO: is_protein check if the protein is not an input or output?
+    sim_concs = [(id, conc) for (id, conc) in sim_concentration.items() if conc is not None and sbml.is_protein(id)]
+    sim_concs.sort(key=lambda x: x[1])
+
+    # Filter and sort target concentrations for proteins
+    target_concs = [(id, conc) for (id, conc) in concentration.items() if sbml.is_protein(id)]
+    target_concs.sort(key=lambda x: x[1])
+
+    # Calculate penalty if the order does not match
+    error: float = 0.0
+    for (sim_id, sim_conc), (target_id, _) in zip(sim_concs, target_concs):
+        if sim_id != target_id:
+            # Penalize mismatch in order
+            error += (math.log10(sim_conc + EPSILON) - math.log10(concentration[sim_id] + EPSILON)) ** 2
+    return error
+        
         
 def parse_args():
     parser = argparse.ArgumentParser(description="Simulate SBML model and plot results.")

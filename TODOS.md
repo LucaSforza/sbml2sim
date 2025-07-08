@@ -2,8 +2,14 @@
 
 ## TODOs:
 - Create a simulatable file that includes proteomics data.
-- When simulating a model, allow the use of an external file containing kinetic constants.
-- implement prof idea: TODO: write prof idea
+- Enable simulation of a model using an external file for kinetic constants.
+- Simulate a model where parameters can be specified via a boolean array. (reaction are only fast or slow)
+- The constants for a given enzyme are the same across all reactions in which it participates.
+- implement prof idea:
+    - Given a parametric model and a boolean array (reactions are either fast or slow), find all arrays that satisfy the following constraints:
+        - The concentrations of the species must be ordered according to the experimental data (if available).
+        - The system is stable, meaning the concentrations remain within a certain range, specifically between 0 and the concentration of water.
+- Run the project on the cluster and parallelize the computations.
 
 
 # 7/06/2025
