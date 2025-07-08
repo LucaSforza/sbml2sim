@@ -7,7 +7,7 @@
 
 class rr_Simulator : public Simulator {
 
-    rr::RoadRunner simulator;
+    rr::RoadRunner simulator; 
 
 public:
     virtual ~rr_Simulator() override = default;

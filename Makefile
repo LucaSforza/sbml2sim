@@ -5,7 +5,7 @@ LIB_DIRS= -L./lib64
 
 CXX =g++
 CXXFLAGS= $(INCLUDE_DIRS) -fPIC
-LDFLAGS= $(LIB_DIRS) -lroadrunner -lsbml
+LDFLAGS= $(LIB_DIRS) -lroadrunner -lsbml -fopenmp
 
 
 folder:

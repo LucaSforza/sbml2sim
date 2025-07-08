@@ -2,7 +2,7 @@
 #define PARALLEL_SIMULATION_
 
 #include <vector>
-#include <assert>
+#include <assert.h>
 #include <omp.h>
 
 #include "core_convertor.hpp"
@@ -12,7 +12,7 @@ using Parameters = std::map<std::string, bool>;
 using SimulationResult = std::vector<std::pair<SpeciesId, float>>;
 
 class Simulator {
-    // TODO: float?
+public:
     virtual ~Simulator();
     virtual SimulationResult simulate();
 };
@@ -29,7 +29,7 @@ public:
     }
 
     ParallelSimulator(int workers): workers(workers), lenght(0) {
-        this->sims = malloc(sizeof(Simulator*)*workers);
+        this->sims = (Simulator**)malloc(sizeof(Simulator*)*workers);
     }
 
     /***
@@ -42,10 +42,10 @@ public:
     SimulationResult *simulate() {
         assert(this->lenght == this->workers);
         assert(this->workers > 0);
-        SimulationResult *results = malloc(sizeof(SimulationResult)*this->workers);
+        SimulationResult *results = (SimulationResult*)malloc(sizeof(SimulationResult)*this->workers);
         #pragma omp parallel for schedule(dynamic)
-        for(int i = 0; i < this->workers, ++i) {
-            SimulationResult result = this->params[i]->simulate();
+        for(int i = 0; i < this->workers; ++i) {
+            SimulationResult result = this->sims[i]->simulate();
             // false sharing?
             results[i] = result;
         }

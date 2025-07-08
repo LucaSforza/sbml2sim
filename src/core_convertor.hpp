@@ -15,8 +15,7 @@
 
 #include "utils.hpp"
 
-#define eprintf(...) fprintf(stdout, __VA_ARGS__)
-#define TODO(msg) assert(false && msg)
+
 
 #define SBO_INHIBITOR 20
 #define SBO_ACTIVATOR 21
@@ -24,8 +23,11 @@
 
 #define EPSILON (1e-6)
 
-using SpeciesToId = std::unordered_map<std::string, std::string>; 
-using IdToSpecies = std::unordered_map<std::string, std::vector<std::string>>; 
+using SpeciesId = std::string;
+using ParameterId = std::string;
+
+using SpeciesToId = std::unordered_map<SpeciesId, std::string>; 
+using IdToSpecies = std::unordered_map<std::string, std::vector<SpeciesId>>; 
 
 // species id -> UniProdId
 using ProteinToId  = SpeciesToId;

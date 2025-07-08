@@ -1,4 +1,6 @@
 #include "sbmldoc.hpp"
+#include "parallel_simulation.hpp"
+
 
 extern "C" {
 
