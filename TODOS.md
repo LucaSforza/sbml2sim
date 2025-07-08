@@ -1,3 +1,11 @@
+# 8/06/2025
+
+## TODOs:
+- Create a simulatable file that includes proteomics data.
+- When simulating a model, allow the use of an external file containing kinetic constants.
+- implement prof idea: TODO: write prof idea
+
+
 # 7/06/2025
 
 ## TODOs:
