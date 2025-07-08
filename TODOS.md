@@ -1,3 +1,11 @@
+# 9/06/2025
+
+## TODOs:
+- the same from yesterday
+- create binding for simulator.
+- run simulation in parallel with different costant
+- run using Nevergrad
+
 # 8/06/2025
 
 ## TODOs:
