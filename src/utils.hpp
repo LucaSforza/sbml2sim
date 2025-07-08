@@ -7,6 +7,9 @@
 #include <vector>
 #include <memory>
 
+#define eprintf(...) fprintf(stdout, __VA_ARGS__)
+#define TODO(msg) assert(false && msg)
+
 class MathMLIterator {
     std::deque<libsbml::ASTNode*> frontier;
 

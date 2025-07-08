@@ -119,6 +119,8 @@ def run(sbml: SBMLDoc, plot=False,only_avg=False, output_file="simulation") -> S
 
 EPSILON=1e-12
 
+# IDEA: use this penalty in genetic algorithms by parallelizing
+# IDEA: write this is C++?
 def protein_order_penalty(
     sbml: SBMLDoc,
     sim_concentration: dict[SpeciesId, float],
