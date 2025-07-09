@@ -178,7 +178,13 @@ class SBMLDoc:
 
     lib.SBMLDoc_set_outputs_variable.restype = None
     lib.SBMLDoc_set_outputs_variable.argtypes = [c_void_p]
+    
+    lib.SBMLDoc_is_input.restype = c_bool
+    lib.SBMLDoc_is_input.argtypes = [c_void_p, c_char_p]
 
+    def is_input(self, species_id: str) -> bool:
+        return lib.SBMLDoc_is_input(self.obj, species_id.encode('utf-8'))
+    
     def set_outputs_constants(self):
         lib.SBMLDoc_set_outputs_constants(self.obj)
 
@@ -334,3 +340,72 @@ def replicate_model_per_tissue(file_path: str, tissues: list[str]):
     result.obj = obj
     return result
 
+
+lib.rr_Simulator_create.restype = c_void_p
+lib.rr_Simulator_create.argtypes = [c_void_p]
+
+class Simulator:
+
+    def __init__(self, obj: c_void_p):
+        self.obj = obj
+
+    lib.Simulator_delete.restype = None
+    lib.Simulator_delete.argtypes = [c_void_p]
+
+    def __del__(self):
+        lib.Simulator_delete(self.obj)
+    
+    lib.Simulator_set_parameter.restype = None
+    lib.Simulator_set_parameter.argtypes = [c_void_p, c_char_p, c_double]
+        
+    def set_parameter(self, id: str, value: float):
+        lib.Simulator_set_parameter(self.obj, id.encode('utf-8'), c_double(value))
+        
+def rr_simualtor(doc: SBMLDoc) -> Simulator:
+    return Simulator(lib.rr_Simulator_create(doc.obj))
+
+class ParallelSimulator:
+    lib.ParallelSimulator_create.restype = c_void_p
+    lib.ParallelSimulator_create.argtypes = [c_int]
+
+    lib.ParallelSimulator_add_worker.restype = None
+    lib.ParallelSimulator_add_worker.argtypes = [c_void_p, c_void_p]
+
+    lib.ParallelSimulator_add_real_concentration.restype = None
+    lib.ParallelSimulator_add_real_concentration.argtypes = [c_void_p, c_char_p, c_double]
+
+    lib.ParallelSimulator_order_real_concentration.restype = None
+    lib.ParallelSimulator_order_real_concentration.argtypes = [c_void_p]
+
+    
+
+    def __init__(self, workers: int):
+        self.obj = lib.ParallelSimulator_create(workers)
+        self.workers = []
+
+    def add_worker(self, worker: Simulator):
+        self.workers.append(worker)
+        lib.ParallelSimulator_add_worker(self.obj, worker.obj)
+
+    def add_real_concentration(self, id: str, value: float):
+        lib.ParallelSimulator_add_real_concentration(self.obj, id.encode('utf-8'), c_double(value))
+
+    def order_real_concentration(self):
+        lib.ParallelSimulator_order_real_concentration(self.obj)
+
+    lib.ParallelSimulator_simulate.restype = c_double
+    lib.ParallelSimulator_simulate.argtypes = [c_void_p, POINTER(c_int)]
+
+    # @returns fitness and number of errors
+    def simulate(self) -> tuple[float, int]:
+        errors = c_int(0)
+        result = lib.ParallelSimulator_simulate(self.obj, errors)
+        return float(result), errors.value
+
+    lib.ParallelSimulator_delete.restype = None
+    lib.ParallelSimulator_delete.argtypes = [c_void_p]
+    
+    def __del__(self):
+        if hasattr(self, 'obj') and self.obj:
+            lib.ParallelSimulator_delete(self.obj)
+            self.obj = None

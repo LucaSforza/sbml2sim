@@ -200,6 +200,10 @@ extern "C" {
         return _this->is_output(species_id);
     }
 
+    bool SBMLDoc_is_input(const SBMLDoc *_this, const char *species_id) {
+        return _this->is_input(species_id);
+    }
+
     void SBMLDoc_set_outputs_constants(SBMLDoc *_this) {
         _this->set_outputs_constants();
     }
@@ -208,7 +212,7 @@ extern "C" {
         _this->set_outputs_variable();
     }
 
-    Simulator *rr_Simulatore_create(const SBMLDoc *doc) {
+    Simulator *rr_Simulator_create(const SBMLDoc *doc) {
         return new rr_Simulator(doc);
     }
 
@@ -222,6 +226,10 @@ extern "C" {
 
     ParallelSimulator *ParallelSimulator_create(int workers) {
         return new ParallelSimulator(workers);
+    }
+
+    ParallelSimulator *ParallelSimulator_delete(ParallelSimulator *_this) {
+        delete _this;
     }
 
     void ParallelSimulator_add_worker(ParallelSimulator *_this, Simulator *worker) {

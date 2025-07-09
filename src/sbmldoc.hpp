@@ -581,6 +581,10 @@ public:
         return this->outputs.find(species_id) != this->outputs.end();
     }
 
+    bool is_input(const char *species_id) const {
+        return this->inputs.find(species_id) != this->inputs.end();
+    }
+
     void set_outputs_constants(void) {
         for(const std::string& sid : this->outputs) {
             libsbml::Species *s = model->getSpecies(sid);

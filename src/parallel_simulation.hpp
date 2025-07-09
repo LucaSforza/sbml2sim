@@ -7,6 +7,7 @@
 
 #include <assert.h>
 #include <omp.h>
+#include <stdio.h>
 
 #include "core_convertor.hpp"
 #include "utils.hpp"
@@ -15,9 +16,10 @@ using SimulationResult = std::vector<std::pair<SpeciesId, double>>;
 
 class Simulator {
 public:
-    virtual ~Simulator();
-    virtual void set_parameter(const char *id, double value);
-    virtual std::optional<SimulationResult> simulate(const std::unordered_set<SpeciesId>& ids);
+    // TODO: random start concentration for input that are not known
+    virtual ~Simulator() {};
+    virtual void set_parameter(const char *id, double value) = 0;
+    virtual std::optional<SimulationResult> simulate(const std::unordered_set<SpeciesId>& ids) = 0;
 };
 
 class ParallelSimulator {
@@ -80,6 +82,9 @@ public:
         assert(this->workers > 0);
         int total_crashed = 0;
         double error = 0.0;
+
+        omp_set_num_threads(workers);
+        
         #pragma omp parallel for schedule(dynamic) reduction(+: error) reduction(+: total_crashed)
         for(int i = 0; i < this->workers; ++i) {
             std::optional<SimulationResult> result = this->sims[i]->simulate(this->species);
@@ -90,6 +95,7 @@ public:
                 total_crashed++;
             }
         }
+        
         *crashed = total_crashed;
         return error;
     }
