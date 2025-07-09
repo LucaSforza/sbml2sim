@@ -12,7 +12,7 @@ class rr_Simulator : public Simulator {
 public:
     virtual ~rr_Simulator() override = default;
 
-    rr_Simulator(SBMLDoc *doc): simulator(doc->convert_to_sbml_string()) {
+    rr_Simulator(const SBMLDoc *doc): simulator(doc->convert_to_sbml_string()) {
         rr::SimulateOptions options;
         options.start = 0;
         options.duration = 100;

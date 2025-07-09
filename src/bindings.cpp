@@ -207,4 +207,36 @@ extern "C" {
     void SBMLDoc_set_outputs_variable(SBMLDoc *_this) {
         _this->set_outputs_variable();
     }
+
+    Simulator *rr_Simulatore_create(const SBMLDoc *doc) {
+        return new rr_Simulator(doc);
+    }
+
+    void Simulator_delete(Simulator *_this) {
+        delete _this;
+    }
+
+    void Simulator_set_parameter(Simulator *_this, const char *id, double value) {
+        _this->set_parameter(id, value);
+    }
+
+    ParallelSimulator *ParallelSimulator_create(int workers) {
+        return new ParallelSimulator(workers);
+    }
+
+    void ParallelSimulator_add_worker(ParallelSimulator *_this, Simulator *worker) {
+        _this->add_worker(worker);
+    }
+
+    void ParallelSimulator_add_real_concentration(ParallelSimulator *_this, const char *id, double value) {
+        _this->add_real_concentration(id, value);
+    }
+
+    void ParallelSimulator_order_real_concentration(ParallelSimulator *_this) {
+        _this->order_real_concentration();
+    }
+
+    double ParallelSimulator_simulate(ParallelSimulator *_this, int *errors) {
+        return _this->simulate(errors);
+    }
 }

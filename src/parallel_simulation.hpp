@@ -63,7 +63,7 @@ public:
         sims[this->lenght++] = sim;
     }
 
-    void add_real_concentration(const SpeciesId& id, double value) {
+    void add_real_concentration(const char *id, double value) {
         assert(this->species.insert(id).second);
         this->real_conc.push_back(std::pair(id, value));
     }
