@@ -1,6 +1,6 @@
 #include "sbmldoc.hpp"
 #include "parallel_simulation.hpp"
-
+#include "rr_simulator.hpp"
 
 extern "C" {
 

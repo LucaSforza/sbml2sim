@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <unordered_set>
+#include <optional>
+
 #include <assert.h>
 #include <omp.h>
 
@@ -14,8 +16,8 @@ using SimulationResult = std::vector<std::pair<SpeciesId, double>>;
 class Simulator {
 public:
     virtual ~Simulator();
-    virtual set_parameter(const char *id, double value);
-    virtual SimulationResult simulate(const std::unordered_map<SpeciesId>& ids);
+    virtual void set_parameter(const char *id, double value);
+    virtual std::optional<SimulationResult> simulate(const std::unordered_set<SpeciesId>& ids);
 };
 
 class ParallelSimulator {
@@ -27,11 +29,11 @@ class ParallelSimulator {
     int workers;
 
     double ordering_error(SimulationResult& result) const {
-        std::sord(result.begin(), result.end(), comp);
+        std::sort(result.begin(), result.end(), comp);
         assert(result.size() == real_conc.size());
         double err = 0.0;
         for (size_t i = 0; i < result.size(); ++i) {
-            if(result[i].firts != real_conc[i].firts) {
+            if(result[i].first != real_conc[i].first) {
                 double a = std::log10(result[i].second + LITTLE_EPSILON);
                 double b = std::log10(real_conc[i].second + LITTLE_EPSILON);
                 double diff = a - b;
@@ -62,7 +64,7 @@ public:
     }
 
     void add_real_concentration(const SpeciesId& id, double value) {
-        assert(this.species.insert(id).second);
+        assert(this->species.insert(id).second);
         this->real_conc.push_back(std::pair(id, value));
     }
 
@@ -73,16 +75,22 @@ public:
     /**
      * @returns error
      */
-    double simulate() const {
+    double simulate(int *crashed) const {
         assert(this->lenght == this->workers);
         assert(this->workers > 0);
+        int total_crashed = 0;
         double error = 0.0;
-        #pragma omp parallel for schedule(dynamic) reduce(+: error)
+        #pragma omp parallel for schedule(dynamic) reduction(+: error) reduction(+: total_crashed)
         for(int i = 0; i < this->workers; ++i) {
-            SimulationResult result = this->sims[i]->simulate();
+            std::optional<SimulationResult> result = this->sims[i]->simulate(this->species);
             // TODO: choose the error
-            error += this->ordering_error(result);
+            if(result.has_value()) {
+                error += this->ordering_error(result.value());
+            } else {
+                total_crashed++;
+            }
         }
+        *crashed = total_crashed;
         return error;
     }
 };
