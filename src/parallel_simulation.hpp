@@ -14,6 +14,17 @@
 
 using SimulationResult = std::vector<std::pair<SpeciesId, double>>;
 
+struct Fitness {
+    // TODO: padding
+    int simulation_id;
+    double fitness;
+    bool error;
+
+    Fitness(int id, double fitness): simulation_id(id), fitness(fitness), error(false) { }
+
+    Fitness(int id, bool error): simulation_id(id), error(error) {}
+};
+
 class Simulator {
 public:
     // TODO: random start concentration for input that are not known
@@ -28,6 +39,7 @@ class ParallelSimulator {
     std::unordered_set<SpeciesId> species;
     std::vector<std::pair<SpeciesId, double>> real_conc;
     int lenght;
+    int capacity;
     int workers;
 
     double ordering_error(SimulationResult& result) const {
@@ -54,14 +66,15 @@ public:
         free(sims);
     }
 
-    ParallelSimulator(int workers): workers(workers), lenght(0) {
-        this->sims = (Simulator**)malloc(sizeof(Simulator*)*workers);
+    ParallelSimulator(int workers, int capacity): workers(workers), lenght(0), capacity(capacity) {
+        this->sims = (Simulator**)malloc(sizeof(Simulator*)*capacity);
     }
 
     /***
      * @note we will not free this istance  
      */
     void add_worker(Simulator *sim) {
+        assert(this->lenght < this->capacity);
         sims[this->lenght++] = sim;
     }
 
@@ -77,27 +90,29 @@ public:
     /**
      * @returns error
      */
-    double simulate(int *crashed) const {
-        assert(this->lenght == this->workers);
+    Fitness *simulate() const {
+        assert(this->lenght == this->capacity);
         assert(this->workers > 0);
-        int total_crashed = 0;
-        double error = 0.0;
 
-        omp_set_num_threads(workers);
+        omp_set_num_threads(this->workers);
+
+        Fitness *r = (Fitness*)malloc(sizeof(Fitness)*this->lenght);
         
-        #pragma omp parallel for schedule(dynamic) reduction(+: error) reduction(+: total_crashed)
-        for(int i = 0; i < this->workers; ++i) {
+        #pragma omp parallel for schedule(dynamic)
+        for(int i = 0; i < this->lenght; ++i) {
+            // printf("Thread %d is running\n", omp_get_thread_num());
             std::optional<SimulationResult> result = this->sims[i]->simulate(this->species);
             // TODO: choose the error
             if(result.has_value()) {
-                error += this->ordering_error(result.value());
+                double error = this->ordering_error(result.value());
+                // TODO: false sharing
+                r[i] = Fitness(i, error);
             } else {
-                total_crashed++;
+                r[i] = Fitness(i, true);
             }
         }
         
-        *crashed = total_crashed;
-        return error;
+        return r;
     }
 };
 

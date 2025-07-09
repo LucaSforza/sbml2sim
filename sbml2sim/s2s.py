@@ -366,7 +366,7 @@ def rr_simualtor(doc: SBMLDoc) -> Simulator:
 
 class ParallelSimulator:
     lib.ParallelSimulator_create.restype = c_void_p
-    lib.ParallelSimulator_create.argtypes = [c_int]
+    lib.ParallelSimulator_create.argtypes = [c_int, c_int]
 
     lib.ParallelSimulator_add_worker.restype = None
     lib.ParallelSimulator_add_worker.argtypes = [c_void_p, c_void_p]
@@ -379,9 +379,10 @@ class ParallelSimulator:
 
     
 
-    def __init__(self, workers: int):
-        self.obj = lib.ParallelSimulator_create(workers)
+    def __init__(self, workers: int, capacity: int):
+        self.obj = lib.ParallelSimulator_create(workers, capacity)
         self.workers = []
+        self.capacity = capacity
 
     def add_worker(self, worker: Simulator):
         self.workers.append(worker)
@@ -393,14 +394,29 @@ class ParallelSimulator:
     def order_real_concentration(self):
         lib.ParallelSimulator_order_real_concentration(self.obj)
 
-    lib.ParallelSimulator_simulate.restype = c_double
-    lib.ParallelSimulator_simulate.argtypes = [c_void_p, POINTER(c_int)]
+    lib.ParallelSimulator_simulate.restype = c_void_p
+    lib.ParallelSimulator_simulate.argtypes = [c_void_p]
+    
+    lib.Fitness_is_error.restype = c_bool
+    lib.Fitness_is_error.argtypes = [c_void_p, c_int]
+    
+    lib.Fitness_fitness.restype = c_double
+    lib.Fitness_fitness.argtypes = [c_void_p, c_int]
+    
+    lib.Fitness_free.restype = None
+    lib.Fitness_free.argtypes = [c_void_p]
 
     # @returns fitness and number of errors
-    def simulate(self) -> tuple[float, int]:
-        errors = c_int(0)
-        result = lib.ParallelSimulator_simulate(self.obj, errors)
-        return float(result), errors.value
+    def simulate(self) -> list[tuple[float, bool]]:
+        result = lib.ParallelSimulator_simulate(self.obj)
+        r = []
+        for i in range(self.capacity):
+            if lib.Fitness_is_error(result,i):
+                r.append((math.nan,True))
+            else:
+                r.append((float(lib.Fitness_fitness(result, i)),False))
+        lib.Fitness_free(result)
+        return r
 
     lib.ParallelSimulator_delete.restype = None
     lib.ParallelSimulator_delete.argtypes = [c_void_p]

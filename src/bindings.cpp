@@ -224,8 +224,8 @@ extern "C" {
         _this->set_parameter(id, value);
     }
 
-    ParallelSimulator *ParallelSimulator_create(int workers) {
-        return new ParallelSimulator(workers);
+    ParallelSimulator *ParallelSimulator_create(int workers, int capacity) {
+        return new ParallelSimulator(workers, capacity);
     }
 
     ParallelSimulator *ParallelSimulator_delete(ParallelSimulator *_this) {
@@ -244,7 +244,19 @@ extern "C" {
         _this->order_real_concentration();
     }
 
-    double ParallelSimulator_simulate(ParallelSimulator *_this, int *errors) {
-        return _this->simulate(errors);
+    Fitness *ParallelSimulator_simulate(ParallelSimulator *_this) {
+        return _this->simulate();
+    }
+
+    bool Fitness_is_error(Fitness *_this, int index) {
+        return _this[index].error;
+    }
+
+    double Fitness_fitness(Fitness *_this, int index) {
+        return _this[index].fitness;
+    }
+
+    void Fitness_free(Fitness *_this) {
+        free(_this);
     }
 }

@@ -35,8 +35,6 @@ public:
 
     std::optional<SimulationResult> simulate(const std::unordered_set<SpeciesId>& ids) override {
 
-        printf("Ciaooo\n");
-        fflush(stdout);
         const ls::DoubleMatrix *result = NULL;
 
         const std::string prefix = "avg_";

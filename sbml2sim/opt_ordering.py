@@ -28,9 +28,10 @@ def main():
     concentrations = convert_ibaq_to_concentrations(sbml, proteomics, args.tissue)
     
     sbml.input_start_random_concentration() # TODO: start random concentration every restart
+    capacity = 40
     
     workers = int(args.workers)
-    parallel_simulator = s2s.ParallelSimulator(workers)
+    parallel_simulator = s2s.ParallelSimulator(workers, capacity)
     
     for (species, conc) in concentrations.items():
         if sbml.is_input(species):
@@ -40,15 +41,18 @@ def main():
             
     parallel_simulator.order_real_concentration()
     
-    for _ in range(workers):
+    for _ in range(capacity):
         parallel_simulator.add_worker(s2s.rr_simualtor(sbml))
+    total_start_time = time.time()
+    for _ in range(10):
+        start_time = time.time()
+        results = parallel_simulator.simulate()
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        print(f"[INFO] results: {results}")
+        print(f"[INFO] time: {elapsed_time:.2f}")
+    elapsed_time = time.time() - total_start_time
+    print(f"[INFO] total time: {elapsed_time}")
     
-    start_time = time.time()
-    (fitness, errors) = parallel_simulator.simulate()
-    elapsed_time = time.time() - start_time
-    print(f"[INFO] fitness: {fitness}")
-    print(f"[INFO] errors: {errors}")
-    print(f"[INFO] Simulation time: {elapsed_time:.2f} seconds")
-
 if __name__ == "__main__":
     main()
