@@ -25,21 +25,33 @@ struct Fitness {
     Fitness(int id, bool error): simulation_id(id), error(error) {}
 };
 
+class ErrorRule {
+public:
+    virtual double error(const SimulationResult& sim_result) = 0;
+};
+
 class Simulator {
 public:
     // TODO: random start concentration for input that are not known
     virtual ~Simulator() {};
     virtual void set_parameter(const char *id, double value) = 0;
     virtual std::optional<SimulationResult> simulate(const std::unordered_set<SpeciesId>& ids) = 0;
+
+    virtual double simulate_error(const std::unordered_set<SpeciesId>& ids, ErrorRule *rule) {
+        std::optional<SimulationResult> result = this->simulate(ids);
+        if(result.has_value()) {
+            return rule->error(result.value());
+        } else {
+            return NAN;
+        }
+    }
 };
 
 class ParallelSimulator {
     // TODO: align, false sharing
-    Simulator **sims;
+    std::vector<Simulator*> sims;
     std::unordered_set<SpeciesId> species;
     std::vector<std::pair<SpeciesId, double>> real_conc;
-    int lenght;
-    int capacity;
     int workers;
 
     double ordering_error(SimulationResult& result) const {
@@ -62,20 +74,15 @@ class ParallelSimulator {
     }
 public:
     // ATTENTION: we are not freeing the elements
-    ~ParallelSimulator() {
-        free(sims);
-    }
+    ~ParallelSimulator() = default;
 
-    ParallelSimulator(int workers, int capacity): workers(workers), lenght(0), capacity(capacity) {
-        this->sims = (Simulator**)malloc(sizeof(Simulator*)*capacity);
-    }
+    ParallelSimulator(int workers): workers(workers) {}
 
     /***
      * @note we will not free this istance  
      */
     void add_worker(Simulator *sim) {
-        assert(this->lenght < this->capacity);
-        sims[this->lenght++] = sim;
+        this->sims.push_back(sim);
     }
 
     void add_real_concentration(const char *id, double value) {
@@ -91,15 +98,15 @@ public:
      * @returns error
      */
     Fitness *simulate() const {
-        assert(this->lenght == this->capacity);
         assert(this->workers > 0);
 
         omp_set_num_threads(this->workers);
 
-        Fitness *r = (Fitness*)malloc(sizeof(Fitness)*this->lenght);
+        Fitness *r = (Fitness*)malloc(sizeof(Fitness)*this->sims.size());
         
         #pragma omp parallel for schedule(dynamic)
-        for(int i = 0; i < this->lenght; ++i) {
+        for(int i = 0; i < this->sims.size(); ++i) {
+            // TODO: simulate a simuator
             // printf("Thread %d is running\n", omp_get_thread_num());
             std::optional<SimulationResult> result = this->sims[i]->simulate(this->species);
             // TODO: choose the error

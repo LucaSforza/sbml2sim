@@ -8,6 +8,7 @@
 class rr_Simulator : public Simulator {
 
     rr::RoadRunner simulator;
+    ErrorRule *error_rule = NULL;
 
 public:
     virtual ~rr_Simulator() override = default;
@@ -68,7 +69,29 @@ public:
         }
 
         return simResult;
+    } // simulale()
+
+
+};
+
+class Search_Solutions_Velocity: public rr_Simulator {
+    std::unordered_map<ParameterId, bool> choosed_ids;
+    std::vector<ParameterId> unchoosed_ids;
+public:
+
+    void set_unchoosed_ids(std::vector<ParameterId> ids) {
+        this->unchoosed_ids = ids;
     }
+
+    void choose_paramater_velocity(const ParameterId& id, bool velocity) {
+        choosed_ids[id] = velocity;
+    }
+    
+    double simulate_error(const std::unordered_set<SpeciesId>& ids, ErrorRule *rule) override {
+        // TODO: simula tutte le combinazioni apparte quelle prescelte
+        TODO("simulate_error");
+    }
+
 };
 
 #endif // RR_SIMULATOR_

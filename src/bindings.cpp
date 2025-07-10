@@ -224,11 +224,12 @@ extern "C" {
         _this->set_parameter(id, value);
     }
 
-    ParallelSimulator *ParallelSimulator_create(int workers, int capacity) {
-        return new ParallelSimulator(workers, capacity);
+    ParallelSimulator *ParallelSimulator_create(int workers) {
+        TODO("change binding python");
+        return new ParallelSimulator(workers);
     }
 
-    ParallelSimulator *ParallelSimulator_delete(ParallelSimulator *_this) {
+    void ParallelSimulator_delete(ParallelSimulator *_this) {
         delete _this;
     }
 
@@ -259,4 +260,13 @@ extern "C" {
     void Fitness_free(Fitness *_this) {
         free(_this);
     }
+
+    // TODO: binding
+    /* void unchoosed_ids(const char **ids, size_t num_ids) {
+        std::vector<ParameterId> result;
+        for (size_t i = 0; i < num_ids; ++i) {
+            result.emplace_back(ids[i]);
+        }
+        unchoosed_ids(result);
+    } */
 }

@@ -1,0 +1,573 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 448B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/debian:latest
+#2 DONE 0.7s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 114B done
+#3 DONE 0.0s
+
+#4 [1/9] FROM docker.io/library/debian:latest@sha256:d42b86d7e24d78a33edcf1ef4f65a20e34acb1e1abd53cabc3f7cdf769fc4082
+#4 resolve docker.io/library/debian:latest@sha256:d42b86d7e24d78a33edcf1ef4f65a20e34acb1e1abd53cabc3f7cdf769fc4082 0.0s done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 124.07kB 0.1s done
+#5 DONE 0.1s
+
+#6 [2/9] WORKDIR /app
+#6 CACHED
+
+#7 [3/9] RUN apt-get update && apt-get install -y     make     python3 python3-pip python3.11-venv     && rm -rf /var/lib/apt/lists/*
+#7 CACHED
+
+#8 [4/9] RUN python3 -m venv /venv-sbml2sim
+#8 CACHED
+
+#9 [5/9] RUN echo "source /venv-sbml2sim/bin/activate" >> ~/.bashrc
+#9 CACHED
+
+#10 [6/9] RUN /venv-sbml2sim/bin/pip3 install nevergrad matplotlib requests reactome2py pandas libroadrunner
+#10 CACHED
+
+#11 [7/9] COPY . .
+#11 DONE 0.6s
+
+#12 [8/9] COPY ./lib64/libroadrunner.so /lib
+#12 DONE 0.1s
+
+#13 [9/9] RUN make
+#13 0.139 mkdir -p build
+#13 0.153 g++ -I./include/ -fPIC -ggdb -shared -o build/libsbmlconverter.so src/bindings.cpp -L./lib64 -lroadrunner -lsbml -fopenmp
+#13 2.085 In file included from /usr/include/c++/12/algorithm:61,
+#13 2.085                  from ./include/sbml/SBMLConstructorException.h:66,
+#13 2.085                  from ./include/sbml/SBase.h:159,
+#13 2.085                  from ./include/sbml/SBMLDocument.h:306,
+#13 2.085                  from src/core_convertor.hpp:7,
+#13 2.085                  from src/sbmldoc.hpp:4,
+#13 2.085                  from src/bindings.cpp:1:
+#13 2.085 /usr/include/c++/12/bits/stl_algo.h: In instantiation of 'void std::__insertion_sort(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]':
+#13 2.085 /usr/include/c++/12/bits/stl_algo.h:1849:25:   required from 'void std::__final_insertion_sort(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]'
+#13 2.085 /usr/include/c++/12/bits/stl_algo.h:1940:31:   required from 'void std::__sort(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]'
+#13 2.085 /usr/include/c++/12/bits/stl_algo.h:4853:18:   required from 'void std::sort(_RAIter, _RAIter, _Compare) [with _RAIter = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)]'
+#13 2.085 src/parallel_simulation.hpp:58:18:   required from here
+#13 2.085 /usr/include/c++/12/bits/stl_algo.h:1814:24: error: passing 'const std::pair<std::__cxx11::basic_string<char>, double>' as 'this' argument discards qualifiers [-fpermissive]
+#13 2.085  1814 |               *__first = _GLIBCXX_MOVE(__val);
+#13 2.085       |                        ^
+#13 2.085 In file included from /usr/include/c++/12/bits/stl_algobase.h:64,
+#13 2.085                  from /usr/include/c++/12/string:50,
+#13 2.085                  from ./include/sbml/util/util.h:54,
+#13 2.085                  from ./include/sbml/xml/XMLError.h:349,
+#13 2.085                  from ./include/sbml/SBMLError.h:466,
+#13 2.085                  from ./include/sbml/SBMLDocument.h:304:
+#13 2.085 /usr/include/c++/12/bits/stl_pair.h:578:7: note:   in call to 'std::pair<_T1, _T2>& std::pair<_T1, _T2>::operator=(std::__conditional_t<std::__and_<std::is_move_assignable<_Tp>, std::is_move_assignable<_T2> >::value, std::pair<_T1, _T2>&&, std::__nonesuch&&>) [with _T1 = std::__cxx11::basic_string<char>; _T2 = double; std::__conditional_t<std::__and_<std::is_move_assignable<_Tp>, std::is_move_assignable<_T2> >::value, std::pair<_T1, _T2>&&, std::__nonesuch&&> = std::pair<std::__cxx11::basic_string<char>, double>&&]'
+#13 2.085   578 |       operator=(__conditional_t<__and_<is_move_assignable<_T1>,
+#13 2.085       |       ^~~~~~~~
+#13 2.110 In file included from /usr/include/c++/12/bits/stl_algo.h:60:
+#13 2.110 /usr/include/c++/12/bits/stl_heap.h: In instantiation of 'void std::__pop_heap(_RandomAccessIterator, _RandomAccessIterator, _RandomAccessIterator, _Compare&) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]':
+#13 2.110 /usr/include/c++/12/bits/stl_algo.h:1632:19:   required from 'void std::__heap_select(_RandomAccessIterator, _RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]'
+#13 2.110 /usr/include/c++/12/bits/stl_algo.h:1900:25:   required from 'void std::__partial_sort(_RandomAccessIterator, _RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]'
+#13 2.110 /usr/include/c++/12/bits/stl_algo.h:1916:27:   required from 'void std::__introsort_loop(_RandomAccessIterator, _RandomAccessIterator, _Size, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Size = long int; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]'
+#13 2.110 /usr/include/c++/12/bits/stl_algo.h:1937:25:   required from 'void std::__sort(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]'
+#13 2.110 /usr/include/c++/12/bits/stl_algo.h:4853:18:   required from 'void std::sort(_RAIter, _RAIter, _Compare) [with _RAIter = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)]'
+#13 2.110 src/parallel_simulation.hpp:58:18:   required from here
+#13 2.110 /usr/include/c++/12/bits/stl_heap.h:263:17: error: no match for 'operator=' (operand types are 'const std::pair<std::__cxx11::basic_string<char>, double>' and 'std::remove_reference<const std::pair<std::__cxx11::basic_string<char>, double>&>::type' {aka 'const std::pair<std::__cxx11::basic_string<char>, double>'})
+#13 2.110   263 |       *__result = _GLIBCXX_MOVE(*__first);
+#13 2.110       |                 ^
+#13 2.111 /usr/include/c++/12/bits/stl_pair.h:578:7: note: candidate: 'std::pair<_T1, _T2>& std::pair<_T1, _T2>::operator=(std::__conditional_t<std::__and_<std::is_move_assignable<_Tp>, std::is_move_assignable<_T2> >::value, std::pair<_T1, _T2>&&, std::__nonesuch&&>) [with _T1 = std::__cxx11::basic_string<char>; _T2 = double; std::__conditional_t<std::__and_<std::is_move_assignable<_Tp>, std::is_move_assignable<_T2> >::value, std::pair<_T1, _T2>&&, std::__nonesuch&&> = std::pair<std::__cxx11::basic_string<char>, double>&&]' (near match)
+#13 2.111   578 |       operator=(__conditional_t<__and_<is_move_assignable<_T1>,
+#13 2.111       |       ^~~~~~~~
+#13 2.111 /usr/include/c++/12/bits/stl_pair.h:578:7: note:   conversion of argument 1 would be ill-formed:
+#13 2.111 /usr/include/c++/12/bits/stl_heap.h:263:17: error: binding reference of type 'std::__conditional_t<true, std::pair<std::__cxx11::basic_string<char>, double>&&, std::__nonesuch&&>' {aka 'std::pair<std::__cxx11::basic_string<char>, double>&&'} to 'std::remove_reference<const std::pair<std::__cxx11::basic_string<char>, double>&>::type' {aka 'const std::pair<std::__cxx11::basic_string<char>, double>'} discards qualifiers
+#13 2.111   263 |       *__result = _GLIBCXX_MOVE(*__first);
+#13 2.111       |                 ^
+#13 2.111 /usr/include/c++/12/bits/stl_pair.h:568:7: note: candidate: 'std::pair<_T1, _T2>& std::pair<_T1, _T2>::operator=(std::__conditional_t<std::__and_<std::is_copy_assignable<_T1>, std::is_copy_assignable<_T2> >::value, const std::pair<_T1, _T2>&, const std::__nonesuch&>) [with _T1 = std::__cxx11::basic_string<char>; _T2 = double; std::__conditional_t<std::__and_<std::is_copy_assignable<_T1>, std::is_copy_assignable<_T2> >::value, const std::pair<_T1, _T2>&, const std::__nonesuch&> = const std::pair<std::__cxx11::basic_string<char>, double>&]' (near match)
+#13 2.111   568 |       operator=(__conditional_t<__and_<is_copy_assignable<_T1>,
+#13 2.111       |       ^~~~~~~~
+#13 2.111 /usr/include/c++/12/bits/stl_pair.h:568:7: note:   passing 'const std::pair<std::__cxx11::basic_string<char>, double>*' as 'this' argument discards qualifiers
+#13 2.111 /usr/include/c++/12/bits/stl_pair.h:604:9: note: candidate: 'template<class _U1, class _U2> typename std::enable_if<std::__and_<std::is_assignable<_T1&, _U1&&>, std::is_assignable<_T2&, _U2&&> >::value, std::pair<_T1, _T2>&>::type std::pair<_T1, _T2>::operator=(std::pair<_U1, _U2>&&) [with _U2 = _U1; _T1 = std::__cxx11::basic_string<char>; _T2 = double]'
+#13 2.111   604 |         operator=(pair<_U1, _U2>&& __p)
+#13 2.111       |         ^~~~~~~~
+#13 2.111 /usr/include/c++/12/bits/stl_pair.h:604:9: note:   template argument deduction/substitution failed:
+#13 2.111 /usr/include/c++/12/bits/stl_heap.h:263:17: note:   types 'std::pair<_T1, _T2>' and 'std::remove_reference<const std::pair<std::__cxx11::basic_string<char>, double>&>::type' {aka 'const std::pair<std::__cxx11::basic_string<char>, double>'} have incompatible cv-qualifiers
+#13 2.111   263 |       *__result = _GLIBCXX_MOVE(*__first);
+#13 2.111       |                 ^
+#13 2.111 /usr/include/c++/12/bits/stl_pair.h:593:9: note: candidate: 'typename std::enable_if<std::__and_<std::is_assignable<_T1&, const _U1&>, std::is_assignable<_T2&, const _U2&> >::value, std::pair<_T1, _T2>&>::type std::pair<_T1, _T2>::operator=(const std::pair<_U1, _U2>&) [with _U1 = std::__cxx11::basic_string<char>; _U2 = double; _T1 = std::__cxx11::basic_string<char>; _T2 = double; typename std::enable_if<std::__and_<std::is_assignable<_T1&, const _U1&>, std::is_assignable<_T2&, const _U2&> >::value, std::pair<_T1, _T2>&>::type = std::pair<std::__cxx11::basic_string<char>, double>&]' (near match)
+#13 2.111   593 |         operator=(const pair<_U1, _U2>& __p)
+#13 2.111       |         ^~~~~~~~
+#13 2.111 /usr/include/c++/12/bits/stl_pair.h:593:9: note:   passing 'const std::pair<std::__cxx11::basic_string<char>, double>*' as 'this' argument discards qualifiers
+#13 2.112 /usr/include/c++/12/bits/stl_algobase.h: In instantiation of 'void std::iter_swap(_ForwardIterator1, _ForwardIterator2) [with _ForwardIterator1 = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _ForwardIterator2 = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >]':
+#13 2.112 /usr/include/c++/12/bits/stl_algo.h:88:20:   required from 'void std::__move_median_to_first(_Iterator, _Iterator, _Iterator, _Iterator, _Compare) [with _Iterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]'
+#13 2.112 /usr/include/c++/12/bits/stl_algo.h:1887:34:   required from '_RandomAccessIterator std::__unguarded_partition_pivot(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]'
+#13 2.112 /usr/include/c++/12/bits/stl_algo.h:1921:38:   required from 'void std::__introsort_loop(_RandomAccessIterator, _RandomAccessIterator, _Size, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Size = long int; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]'
+#13 2.112 /usr/include/c++/12/bits/stl_algo.h:1937:25:   required from 'void std::__sort(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]'
+#13 2.112 /usr/include/c++/12/bits/stl_algo.h:4853:18:   required from 'void std::sort(_RAIter, _RAIter, _Compare) [with _RAIter = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)]'
+#13 2.112 src/parallel_simulation.hpp:58:18:   required from here
+#13 2.112 /usr/include/c++/12/bits/stl_algobase.h:182:11: error: no matching function for call to 'swap(const std::pair<std::__cxx11::basic_string<char>, double>&, const std::pair<std::__cxx11::basic_string<char>, double>&)'
+#13 2.112   182 |       swap(*__a, *__b);
+#13 2.112       |       ~~~~^~~~~~~~~~~~
+#13 2.113 In file included from /usr/include/c++/12/bits/new_allocator.h:36,
+#13 2.113                  from /usr/include/x86_64-linux-gnu/c++/12/bits/c++allocator.h:33,
+#13 2.113                  from /usr/include/c++/12/bits/allocator.h:46,
+#13 2.113                  from /usr/include/c++/12/string:41:
+#13 2.113 /usr/include/c++/12/bits/move.h:196:5: note: candidate: 'template<class _Tp> std::_Require<std::__not_<std::__is_tuple_like<_Tp> >, std::is_move_constructible<_Tp>, std::is_move_assignable<_Tp> > std::swap(_Tp&, _Tp&)'
+#13 2.113   196 |     swap(_Tp& __a, _Tp& __b)
+#13 2.113       |     ^~~~
+#13 2.113 /usr/include/c++/12/bits/move.h:196:5: note:   template argument deduction/substitution failed:
+#13 2.113 In file included from /usr/include/c++/12/bits/char_traits.h:42,
+#13 2.113                  from /usr/include/c++/12/string:40:
+#13 2.113 /usr/include/c++/12/type_traits: In substitution of 'template<bool _Cond, class _Tp> using __enable_if_t = typename std::enable_if::type [with bool _Cond = false; _Tp = void]':
+#13 2.113 /usr/include/c++/12/type_traits:2244:11:   required by substitution of 'template<class ... _Cond> using _Require = std::__enable_if_t<std::__and_< <template-parameter-1-1> >::value> [with _Cond = {std::__not_<std::__is_tuple_like<const std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, double> > >, std::is_move_constructible<const std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, double> >, std::is_move_assignable<const std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, double> >}]'
+#13 2.113 /usr/include/c++/12/bits/move.h:196:5:   required by substitution of 'template<class _Tp> std::_Require<std::__not_<std::__is_tuple_like<_Tp> >, std::is_move_constructible<_Tp>, std::is_move_assignable<_Tp> > std::swap(_Tp&, _Tp&) [with _Tp = const std::pair<std::__cxx11::basic_string<char>, double>]'
+#13 2.113 /usr/include/c++/12/bits/stl_algobase.h:182:11:   required from 'void std::iter_swap(_ForwardIterator1, _ForwardIterator2) [with _ForwardIterator1 = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _ForwardIterator2 = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >]'
+#13 2.113 /usr/include/c++/12/bits/stl_algo.h:88:20:   required from 'void std::__move_median_to_first(_Iterator, _Iterator, _Iterator, _Iterator, _Compare) [with _Iterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]'
+#13 2.113 /usr/include/c++/12/bits/stl_algo.h:1887:34:   required from '_RandomAccessIterator std::__unguarded_partition_pivot(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]'
+#13 2.113 /usr/include/c++/12/bits/stl_algo.h:1921:38:   required from 'void std::__introsort_loop(_RandomAccessIterator, _RandomAccessIterator, _Size, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Size = long int; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]'
+#13 2.113 /usr/include/c++/12/bits/stl_algo.h:1937:25:   required from 'void std::__sort(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]'
+#13 2.113 /usr/include/c++/12/bits/stl_algo.h:4853:18:   required from 'void std::sort(_RAIter, _RAIter, _Compare) [with _RAIter = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)]'
+#13 2.113 src/parallel_simulation.hpp:58:18:   required from here
+#13 2.113 /usr/include/c++/12/type_traits:2240:11: error: no type named 'type' in 'struct std::enable_if<false, void>'
+#13 2.113  2240 |     using __enable_if_t = typename enable_if<_Cond, _Tp>::type;
+#13 2.113       |           ^~~~~~~~~~~~~
+#13 2.113 /usr/include/c++/12/bits/stl_algobase.h: In instantiation of 'void std::iter_swap(_ForwardIterator1, _ForwardIterator2) [with _ForwardIterator1 = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _ForwardIterator2 = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >]':
+#13 2.113 /usr/include/c++/12/bits/stl_algo.h:88:20:   required from 'void std::__move_median_to_first(_Iterator, _Iterator, _Iterator, _Iterator, _Compare) [with _Iterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]'
+#13 2.113 /usr/include/c++/12/bits/stl_algo.h:1887:34:   required from '_RandomAccessIterator std::__unguarded_partition_pivot(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]'
+#13 2.113 /usr/include/c++/12/bits/stl_algo.h:1921:38:   required from 'void std::__introsort_loop(_RandomAccessIterator, _RandomAccessIterator, _Size, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Size = long int; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]'
+#13 2.113 /usr/include/c++/12/bits/stl_algo.h:1937:25:   required from 'void std::__sort(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]'
+#13 2.113 /usr/include/c++/12/bits/stl_algo.h:4853:18:   required from 'void std::sort(_RAIter, _RAIter, _Compare) [with _RAIter = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)]'
+#13 2.113 src/parallel_simulation.hpp:58:18:   required from here
+#13 2.113 /usr/include/c++/12/bits/move.h:220:5: note: candidate: 'template<class _Tp, long unsigned int _Nm> std::__enable_if_t<std::__is_swappable<_Tp>::value> std::swap(_Tp (&)[_Nm], _Tp (&)[_Nm])'
+#13 2.113   220 |     swap(_Tp (&__a)[_Nm], _Tp (&__b)[_Nm])
+#13 2.113       |     ^~~~
+#13 2.113 /usr/include/c++/12/bits/move.h:220:5: note:   template argument deduction/substitution failed:
+#13 2.113 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   mismatched types '_Tp [_Nm]' and 'const std::pair<std::__cxx11::basic_string<char>, double>'
+#13 2.113   182 |       swap(*__a, *__b);
+#13 2.113       |       ~~~~^~~~~~~~~~~~
+#13 2.113 /usr/include/c++/12/bits/stl_pair.h:707:5: note: candidate: 'template<class _T1, class _T2> typename std::enable_if<std::__and_<std::__is_swappable<_T1>, std::__is_swappable<_T2> >::value>::type std::swap(pair<_T1, _T2>&, pair<_T1, _T2>&)'
+#13 2.113   707 |     swap(pair<_T1, _T2>& __x, pair<_T1, _T2>& __y)
+#13 2.113       |     ^~~~
+#13 2.113 /usr/include/c++/12/bits/stl_pair.h:707:5: note:   template argument deduction/substitution failed:
+#13 2.113 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::pair<_T1, _T2>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.113   182 |       swap(*__a, *__b);
+#13 2.113       |       ~~~~^~~~~~~~~~~~
+#13 2.113 /usr/include/c++/12/bits/stl_pair.h:715:5: note: candidate: 'template<class _T1, class _T2> typename std::enable_if<(! std::__and_<std::__is_swappable<_T1>, std::__is_swappable<_T2> >::value)>::type std::swap(pair<_T1, _T2>&, pair<_T1, _T2>&)' (deleted)
+#13 2.113   715 |     swap(pair<_T1, _T2>&, pair<_T1, _T2>&) = delete;
+#13 2.113       |     ^~~~
+#13 2.113 /usr/include/c++/12/bits/stl_pair.h:715:5: note:   template argument deduction/substitution failed:
+#13 2.113 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::pair<_T1, _T2>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.113   182 |       swap(*__a, *__b);
+#13 2.113       |       ~~~~^~~~~~~~~~~~
+#13 2.113 In file included from /usr/include/c++/12/bits/quoted_string.h:38,
+#13 2.113                  from /usr/include/c++/12/iomanip:45,
+#13 2.113                  from ./include/sbml/annotation/RDFAnnotationParser.h:87,
+#13 2.113                  from ./include/sbml/annotation/RDFAnnotation.h:45,
+#13 2.113                  from ./include/sbml/SBase.h:153:
+#13 2.113 /usr/include/c++/12/sstream:1185:5: note: candidate: 'template<class _CharT, class _Traits, class _Allocator> void std::__cxx11::swap(basic_stringbuf<_CharT, _Traits, _Alloc>&, basic_stringbuf<_CharT, _Traits, _Alloc>&)'
+#13 2.113  1185 |     swap(basic_stringbuf<_CharT, _Traits, _Allocator>& __x,
+#13 2.113       |     ^~~~
+#13 2.113 /usr/include/c++/12/sstream:1185:5: note:   template argument deduction/substitution failed:
+#13 2.114 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::__cxx11::basic_stringbuf<_CharT, _Traits, _Alloc>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.114   182 |       swap(*__a, *__b);
+#13 2.114       |       ~~~~^~~~~~~~~~~~
+#13 2.114 /usr/include/c++/12/sstream:1193:5: note: candidate: 'template<class _CharT, class _Traits, class _Allocator> void std::__cxx11::swap(basic_istringstream<_CharT, _Traits, _Allocator>&, basic_istringstream<_CharT, _Traits, _Allocator>&)'
+#13 2.114  1193 |     swap(basic_istringstream<_CharT, _Traits, _Allocator>& __x,
+#13 2.114       |     ^~~~
+#13 2.114 /usr/include/c++/12/sstream:1193:5: note:   template argument deduction/substitution failed:
+#13 2.114 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::__cxx11::basic_istringstream<_CharT, _Traits, _Allocator>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.114   182 |       swap(*__a, *__b);
+#13 2.114       |       ~~~~^~~~~~~~~~~~
+#13 2.114 /usr/include/c++/12/sstream:1200:5: note: candidate: 'template<class _CharT, class _Traits, class _Allocator> void std::__cxx11::swap(basic_ostringstream<_CharT, _Traits, _Allocator>&, basic_ostringstream<_CharT, _Traits, _Allocator>&)'
+#13 2.114  1200 |     swap(basic_ostringstream<_CharT, _Traits, _Allocator>& __x,
+#13 2.114       |     ^~~~
+#13 2.114 /usr/include/c++/12/sstream:1200:5: note:   template argument deduction/substitution failed:
+#13 2.114 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::__cxx11::basic_ostringstream<_CharT, _Traits, _Allocator>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.114   182 |       swap(*__a, *__b);
+#13 2.114       |       ~~~~^~~~~~~~~~~~
+#13 2.114 /usr/include/c++/12/sstream:1207:5: note: candidate: 'template<class _CharT, class _Traits, class _Allocator> void std::__cxx11::swap(basic_stringstream<_CharT, _Traits, _Allocator>&, basic_stringstream<_CharT, _Traits, _Allocator>&)'
+#13 2.114  1207 |     swap(basic_stringstream<_CharT, _Traits, _Allocator>& __x,
+#13 2.114       |     ^~~~
+#13 2.114 /usr/include/c++/12/sstream:1207:5: note:   template argument deduction/substitution failed:
+#13 2.114 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::__cxx11::basic_stringstream<_CharT, _Traits, _Allocator>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.114   182 |       swap(*__a, *__b);
+#13 2.114       |       ~~~~^~~~~~~~~~~~
+#13 2.114 In file included from /usr/include/c++/12/set:62,
+#13 2.114                  from ./include/rr/rrRoadRunner.h:25,
+#13 2.114                  from src/rr_simulator.hpp:4,
+#13 2.114                  from src/bindings.cpp:3:
+#13 2.114 /usr/include/c++/12/bits/stl_multiset.h:1046:5: note: candidate: 'template<class _Key, class _Compare, class _Alloc> void std::swap(multiset<_Key, _Compare, _Allocator>&, multiset<_Key, _Compare, _Allocator>&)'
+#13 2.114  1046 |     swap(multiset<_Key, _Compare, _Alloc>& __x,
+#13 2.114       |     ^~~~
+#13 2.114 /usr/include/c++/12/bits/stl_multiset.h:1046:5: note:   template argument deduction/substitution failed:
+#13 2.114 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::multiset<_Key, _Compare, _Allocator>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.114   182 |       swap(*__a, *__b);
+#13 2.114       |       ~~~~^~~~~~~~~~~~
+#13 2.114 In file included from /usr/include/c++/12/set:61:
+#13 2.114 /usr/include/c++/12/bits/stl_set.h:1059:5: note: candidate: 'template<class _Key, class _Compare, class _Alloc> void std::swap(set<_Key, _Compare, _Allocator>&, set<_Key, _Compare, _Allocator>&)'
+#13 2.114  1059 |     swap(set<_Key, _Compare, _Alloc>& __x, set<_Key, _Compare, _Alloc>& __y)
+#13 2.114       |     ^~~~
+#13 2.114 /usr/include/c++/12/bits/stl_set.h:1059:5: note:   template argument deduction/substitution failed:
+#13 2.114 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::set<_Key, _Compare, _Allocator>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.114   182 |       swap(*__a, *__b);
+#13 2.114       |       ~~~~^~~~~~~~~~~~
+#13 2.114 In file included from /usr/include/c++/12/mutex:44,
+#13 2.114                  from ./include/rr/RegistrationFactory.h:10,
+#13 2.114                  from ./include/rr/Integrator.h:26,
+#13 2.114                  from ./include/rr/rrRoadRunnerOptions.h:13,
+#13 2.114                  from ./include/rr/rrRoadRunner.h:6:
+#13 2.114 /usr/include/c++/12/bits/unique_lock.h:236:5: note: candidate: 'template<class _Mutex> void std::swap(unique_lock<_Mutex>&, unique_lock<_Mutex>&)'
+#13 2.114   236 |     swap(unique_lock<_Mutex>& __x, unique_lock<_Mutex>& __y) noexcept
+#13 2.114       |     ^~~~
+#13 2.114 /usr/include/c++/12/bits/unique_lock.h:236:5: note:   template argument deduction/substitution failed:
+#13 2.114 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::unique_lock<_Mutex>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.114   182 |       swap(*__a, *__b);
+#13 2.114       |       ~~~~^~~~~~~~~~~~
+#13 2.115 In file included from ./include/rr/Setting.h:9,
+#13 2.115                  from ./include/rr/Dictionary.h:11,
+#13 2.115                  from ./include/rr/rrRoadRunnerOptions.h:12:
+#13 2.115 /usr/include/c++/12/variant:1302:5: note: candidate: 'template<class ... _Types> std::enable_if_t<(!((is_move_constructible_v<_Types> && ...) && (is_swappable_v<_Types> && ...)))> std::swap(variant<_Types ...>&, variant<_Types ...>&)' (deleted)
+#13 2.115  1302 |     swap(variant<_Types...>&, variant<_Types...>&) = delete;
+#13 2.115       |     ^~~~
+#13 2.115 /usr/include/c++/12/variant:1302:5: note:   template argument deduction/substitution failed:
+#13 2.115 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::variant<_Types ...>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.115   182 |       swap(*__a, *__b);
+#13 2.115       |       ~~~~^~~~~~~~~~~~
+#13 2.115 /usr/include/c++/12/variant:1295:5: note: candidate: 'template<class ... _Types> std::enable_if_t<((is_move_constructible_v<_Types> && ...) && (is_swappable_v<_Types> && ...))> std::swap(variant<_Types ...>&, variant<_Types ...>&)'
+#13 2.115  1295 |     swap(variant<_Types...>& __lhs, variant<_Types...>& __rhs)
+#13 2.115       |     ^~~~
+#13 2.115 /usr/include/c++/12/variant:1295:5: note:   template argument deduction/substitution failed:
+#13 2.115 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::variant<_Types ...>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.115   182 |       swap(*__a, *__b);
+#13 2.115       |       ~~~~^~~~~~~~~~~~
+#13 2.115 In file included from /usr/include/c++/12/memory:77,
+#13 2.115                  from src/utils.hpp:8,
+#13 2.115                  from src/core_convertor.hpp:16:
+#13 2.115 /usr/include/c++/12/bits/shared_ptr.h:888:5: note: candidate: 'template<class _Tp> void std::swap(weak_ptr<_Tp>&, weak_ptr<_Tp>&)'
+#13 2.115   888 |     swap(weak_ptr<_Tp>& __a, weak_ptr<_Tp>& __b) noexcept
+#13 2.115       |     ^~~~
+#13 2.115 /usr/include/c++/12/bits/shared_ptr.h:888:5: note:   template argument deduction/substitution failed:
+#13 2.115 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::weak_ptr<_Tp>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.115   182 |       swap(*__a, *__b);
+#13 2.115       |       ~~~~^~~~~~~~~~~~
+#13 2.115 /usr/include/c++/12/bits/shared_ptr.h:692:5: note: candidate: 'template<class _Tp> void std::swap(shared_ptr<_Tp>&, shared_ptr<_Tp>&)'
+#13 2.115   692 |     swap(shared_ptr<_Tp>& __a, shared_ptr<_Tp>& __b) noexcept
+#13 2.115       |     ^~~~
+#13 2.115 /usr/include/c++/12/bits/shared_ptr.h:692:5: note:   template argument deduction/substitution failed:
+#13 2.115 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::shared_ptr<_Tp>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.115   182 |       swap(*__a, *__b);
+#13 2.115       |       ~~~~^~~~~~~~~~~~
+#13 2.116 In file included from /usr/include/c++/12/bits/shared_ptr.h:53:
+#13 2.116 /usr/include/c++/12/bits/shared_ptr_base.h:2128:5: note: candidate: 'template<class _Tp, __gnu_cxx::_Lock_policy _Lp> void std::swap(__weak_ptr<_Tp, _Lp>&, __weak_ptr<_Tp, _Lp>&)'
+#13 2.116  2128 |     swap(__weak_ptr<_Tp, _Lp>& __a, __weak_ptr<_Tp, _Lp>& __b) noexcept
+#13 2.116       |     ^~~~
+#13 2.116 /usr/include/c++/12/bits/shared_ptr_base.h:2128:5: note:   template argument deduction/substitution failed:
+#13 2.116 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::__weak_ptr<_Tp, _Lp>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.116   182 |       swap(*__a, *__b);
+#13 2.116       |       ~~~~^~~~~~~~~~~~
+#13 2.116 /usr/include/c++/12/bits/shared_ptr_base.h:1917:5: note: candidate: 'template<class _Tp, __gnu_cxx::_Lock_policy _Lp> void std::swap(__shared_ptr<_Tp, _Lp>&, __shared_ptr<_Tp, _Lp>&)'
+#13 2.116  1917 |     swap(__shared_ptr<_Tp, _Lp>& __a, __shared_ptr<_Tp, _Lp>& __b) noexcept
+#13 2.116       |     ^~~~
+#13 2.116 /usr/include/c++/12/bits/shared_ptr_base.h:1917:5: note:   template argument deduction/substitution failed:
+#13 2.116 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::__shared_ptr<_Tp, _Lp>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.116   182 |       swap(*__a, *__b);
+#13 2.116       |       ~~~~^~~~~~~~~~~~
+#13 2.116 In file included from /usr/include/c++/12/memory:76:
+#13 2.116 /usr/include/c++/12/bits/unique_ptr.h:815:5: note: candidate: 'template<class _Tp, class _Dp> typename std::enable_if<(! std::__is_swappable<_T2>::value)>::type std::swap(unique_ptr<_Tp, _Dp>&, unique_ptr<_Tp, _Dp>&)' (deleted)
+#13 2.116   815 |     swap(unique_ptr<_Tp, _Dp>&,
+#13 2.116       |     ^~~~
+#13 2.116 /usr/include/c++/12/bits/unique_ptr.h:815:5: note:   template argument deduction/substitution failed:
+#13 2.116 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::unique_ptr<_Tp, _Dp>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.116   182 |       swap(*__a, *__b);
+#13 2.116       |       ~~~~^~~~~~~~~~~~
+#13 2.116 /usr/include/c++/12/bits/unique_ptr.h:808:5: note: candidate: 'template<class _Tp, class _Dp> typename std::enable_if<std::__is_swappable<_T2>::value>::type std::swap(unique_ptr<_Tp, _Dp>&, unique_ptr<_Tp, _Dp>&)'
+#13 2.116   808 |     swap(unique_ptr<_Tp, _Dp>& __x,
+#13 2.116       |     ^~~~
+#13 2.116 /usr/include/c++/12/bits/unique_ptr.h:808:5: note:   template argument deduction/substitution failed:
+#13 2.116 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::unique_ptr<_Tp, _Dp>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.116   182 |       swap(*__a, *__b);
+#13 2.116       |       ~~~~^~~~~~~~~~~~
+#13 2.116 In file included from src/core_convertor.hpp:14:
+#13 2.116 /usr/include/c++/12/optional:1442:5: note: candidate: 'template<class _Tp> std::enable_if_t<(!(is_move_constructible_v<_Tp> && is_swappable_v<_Tp>))> std::swap(optional<_Tp>&, optional<_Tp>&)' (deleted)
+#13 2.116  1442 |     swap(optional<_Tp>&, optional<_Tp>&) = delete;
+#13 2.116       |     ^~~~
+#13 2.116 /usr/include/c++/12/optional:1442:5: note:   template argument deduction/substitution failed:
+#13 2.117 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::optional<_Tp>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.117   182 |       swap(*__a, *__b);
+#13 2.117       |       ~~~~^~~~~~~~~~~~
+#13 2.117 /usr/include/c++/12/optional:1436:5: note: candidate: 'template<class _Tp> std::enable_if_t<(is_move_constructible_v<_Tp> && is_swappable_v<_Tp>)> std::swap(optional<_Tp>&, optional<_Tp>&)'
+#13 2.117  1436 |     swap(optional<_Tp>& __lhs, optional<_Tp>& __rhs)
+#13 2.117       |     ^~~~
+#13 2.117 /usr/include/c++/12/optional:1436:5: note:   template argument deduction/substitution failed:
+#13 2.117 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::optional<_Tp>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.117   182 |       swap(*__a, *__b);
+#13 2.117       |       ~~~~^~~~~~~~~~~~
+#13 2.117 In file included from /usr/include/c++/12/unordered_set:47,
+#13 2.117                  from src/core_convertor.hpp:12:
+#13 2.117 /usr/include/c++/12/bits/unordered_set.h:1797:5: note: candidate: 'template<class _Value, class _Hash, class _Pred, class _Alloc> void std::swap(unordered_multiset<_Value1, _Hash1, _Pred1, _Alloc1>&, unordered_multiset<_Value1, _Hash1, _Pred1, _Alloc1>&)'
+#13 2.117  1797 |     swap(unordered_multiset<_Value, _Hash, _Pred, _Alloc>& __x,
+#13 2.117       |     ^~~~
+#13 2.117 /usr/include/c++/12/bits/unordered_set.h:1797:5: note:   template argument deduction/substitution failed:
+#13 2.117 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::unordered_multiset<_Value1, _Hash1, _Pred1, _Alloc1>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.117   182 |       swap(*__a, *__b);
+#13 2.117       |       ~~~~^~~~~~~~~~~~
+#13 2.117 /usr/include/c++/12/bits/unordered_set.h:1790:5: note: candidate: 'template<class _Value, class _Hash, class _Pred, class _Alloc> void std::swap(unordered_set<_Value1, _Hash1, _Pred1, _Alloc1>&, unordered_set<_Value1, _Hash1, _Pred1, _Alloc1>&)'
+#13 2.117  1790 |     swap(unordered_set<_Value, _Hash, _Pred, _Alloc>& __x,
+#13 2.117       |     ^~~~
+#13 2.117 /usr/include/c++/12/bits/unordered_set.h:1790:5: note:   template argument deduction/substitution failed:
+#13 2.117 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::unordered_set<_Value1, _Hash1, _Pred1, _Alloc1>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.117   182 |       swap(*__a, *__b);
+#13 2.117       |       ~~~~^~~~~~~~~~~~
+#13 2.118 In file included from /usr/include/c++/12/functional:63,
+#13 2.118                  from ./include/sbml/ListOf.h:101,
+#13 2.118                  from ./include/sbml/FunctionDefinition.h:141,
+#13 2.118                  from ./include/sbml/SBMLTransforms.h:57,
+#13 2.118                  from ./include/sbml/SBMLDocument.h:307:
+#13 2.118 /usr/include/c++/12/array:388:5: note: candidate: 'template<class _Tp, long unsigned int _Nm> typename std::enable_if<(! typename std::__array_traits<_Tp, _Nm>::_Is_swappable::value)>::type std::swap(array<_Tp, _Nm>&, array<_Tp, _Nm>&)' (deleted)
+#13 2.118   388 |     swap(array<_Tp, _Nm>&, array<_Tp, _Nm>&) = delete;
+#13 2.118       |     ^~~~
+#13 2.118 /usr/include/c++/12/array:388:5: note:   template argument deduction/substitution failed:
+#13 2.118 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::array<_Tp, _Nm>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.118   182 |       swap(*__a, *__b);
+#13 2.118       |       ~~~~^~~~~~~~~~~~
+#13 2.118 /usr/include/c++/12/array:380:5: note: candidate: 'template<class _Tp, long unsigned int _Nm> typename std::enable_if<typename std::__array_traits<_Tp, _Nm>::_Is_swappable::value>::type std::swap(array<_Tp, _Nm>&, array<_Tp, _Nm>&)'
+#13 2.118   380 |     swap(array<_Tp, _Nm>& __one, array<_Tp, _Nm>& __two)
+#13 2.118       |     ^~~~
+#13 2.118 /usr/include/c++/12/array:380:5: note:   template argument deduction/substitution failed:
+#13 2.118 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::array<_Tp, _Nm>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.118   182 |       swap(*__a, *__b);
+#13 2.118       |       ~~~~^~~~~~~~~~~~
+#13 2.118 In file included from /usr/include/c++/12/unordered_map:47,
+#13 2.118                  from /usr/include/c++/12/functional:61:
+#13 2.118 /usr/include/c++/12/bits/unordered_map.h:2127:5: note: candidate: 'template<class _Key, class _Tp, class _Hash, class _Pred, class _Alloc> void std::swap(unordered_multimap<_Key1, _Tp1, _Hash1, _Pred1, _Alloc1>&, unordered_multimap<_Key1, _Tp1, _Hash1, _Pred1, _Alloc1>&)'
+#13 2.118  2127 |     swap(unordered_multimap<_Key, _Tp, _Hash, _Pred, _Alloc>& __x,
+#13 2.118       |     ^~~~
+#13 2.118 /usr/include/c++/12/bits/unordered_map.h:2127:5: note:   template argument deduction/substitution failed:
+#13 2.118 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::unordered_multimap<_Key1, _Tp1, _Hash1, _Pred1, _Alloc1>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.118   182 |       swap(*__a, *__b);
+#13 2.118       |       ~~~~^~~~~~~~~~~~
+#13 2.118 /usr/include/c++/12/bits/unordered_map.h:2120:5: note: candidate: 'template<class _Key, class _Tp, class _Hash, class _Pred, class _Alloc> void std::swap(unordered_map<_Key1, _Tp1, _Hash1, _Pred1, _Alloc1>&, unordered_map<_Key1, _Tp1, _Hash1, _Pred1, _Alloc1>&)'
+#13 2.118  2120 |     swap(unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>& __x,
+#13 2.118       |     ^~~~
+#13 2.118 /usr/include/c++/12/bits/unordered_map.h:2120:5: note:   template argument deduction/substitution failed:
+#13 2.118 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::unordered_map<_Key1, _Tp1, _Hash1, _Pred1, _Alloc1>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.118   182 |       swap(*__a, *__b);
+#13 2.118       |       ~~~~^~~~~~~~~~~~
+#13 2.118 In file included from /usr/include/c++/12/functional:59:
+#13 2.118 /usr/include/c++/12/bits/std_function.h:757:5: note: candidate: 'template<class _Res, class ... _Args> void std::swap(function<_Res(_ArgTypes ...)>&, function<_Res(_ArgTypes ...)>&)'
+#13 2.118   757 |     swap(function<_Res(_Args...)>& __x, function<_Res(_Args...)>& __y) noexcept
+#13 2.118       |     ^~~~
+#13 2.118 /usr/include/c++/12/bits/std_function.h:757:5: note:   template argument deduction/substitution failed:
+#13 2.118 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::function<_Res(_ArgTypes ...)>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.118   182 |       swap(*__a, *__b);
+#13 2.118       |       ~~~~^~~~~~~~~~~~
+#13 2.118 In file included from /usr/include/c++/12/deque:64,
+#13 2.118                  from ./include/sbml/SBO.h:215,
+#13 2.118                  from ./include/sbml/FunctionDefinition.h:138:
+#13 2.118 /usr/include/c++/12/bits/stl_deque.h:2366:5: note: candidate: 'template<class _Tp, class _Alloc> void std::swap(deque<_Tp, _Alloc>&, deque<_Tp, _Alloc>&)'
+#13 2.118  2366 |     swap(deque<_Tp,_Alloc>& __x, deque<_Tp,_Alloc>& __y)
+#13 2.118       |     ^~~~
+#13 2.118 /usr/include/c++/12/bits/stl_deque.h:2366:5: note:   template argument deduction/substitution failed:
+#13 2.118 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::deque<_Tp, _Alloc>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.118   182 |       swap(*__a, *__b);
+#13 2.118       |       ~~~~^~~~~~~~~~~~
+#13 2.119 In file included from /usr/include/c++/12/map:62,
+#13 2.119                  from ./include/sbml/extension/ASTBasePlugin.h:63,
+#13 2.119                  from ./include/sbml/math/ASTNode.h:189,
+#13 2.119                  from ./include/sbml/SBMLTransforms.h:56:
+#13 2.119 /usr/include/c++/12/bits/stl_multimap.h:1206:5: note: candidate: 'template<class _Key, class _Tp, class _Compare, class _Alloc> void std::swap(multimap<_Key, _Tp, _Compare, _Allocator>&, multimap<_Key, _Tp, _Compare, _Allocator>&)'
+#13 2.119  1206 |     swap(multimap<_Key, _Tp, _Compare, _Alloc>& __x,
+#13 2.119       |     ^~~~
+#13 2.119 /usr/include/c++/12/bits/stl_multimap.h:1206:5: note:   template argument deduction/substitution failed:
+#13 2.119 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::multimap<_Key, _Tp, _Compare, _Allocator>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.119   182 |       swap(*__a, *__b);
+#13 2.119       |       ~~~~^~~~~~~~~~~~
+#13 2.119 In file included from /usr/include/c++/12/map:61:
+#13 2.119 /usr/include/c++/12/bits/stl_map.h:1585:5: note: candidate: 'template<class _Key, class _Tp, class _Compare, class _Alloc> void std::swap(map<_Key, _Tp, _Compare, _Allocator>&, map<_Key, _Tp, _Compare, _Allocator>&)'
+#13 2.119  1585 |     swap(map<_Key, _Tp, _Compare, _Alloc>& __x,
+#13 2.119       |     ^~~~
+#13 2.119 /usr/include/c++/12/bits/stl_map.h:1585:5: note:   template argument deduction/substitution failed:
+#13 2.119 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::map<_Key, _Tp, _Compare, _Allocator>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.119   182 |       swap(*__a, *__b);
+#13 2.119       |       ~~~~^~~~~~~~~~~~
+#13 2.119 In file included from /usr/include/c++/12/bits/stl_map.h:63:
+#13 2.119 /usr/include/c++/12/tuple:1766:5: note: candidate: 'template<class ... _Elements> typename std::enable_if<(! std::__and_<std::__is_swappable<_Elements>...>::value)>::type std::swap(tuple<_Args1 ...>&, tuple<_Args1 ...>&)' (deleted)
+#13 2.119  1766 |     swap(tuple<_Elements...>&, tuple<_Elements...>&) = delete;
+#13 2.119       |     ^~~~
+#13 2.119 /usr/include/c++/12/tuple:1766:5: note:   template argument deduction/substitution failed:
+#13 2.119 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::tuple<_Args1 ...>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.119   182 |       swap(*__a, *__b);
+#13 2.119       |       ~~~~^~~~~~~~~~~~
+#13 2.119 /usr/include/c++/12/tuple:1758:5: note: candidate: 'template<class ... _Elements> typename std::enable_if<std::__and_<std::__is_swappable<_Elements>...>::value>::type std::swap(tuple<_Args1 ...>&, tuple<_Args1 ...>&)'
+#13 2.119  1758 |     swap(tuple<_Elements...>& __x, tuple<_Elements...>& __y)
+#13 2.119       |     ^~~~
+#13 2.119 /usr/include/c++/12/tuple:1758:5: note:   template argument deduction/substitution failed:
+#13 2.119 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::tuple<_Args1 ...>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.119   182 |       swap(*__a, *__b);
+#13 2.119       |       ~~~~^~~~~~~~~~~~
+#13 2.119 In file included from /usr/include/c++/12/map:60:
+#13 2.119 /usr/include/c++/12/bits/stl_tree.h:1678:5: note: candidate: 'template<class _Key, class _Val, class _KeyOfValue, class _Compare, class _Alloc> void std::swap(_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>&, _Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>&)'
+#13 2.119  1678 |     swap(_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>& __x,
+#13 2.119       |     ^~~~
+#13 2.119 /usr/include/c++/12/bits/stl_tree.h:1678:5: note:   template argument deduction/substitution failed:
+#13 2.119 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.119   182 |       swap(*__a, *__b);
+#13 2.119       |       ~~~~^~~~~~~~~~~~
+#13 2.120 In file included from /usr/include/c++/12/list:63,
+#13 2.120                  from ./include/sbml/xml/XMLErrorLog.h:100,
+#13 2.120                  from ./include/sbml/SBMLErrorLog.h:112,
+#13 2.120                  from ./include/sbml/SBMLDocument.h:305:
+#13 2.120 /usr/include/c++/12/bits/stl_list.h:2217:5: note: candidate: 'template<class _Tp, class _Alloc> void std::swap(__cxx11::list<_Tp, _Alloc>&, __cxx11::list<_Tp, _Alloc>&)'
+#13 2.120  2217 |     swap(list<_Tp, _Alloc>& __x, list<_Tp, _Alloc>& __y)
+#13 2.120       |     ^~~~
+#13 2.120 /usr/include/c++/12/bits/stl_list.h:2217:5: note:   template argument deduction/substitution failed:
+#13 2.120 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::__cxx11::list<_Tp, _Alloc>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.120   182 |       swap(*__a, *__b);
+#13 2.120       |       ~~~~^~~~~~~~~~~~
+#13 2.120 In file included from /usr/include/c++/12/vector:64,
+#13 2.120                  from ./include/sbml/xml/XMLNamespaces.h:80,
+#13 2.120                  from ./include/sbml/SBMLNamespaces.h:108,
+#13 2.120                  from ./include/sbml/SBMLError.h:467:
+#13 2.120 /usr/include/c++/12/bits/stl_vector.h:2107:5: note: candidate: 'template<class _Tp, class _Alloc> void std::swap(vector<_Tp, _Alloc>&, vector<_Tp, _Alloc>&)'
+#13 2.120  2107 |     swap(vector<_Tp, _Alloc>& __x, vector<_Tp, _Alloc>& __y)
+#13 2.120       |     ^~~~
+#13 2.120 /usr/include/c++/12/bits/stl_vector.h:2107:5: note:   template argument deduction/substitution failed:
+#13 2.120 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::vector<_Tp, _Alloc>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.120   182 |       swap(*__a, *__b);
+#13 2.120       |       ~~~~^~~~~~~~~~~~
+#13 2.121 In file included from /usr/include/c++/12/string:53:
+#13 2.121 /usr/include/c++/12/bits/basic_string.h:3845:5: note: candidate: 'template<class _CharT, class _Traits, class _Alloc> void std::swap(__cxx11::basic_string<_CharT, _Traits, _Allocator>&, __cxx11::basic_string<_CharT, _Traits, _Allocator>&)'
+#13 2.121  3845 |     swap(basic_string<_CharT, _Traits, _Alloc>& __lhs,
+#13 2.121       |     ^~~~
+#13 2.121 /usr/include/c++/12/bits/basic_string.h:3845:5: note:   template argument deduction/substitution failed:
+#13 2.121 /usr/include/c++/12/bits/stl_algobase.h:182:11: note:   types 'std::__cxx11::basic_string<_CharT, _Traits, _Allocator>' and 'const std::pair<std::__cxx11::basic_string<char>, double>' have incompatible cv-qualifiers
+#13 2.121   182 |       swap(*__a, *__b);
+#13 2.121       |       ~~~~^~~~~~~~~~~~
+#13 2.121 In file included from /usr/include/c++/12/thread:43,
+#13 2.121                  from ./include/rr/rrRoadRunner.h:8:
+#13 2.121 /usr/include/c++/12/bits/std_thread.h:276:3: note: candidate: 'void std::swap(thread&, thread&)'
+#13 2.121   276 |   swap(thread& __x, thread& __y) noexcept
+#13 2.121       |   ^~~~
+#13 2.121 /usr/include/c++/12/bits/std_thread.h:276:16: note:   no known conversion for argument 1 from 'const std::pair<std::__cxx11::basic_string<char>, double>' to 'std::thread&'
+#13 2.121   276 |   swap(thread& __x, thread& __y) noexcept
+#13 2.121       |        ~~~~~~~~^~~
+#13 2.130 /usr/include/c++/12/bits/stl_heap.h: In instantiation of 'void std::__adjust_heap(_RandomAccessIterator, _Distance, _Distance, _Tp, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Distance = long int; _Tp = pair<__cxx11::basic_string<char>, double>; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]':
+#13 2.130 /usr/include/c++/12/bits/stl_heap.h:356:22:   required from 'void std::__make_heap(_RandomAccessIterator, _RandomAccessIterator, _Compare&) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]'
+#13 2.130 /usr/include/c++/12/bits/stl_algo.h:1629:23:   required from 'void std::__heap_select(_RandomAccessIterator, _RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]'
+#13 2.130 /usr/include/c++/12/bits/stl_algo.h:1900:25:   required from 'void std::__partial_sort(_RandomAccessIterator, _RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]'
+#13 2.130 /usr/include/c++/12/bits/stl_algo.h:1916:27:   required from 'void std::__introsort_loop(_RandomAccessIterator, _RandomAccessIterator, _Size, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Size = long int; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]'
+#13 2.130 /usr/include/c++/12/bits/stl_algo.h:1937:25:   required from 'void std::__sort(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]'
+#13 2.130 /usr/include/c++/12/bits/stl_algo.h:4853:18:   required from 'void std::sort(_RAIter, _RAIter, _Compare) [with _RAIter = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)]'
+#13 2.130 src/parallel_simulation.hpp:58:18:   required from here
+#13 2.130 /usr/include/c++/12/bits/stl_heap.h:235:36: error: no match for 'operator=' (operand types are 'const std::pair<std::__cxx11::basic_string<char>, double>' and 'std::remove_reference<const std::pair<std::__cxx11::basic_string<char>, double>&>::type' {aka 'const std::pair<std::__cxx11::basic_string<char>, double>'})
+#13 2.130   235 |           *(__first + __holeIndex) = _GLIBCXX_MOVE(*(__first + __secondChild));
+#13 2.130       |                                    ^
+#13 2.130 /usr/include/c++/12/bits/stl_pair.h:578:7: note: candidate: 'std::pair<_T1, _T2>& std::pair<_T1, _T2>::operator=(std::__conditional_t<std::__and_<std::is_move_assignable<_Tp>, std::is_move_assignable<_T2> >::value, std::pair<_T1, _T2>&&, std::__nonesuch&&>) [with _T1 = std::__cxx11::basic_string<char>; _T2 = double; std::__conditional_t<std::__and_<std::is_move_assignable<_Tp>, std::is_move_assignable<_T2> >::value, std::pair<_T1, _T2>&&, std::__nonesuch&&> = std::pair<std::__cxx11::basic_string<char>, double>&&]' (near match)
+#13 2.130   578 |       operator=(__conditional_t<__and_<is_move_assignable<_T1>,
+#13 2.130       |       ^~~~~~~~
+#13 2.130 /usr/include/c++/12/bits/stl_pair.h:578:7: note:   conversion of argument 1 would be ill-formed:
+#13 2.130 /usr/include/c++/12/bits/stl_heap.h:235:36: error: binding reference of type 'std::__conditional_t<true, std::pair<std::__cxx11::basic_string<char>, double>&&, std::__nonesuch&&>' {aka 'std::pair<std::__cxx11::basic_string<char>, double>&&'} to 'std::remove_reference<const std::pair<std::__cxx11::basic_string<char>, double>&>::type' {aka 'const std::pair<std::__cxx11::basic_string<char>, double>'} discards qualifiers
+#13 2.130   235 |           *(__first + __holeIndex) = _GLIBCXX_MOVE(*(__first + __secondChild));
+#13 2.130       |                                    ^
+#13 2.130 /usr/include/c++/12/bits/stl_pair.h:568:7: note: candidate: 'std::pair<_T1, _T2>& std::pair<_T1, _T2>::operator=(std::__conditional_t<std::__and_<std::is_copy_assignable<_T1>, std::is_copy_assignable<_T2> >::value, const std::pair<_T1, _T2>&, const std::__nonesuch&>) [with _T1 = std::__cxx11::basic_string<char>; _T2 = double; std::__conditional_t<std::__and_<std::is_copy_assignable<_T1>, std::is_copy_assignable<_T2> >::value, const std::pair<_T1, _T2>&, const std::__nonesuch&> = const std::pair<std::__cxx11::basic_string<char>, double>&]' (near match)
+#13 2.130   568 |       operator=(__conditional_t<__and_<is_copy_assignable<_T1>,
+#13 2.130       |       ^~~~~~~~
+#13 2.130 /usr/include/c++/12/bits/stl_pair.h:568:7: note:   passing 'const std::pair<std::__cxx11::basic_string<char>, double>*' as 'this' argument discards qualifiers
+#13 2.130 /usr/include/c++/12/bits/stl_pair.h:604:9: note: candidate: 'template<class _U1, class _U2> typename std::enable_if<std::__and_<std::is_assignable<_T1&, _U1&&>, std::is_assignable<_T2&, _U2&&> >::value, std::pair<_T1, _T2>&>::type std::pair<_T1, _T2>::operator=(std::pair<_U1, _U2>&&) [with _U2 = _U1; _T1 = std::__cxx11::basic_string<char>; _T2 = double]'
+#13 2.130   604 |         operator=(pair<_U1, _U2>&& __p)
+#13 2.130       |         ^~~~~~~~
+#13 2.130 /usr/include/c++/12/bits/stl_pair.h:604:9: note:   template argument deduction/substitution failed:
+#13 2.130 /usr/include/c++/12/bits/stl_heap.h:235:36: note:   types 'std::pair<_T1, _T2>' and 'std::remove_reference<const std::pair<std::__cxx11::basic_string<char>, double>&>::type' {aka 'const std::pair<std::__cxx11::basic_string<char>, double>'} have incompatible cv-qualifiers
+#13 2.130   235 |           *(__first + __holeIndex) = _GLIBCXX_MOVE(*(__first + __secondChild));
+#13 2.130       |                                    ^
+#13 2.130 /usr/include/c++/12/bits/stl_pair.h:593:9: note: candidate: 'typename std::enable_if<std::__and_<std::is_assignable<_T1&, const _U1&>, std::is_assignable<_T2&, const _U2&> >::value, std::pair<_T1, _T2>&>::type std::pair<_T1, _T2>::operator=(const std::pair<_U1, _U2>&) [with _U1 = std::__cxx11::basic_string<char>; _U2 = double; _T1 = std::__cxx11::basic_string<char>; _T2 = double; typename std::enable_if<std::__and_<std::is_assignable<_T1&, const _U1&>, std::is_assignable<_T2&, const _U2&> >::value, std::pair<_T1, _T2>&>::type = std::pair<std::__cxx11::basic_string<char>, double>&]' (near match)
+#13 2.130   593 |         operator=(const pair<_U1, _U2>& __p)
+#13 2.130       |         ^~~~~~~~
+#13 2.130 /usr/include/c++/12/bits/stl_pair.h:593:9: note:   passing 'const std::pair<std::__cxx11::basic_string<char>, double>*' as 'this' argument discards qualifiers
+#13 2.130 /usr/include/c++/12/bits/stl_heap.h:241:36: error: no match for 'operator=' (operand types are 'const std::pair<std::__cxx11::basic_string<char>, double>' and 'std::remove_reference<const std::pair<std::__cxx11::basic_string<char>, double>&>::type' {aka 'const std::pair<std::__cxx11::basic_string<char>, double>'})
+#13 2.130   241 |           *(__first + __holeIndex) = _GLIBCXX_MOVE(*(__first
+#13 2.130       |                                    ^
+#13 2.130 /usr/include/c++/12/bits/stl_pair.h:578:7: note: candidate: 'std::pair<_T1, _T2>& std::pair<_T1, _T2>::operator=(std::__conditional_t<std::__and_<std::is_move_assignable<_Tp>, std::is_move_assignable<_T2> >::value, std::pair<_T1, _T2>&&, std::__nonesuch&&>) [with _T1 = std::__cxx11::basic_string<char>; _T2 = double; std::__conditional_t<std::__and_<std::is_move_assignable<_Tp>, std::is_move_assignable<_T2> >::value, std::pair<_T1, _T2>&&, std::__nonesuch&&> = std::pair<std::__cxx11::basic_string<char>, double>&&]' (near match)
+#13 2.130   578 |       operator=(__conditional_t<__and_<is_move_assignable<_T1>,
+#13 2.130       |       ^~~~~~~~
+#13 2.130 /usr/include/c++/12/bits/stl_pair.h:578:7: note:   conversion of argument 1 would be ill-formed:
+#13 2.131 /usr/include/c++/12/bits/stl_heap.h:241:36: error: binding reference of type 'std::__conditional_t<true, std::pair<std::__cxx11::basic_string<char>, double>&&, std::__nonesuch&&>' {aka 'std::pair<std::__cxx11::basic_string<char>, double>&&'} to 'std::remove_reference<const std::pair<std::__cxx11::basic_string<char>, double>&>::type' {aka 'const std::pair<std::__cxx11::basic_string<char>, double>'} discards qualifiers
+#13 2.131   241 |           *(__first + __holeIndex) = _GLIBCXX_MOVE(*(__first
+#13 2.131       |                                    ^
+#13 2.131 /usr/include/c++/12/bits/stl_pair.h:568:7: note: candidate: 'std::pair<_T1, _T2>& std::pair<_T1, _T2>::operator=(std::__conditional_t<std::__and_<std::is_copy_assignable<_T1>, std::is_copy_assignable<_T2> >::value, const std::pair<_T1, _T2>&, const std::__nonesuch&>) [with _T1 = std::__cxx11::basic_string<char>; _T2 = double; std::__conditional_t<std::__and_<std::is_copy_assignable<_T1>, std::is_copy_assignable<_T2> >::value, const std::pair<_T1, _T2>&, const std::__nonesuch&> = const std::pair<std::__cxx11::basic_string<char>, double>&]' (near match)
+#13 2.131   568 |       operator=(__conditional_t<__and_<is_copy_assignable<_T1>,
+#13 2.131       |       ^~~~~~~~
+#13 2.131 /usr/include/c++/12/bits/stl_pair.h:568:7: note:   passing 'const std::pair<std::__cxx11::basic_string<char>, double>*' as 'this' argument discards qualifiers
+#13 2.131 /usr/include/c++/12/bits/stl_pair.h:604:9: note: candidate: 'template<class _U1, class _U2> typename std::enable_if<std::__and_<std::is_assignable<_T1&, _U1&&>, std::is_assignable<_T2&, _U2&&> >::value, std::pair<_T1, _T2>&>::type std::pair<_T1, _T2>::operator=(std::pair<_U1, _U2>&&) [with _U2 = _U1; _T1 = std::__cxx11::basic_string<char>; _T2 = double]'
+#13 2.131   604 |         operator=(pair<_U1, _U2>&& __p)
+#13 2.131       |         ^~~~~~~~
+#13 2.131 /usr/include/c++/12/bits/stl_pair.h:604:9: note:   template argument deduction/substitution failed:
+#13 2.131 /usr/include/c++/12/bits/stl_heap.h:241:36: note:   types 'std::pair<_T1, _T2>' and 'std::remove_reference<const std::pair<std::__cxx11::basic_string<char>, double>&>::type' {aka 'const std::pair<std::__cxx11::basic_string<char>, double>'} have incompatible cv-qualifiers
+#13 2.131   241 |           *(__first + __holeIndex) = _GLIBCXX_MOVE(*(__first
+#13 2.131       |                                    ^
+#13 2.131 /usr/include/c++/12/bits/stl_pair.h:593:9: note: candidate: 'typename std::enable_if<std::__and_<std::is_assignable<_T1&, const _U1&>, std::is_assignable<_T2&, const _U2&> >::value, std::pair<_T1, _T2>&>::type std::pair<_T1, _T2>::operator=(const std::pair<_U1, _U2>&) [with _U1 = std::__cxx11::basic_string<char>; _U2 = double; _T1 = std::__cxx11::basic_string<char>; _T2 = double; typename std::enable_if<std::__and_<std::is_assignable<_T1&, const _U1&>, std::is_assignable<_T2&, const _U2&> >::value, std::pair<_T1, _T2>&>::type = std::pair<std::__cxx11::basic_string<char>, double>&]' (near match)
+#13 2.131   593 |         operator=(const pair<_U1, _U2>& __p)
+#13 2.131       |         ^~~~~~~~
+#13 2.131 /usr/include/c++/12/bits/stl_pair.h:593:9: note:   passing 'const std::pair<std::__cxx11::basic_string<char>, double>*' as 'this' argument discards qualifiers
+#13 2.160 /usr/include/c++/12/bits/stl_algobase.h: In instantiation of 'static _BI2 std::__copy_move_backward<true, false, std::random_access_iterator_tag>::__copy_move_b(_BI1, _BI1, _BI2) [with _BI1 = const std::pair<std::__cxx11::basic_string<char>, double>*; _BI2 = const std::pair<std::__cxx11::basic_string<char>, double>*]':
+#13 2.160 /usr/include/c++/12/bits/stl_algobase.h:760:37:   required from '_BI2 std::__copy_move_backward_a2(_BI1, _BI1, _BI2) [with bool _IsMove = true; _BI1 = const pair<__cxx11::basic_string<char>, double>*; _BI2 = const pair<__cxx11::basic_string<char>, double>*]'
+#13 2.160 /usr/include/c++/12/bits/stl_algobase.h:769:51:   required from '_BI2 std::__copy_move_backward_a1(_BI1, _BI1, _BI2) [with bool _IsMove = true; _BI1 = const pair<__cxx11::basic_string<char>, double>*; _BI2 = const pair<__cxx11::basic_string<char>, double>*]'
+#13 2.160 /usr/include/c++/12/bits/stl_algobase.h:800:5:   required from '_OI std::__copy_move_backward_a(_II, _II, _OI) [with bool _IsMove = true; _II = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _OI = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >]'
+#13 2.160 /usr/include/c++/12/bits/stl_algobase.h:892:47:   required from '_BI2 std::move_backward(_BI1, _BI1, _BI2) [with _BI1 = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _BI2 = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >]'
+#13 2.160 /usr/include/c++/12/bits/stl_algo.h:1813:8:   required from 'void std::__insertion_sort(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]'
+#13 2.160 /usr/include/c++/12/bits/stl_algo.h:1849:25:   required from 'void std::__final_insertion_sort(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]'
+#13 2.160 /usr/include/c++/12/bits/stl_algo.h:1940:31:   required from 'void std::__sort(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)>]'
+#13 2.160 /usr/include/c++/12/bits/stl_algo.h:4853:18:   required from 'void std::sort(_RAIter, _RAIter, _Compare) [with _RAIter = __gnu_cxx::__normal_iterator<const pair<__cxx11::basic_string<char>, double>*, vector<pair<__cxx11::basic_string<char>, double> > >; _Compare = bool (*)(const pair<__cxx11::basic_string<char>, double>&, const pair<__cxx11::basic_string<char>, double>&)]'
+#13 2.160 src/parallel_simulation.hpp:58:18:   required from here
+#13 2.160 /usr/include/c++/12/bits/stl_algobase.h:719:25: error: no match for 'operator=' (operand types are 'const std::pair<std::__cxx11::basic_string<char>, double>' and 'std::remove_reference<const std::pair<std::__cxx11::basic_string<char>, double>&>::type' {aka 'const std::pair<std::__cxx11::basic_string<char>, double>'})
+#13 2.160   719 |             *--__result = std::move(*--__last);
+#13 2.160       |             ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+#13 2.160 /usr/include/c++/12/bits/stl_pair.h:578:7: note: candidate: 'std::pair<_T1, _T2>& std::pair<_T1, _T2>::operator=(std::__conditional_t<std::__and_<std::is_move_assignable<_Tp>, std::is_move_assignable<_T2> >::value, std::pair<_T1, _T2>&&, std::__nonesuch&&>) [with _T1 = std::__cxx11::basic_string<char>; _T2 = double; std::__conditional_t<std::__and_<std::is_move_assignable<_Tp>, std::is_move_assignable<_T2> >::value, std::pair<_T1, _T2>&&, std::__nonesuch&&> = std::pair<std::__cxx11::basic_string<char>, double>&&]' (near match)
+#13 2.160   578 |       operator=(__conditional_t<__and_<is_move_assignable<_T1>,
+#13 2.160       |       ^~~~~~~~
+#13 2.160 /usr/include/c++/12/bits/stl_pair.h:578:7: note:   conversion of argument 1 would be ill-formed:
+#13 2.160 /usr/include/c++/12/bits/stl_algobase.h:719:25: error: binding reference of type 'std::__conditional_t<true, std::pair<std::__cxx11::basic_string<char>, double>&&, std::__nonesuch&&>' {aka 'std::pair<std::__cxx11::basic_string<char>, double>&&'} to 'std::remove_reference<const std::pair<std::__cxx11::basic_string<char>, double>&>::type' {aka 'const std::pair<std::__cxx11::basic_string<char>, double>'} discards qualifiers
+#13 2.160   719 |             *--__result = std::move(*--__last);
+#13 2.160       |             ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+#13 2.160 /usr/include/c++/12/bits/stl_pair.h:568:7: note: candidate: 'std::pair<_T1, _T2>& std::pair<_T1, _T2>::operator=(std::__conditional_t<std::__and_<std::is_copy_assignable<_T1>, std::is_copy_assignable<_T2> >::value, const std::pair<_T1, _T2>&, const std::__nonesuch&>) [with _T1 = std::__cxx11::basic_string<char>; _T2 = double; std::__conditional_t<std::__and_<std::is_copy_assignable<_T1>, std::is_copy_assignable<_T2> >::value, const std::pair<_T1, _T2>&, const std::__nonesuch&> = const std::pair<std::__cxx11::basic_string<char>, double>&]' (near match)
+#13 2.160   568 |       operator=(__conditional_t<__and_<is_copy_assignable<_T1>,
+#13 2.160       |       ^~~~~~~~
+#13 2.160 /usr/include/c++/12/bits/stl_pair.h:568:7: note:   passing 'const std::pair<std::__cxx11::basic_string<char>, double>*' as 'this' argument discards qualifiers
+#13 2.160 /usr/include/c++/12/bits/stl_pair.h:604:9: note: candidate: 'template<class _U1, class _U2> typename std::enable_if<std::__and_<std::is_assignable<_T1&, _U1&&>, std::is_assignable<_T2&, _U2&&> >::value, std::pair<_T1, _T2>&>::type std::pair<_T1, _T2>::operator=(std::pair<_U1, _U2>&&) [with _U2 = _U1; _T1 = std::__cxx11::basic_string<char>; _T2 = double]'
+#13 2.160   604 |         operator=(pair<_U1, _U2>&& __p)
+#13 2.160       |         ^~~~~~~~
+#13 2.160 /usr/include/c++/12/bits/stl_pair.h:604:9: note:   template argument deduction/substitution failed:
+#13 2.160 /usr/include/c++/12/bits/stl_algobase.h:719:25: note:   types 'std::pair<_T1, _T2>' and 'std::remove_reference<const std::pair<std::__cxx11::basic_string<char>, double>&>::type' {aka 'const std::pair<std::__cxx11::basic_string<char>, double>'} have incompatible cv-qualifiers
+#13 2.160   719 |             *--__result = std::move(*--__last);
+#13 2.160       |             ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+#13 2.161 /usr/include/c++/12/bits/stl_pair.h:593:9: note: candidate: 'typename std::enable_if<std::__and_<std::is_assignable<_T1&, const _U1&>, std::is_assignable<_T2&, const _U2&> >::value, std::pair<_T1, _T2>&>::type std::pair<_T1, _T2>::operator=(const std::pair<_U1, _U2>&) [with _U1 = std::__cxx11::basic_string<char>; _U2 = double; _T1 = std::__cxx11::basic_string<char>; _T2 = double; typename std::enable_if<std::__and_<std::is_assignable<_T1&, const _U1&>, std::is_assignable<_T2&, const _U2&> >::value, std::pair<_T1, _T2>&>::type = std::pair<std::__cxx11::basic_string<char>, double>&]' (near match)
+#13 2.161   593 |         operator=(const pair<_U1, _U2>& __p)
+#13 2.161       |         ^~~~~~~~
+#13 2.161 /usr/include/c++/12/bits/stl_pair.h:593:9: note:   passing 'const std::pair<std::__cxx11::basic_string<char>, double>*' as 'this' argument discards qualifiers
+#13 2.268 make: *** [Makefile:15: libsbmlconverter.so] Error 1
+#13 ERROR: process "/bin/sh -c make" did not complete successfully: exit code: 2
+------
+ > [9/9] RUN make:
+2.160       |         ^~~~~~~~
+2.160 /usr/include/c++/12/bits/stl_pair.h:604:9: note:   template argument deduction/substitution failed:
+2.160 /usr/include/c++/12/bits/stl_algobase.h:719:25: note:   types 'std::pair<_T1, _T2>' and 'std::remove_reference<const std::pair<std::__cxx11::basic_string<char>, double>&>::type' {aka 'const std::pair<std::__cxx11::basic_string<char>, double>'} have incompatible cv-qualifiers
+2.160   719 |             *--__result = std::move(*--__last);
+2.160       |             ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+2.161 /usr/include/c++/12/bits/stl_pair.h:593:9: note: candidate: 'typename std::enable_if<std::__and_<std::is_assignable<_T1&, const _U1&>, std::is_assignable<_T2&, const _U2&> >::value, std::pair<_T1, _T2>&>::type std::pair<_T1, _T2>::operator=(const std::pair<_U1, _U2>&) [with _U1 = std::__cxx11::basic_string<char>; _U2 = double; _T1 = std::__cxx11::basic_string<char>; _T2 = double; typename std::enable_if<std::__and_<std::is_assignable<_T1&, const _U1&>, std::is_assignable<_T2&, const _U2&> >::value, std::pair<_T1, _T2>&>::type = std::pair<std::__cxx11::basic_string<char>, double>&]' (near match)
+2.161   593 |         operator=(const pair<_U1, _U2>& __p)
+2.161       |         ^~~~~~~~
+2.161 /usr/include/c++/12/bits/stl_pair.h:593:9: note:   passing 'const std::pair<std::__cxx11::basic_string<char>, double>*' as 'this' argument discards qualifiers
+2.268 make: *** [Makefile:15: libsbmlconverter.so] Error 1
+------
+Dockerfile:18
+--------------------
+  16 |     COPY ./lib64/libroadrunner.so /lib
+  17 |     
+  18 | >>> RUN make 
+  19 |     
+--------------------
+ERROR: failed to solve: process "/bin/sh -c make" did not complete successfully: exit code: 2
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/4ee3v9vkz9do4tesqhxphcpu9
