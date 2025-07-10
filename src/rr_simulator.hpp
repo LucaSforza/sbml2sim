@@ -8,7 +8,6 @@
 class rr_Simulator : public Simulator {
 
     rr::RoadRunner simulator;
-    ErrorRule *error_rule = NULL;
 
 public:
     virtual ~rr_Simulator() override = default;
@@ -71,12 +70,23 @@ public:
         return simResult;
     } // simulale()
 
+protected:
+    const rr::RoadRunner& get_simulator() {
+        return this->simulator;
+    }
+};
 
+struct ParameterResult {
+    const char *paramater_id;
+    bool velocity;
 };
 
 class Search_Solutions_Velocity: public rr_Simulator {
     std::unordered_map<ParameterId, bool> choosed_ids;
     std::vector<ParameterId> unchoosed_ids;
+
+    std::unordered_map<ParameterId, bool> best_parameters;
+    std::vector<std::vector<bool>> best_assigns;
 public:
 
     void set_unchoosed_ids(std::vector<ParameterId> ids) {
@@ -86,10 +96,51 @@ public:
     void choose_paramater_velocity(const ParameterId& id, bool velocity) {
         choosed_ids[id] = velocity;
     }
+
+    ParameterResult **get_best_assigns() const {
+        ParameterResult **results = (ParameterResult**)malloc(sizeof(ParameterResult)*best_assigns.size());
+        for(size_t i = 0; i < best_assigns.size(); i++) {
+            ParameterResult *one_result = (ParameterResult*)malloc(sizeof(ParameterResult)*unchoosed_ids.size());
+            results[i] = one_result;
+        }
+
+        for (size_t j = 0; j < best_assigns.size(); j++) {
+            for (size_t i = 0; i < unchoosed_ids.size(); ++i) {
+                results[j][i].paramater_id = strdup(unchoosed_ids[i].c_str()); // TODO: not duplicate??
+                results[j][i].velocity = best_assigns[j][i];
+            }
+        }
+        return results;
+    }
     
     double simulate_error(const std::unordered_set<SpeciesId>& ids, ErrorRule *rule) override {
-        // TODO: simula tutte le combinazioni apparte quelle prescelte
-        TODO("simulate_error");
+        // Imposta anche i parametri già scelti
+        for (const auto& [id, val] : choosed_ids) {
+            this->set_parameter(id.c_str(), val ? 1e2 : 1e-2);
+        }
+
+        std::vector<bool> curr_assign(unchoosed_ids.size(), false);
+        
+        // Numero di combinazioni: 2^(unchoosed_ids.size())
+        size_t num_combinations = 1ULL << unchoosed_ids.size();
+
+        for (size_t mask = 0; mask < num_combinations; ++mask) {
+            // Imposta i parametri booleani secondo la combinazione corrente
+            for (size_t i = 0; i < unchoosed_ids.size(); ++i) {
+                bool value = (mask >> i) & 1;
+                curr_assign[i] = value;
+                this->set_parameter(unchoosed_ids[i].c_str(), value ? 1e2 : 1e-2);
+            }
+
+            std::optional<SimulationResult> result = simulate(ids);
+            if (result.has_value()) {
+                double error = 1e6*rule->error(*result);
+                if(error < 1e-12) { // if(error == 0.0)
+                    best_assigns.push_back(curr_assign);
+                }
+            }
+        }
+        return 0.0;
     }
 
 };
