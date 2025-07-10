@@ -33,6 +33,32 @@ public:
         this->simulator.setGlobalParameterByName(id, value);
     }
 
+    ParameterResult *get_all_parameters() override {
+        // Ottieni tutti i parametri globali
+        std::vector<std::string> allParams = simulator.getGlobalParameterIds();
+        std::vector<ParameterResult> selectedParams;
+
+        const std::string prefix = "k_";
+        for (const auto& param : allParams) {
+            if (param.compare(0, prefix.size(), prefix) == 0) {
+                ParameterResult pr;
+                pr.paramater_id = strdup(param.c_str());
+                pr.constant = simulator.getGlobalParameterByName(param);
+                selectedParams.push_back(pr);
+            }
+        }
+
+        // Alloca array C-style
+        ParameterResult *result = nullptr;
+        if (!selectedParams.empty()) {
+            result = (ParameterResult*)malloc(sizeof(ParameterResult) * selectedParams.size());
+            for (size_t i = 0; i < selectedParams.size(); ++i) {
+                result[i] = selectedParams[i];
+            }
+        }
+        return result;
+    }
+
     std::optional<SimulationResult> simulate(const std::unordered_set<SpeciesId>& ids) override {
 
         const ls::DoubleMatrix *result = NULL;
@@ -76,10 +102,6 @@ protected:
     }
 };
 
-struct ParameterResult {
-    const char *paramater_id;
-    bool velocity;
-};
 
 class Search_Solutions_Velocity: public rr_Simulator {
     std::unordered_map<ParameterId, bool> choosed_ids;
@@ -107,7 +129,7 @@ public:
         for (size_t j = 0; j < best_assigns.size(); j++) {
             for (size_t i = 0; i < unchoosed_ids.size(); ++i) {
                 results[j][i].paramater_id = strdup(unchoosed_ids[i].c_str()); // TODO: not duplicate??
-                results[j][i].velocity = best_assigns[j][i];
+                results[j][i].constant = best_assigns[j][i] ? 1e2 : 1e-2;
             }
         }
         return results;

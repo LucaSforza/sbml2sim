@@ -30,11 +30,18 @@ public:
     virtual double error(const SimulationResult& sim_result) = 0;
 };
 
+struct ParameterResult {
+    const char *paramater_id;
+    double constant;
+};
+
+
 class Simulator {
 public:
     // TODO: random start concentration for input that are not known
     virtual ~Simulator() {};
     virtual void set_parameter(const char *id, double value) = 0;
+    virtual ParameterResult *get_all_parameters() = 0;
     virtual std::optional<SimulationResult> simulate(const std::unordered_set<SpeciesId>& ids) = 0;
 
     virtual double simulate_error(const std::unordered_set<SpeciesId>& ids, ErrorRule *rule) {
