@@ -225,7 +225,6 @@ extern "C" {
     }
 
     ParallelSimulator *ParallelSimulator_create(int workers) {
-        TODO("change binding python");
         return new ParallelSimulator(workers);
     }
 
@@ -260,6 +259,8 @@ extern "C" {
     void Fitness_free(Fitness *_this) {
         free(_this);
     }
+
+    // TODO: get_parameter
 
     // TODO: binding
     /* void unchoosed_ids(const char **ids, size_t num_ids) {

@@ -68,6 +68,7 @@ public:
         try {
             result = simulator.simulate();
         } catch (const std::exception& e) {
+            // TODO: return a Simulation Result
             return std::nullopt;
         }
 

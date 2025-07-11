@@ -366,7 +366,7 @@ def rr_simualtor(doc: SBMLDoc) -> Simulator:
 
 class ParallelSimulator:
     lib.ParallelSimulator_create.restype = c_void_p
-    lib.ParallelSimulator_create.argtypes = [c_int, c_int]
+    lib.ParallelSimulator_create.argtypes = [c_int]
 
     lib.ParallelSimulator_add_worker.restype = None
     lib.ParallelSimulator_add_worker.argtypes = [c_void_p, c_void_p]
@@ -379,11 +379,11 @@ class ParallelSimulator:
 
     
 
-    def __init__(self, workers: int, capacity: int):
-        self.obj = lib.ParallelSimulator_create(workers, capacity)
+    def __init__(self, workers: int):
+        self.obj = lib.ParallelSimulator_create(workers)
         self.workers = []
-        self.capacity = capacity
 
+    # TODO: change name
     def add_worker(self, worker: Simulator):
         self.workers.append(worker)
         lib.ParallelSimulator_add_worker(self.obj, worker.obj)
@@ -410,13 +410,16 @@ class ParallelSimulator:
     def simulate(self) -> list[tuple[float, bool]]:
         result = lib.ParallelSimulator_simulate(self.obj)
         r = []
-        for i in range(self.capacity):
+        for i in range(len(self.workers)):
             if lib.Fitness_is_error(result,i):
                 r.append((math.nan,True))
             else:
                 r.append((float(lib.Fitness_fitness(result, i)),False))
         lib.Fitness_free(result)
         return r
+    
+    def get_simulators(self) -> list[Simulator]:
+        return self.workers
 
     lib.ParallelSimulator_delete.restype = None
     lib.ParallelSimulator_delete.argtypes = [c_void_p]

@@ -67,10 +67,11 @@ class ParallelSimulator {
         double err = 0.0;
         for (size_t i = 0; i < result.size(); ++i) {
             if(result[i].first != real_conc[i].first) {
-                double a = std::log10(result[i].second + LITTLE_EPSILON);
-                double b = std::log10(real_conc[i].second + LITTLE_EPSILON);
-                double diff = a - b;
-                err += diff * diff;
+                if(result[i].second < -1e-6) {
+                    err += 100.0;
+                }
+                double a = std::log10(std::abs((result[i].second + LITTLE_EPSILON) / (real_conc[i].second + LITTLE_EPSILON)));
+                err += a * a;
             }
         }
         return err;
@@ -113,7 +114,7 @@ public:
         
         #pragma omp parallel for schedule(dynamic)
         for(int i = 0; i < this->sims.size(); ++i) {
-            // TODO: simulate a simuator
+            // TODO: random start concentration
             // printf("Thread %d is running\n", omp_get_thread_num());
             std::optional<SimulationResult> result = this->sims[i]->simulate(this->species);
             // TODO: choose the error
