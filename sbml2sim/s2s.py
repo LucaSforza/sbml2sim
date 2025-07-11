@@ -364,20 +364,44 @@ class Simulator:
 def rr_simualtor(doc: SBMLDoc) -> Simulator:
     return Simulator(lib.rr_Simulator_create(doc.obj))
 
+class ErrorHandler:
+    
+    lib.ErrorHandler_add_real_concentration.restype = None
+    lib.ErrorHandler_add_real_concentration.argtypes = [c_void_p, c_char_p, c_double]
+
+    lib.ErrorHandler_order_real_concentration.restype = None
+    lib.ErrorHandler_order_real_concentration.argtypes = [c_void_p]
+
+    def add_real_concentration(self, id: str, value: float):
+        lib.ErrorHandler_add_real_concentration(self.obj, id.encode('utf-8'), c_double(value))
+
+    def order_real_concentration(self):
+        lib.ErrorHandler_order_real_concentration(self.obj)
+
+    def __init__(self, obj):
+        self.obj = obj
+
+    lib.ErrorHandler_delete.restype = None
+    lib.ErrorHandler_delete.argtypes = [c_void_p]
+
+    def __del__(self):
+        if hasattr(self, 'obj') and self.obj:
+            lib.HandlerError_delete(self.obj)
+            self.obj = None
+
+
+lib.OrderingError_create.restype = c_void_p
+lib.OrderingError_create.argtypes = []
+
+def ordering_error_create():
+    return ErrorHandler(lib.OrderingError_create())
+
 class ParallelSimulator:
     lib.ParallelSimulator_create.restype = c_void_p
     lib.ParallelSimulator_create.argtypes = [c_int]
 
     lib.ParallelSimulator_add_worker.restype = None
     lib.ParallelSimulator_add_worker.argtypes = [c_void_p, c_void_p]
-
-    lib.ParallelSimulator_add_real_concentration.restype = None
-    lib.ParallelSimulator_add_real_concentration.argtypes = [c_void_p, c_char_p, c_double]
-
-    lib.ParallelSimulator_order_real_concentration.restype = None
-    lib.ParallelSimulator_order_real_concentration.argtypes = [c_void_p]
-
-    
 
     def __init__(self, workers: int):
         self.obj = lib.ParallelSimulator_create(workers)
@@ -407,8 +431,8 @@ class ParallelSimulator:
     lib.Fitness_free.argtypes = [c_void_p]
 
     # @returns fitness and number of errors
-    def simulate(self) -> list[tuple[float, bool]]:
-        result = lib.ParallelSimulator_simulate(self.obj)
+    def simulate(self, handler: ErrorHandler) -> list[tuple[float, bool]]:
+        result = lib.ParallelSimulator_simulate(self.obj, handler.obj)
         r = []
         for i in range(len(self.workers)):
             if lib.Fitness_is_error(result,i):

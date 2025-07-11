@@ -244,6 +244,10 @@ extern "C" {
         _this->order_real_concentration();
     }
 
+    void ErrorHandler_delete(ErrorHandler *_this) {
+        delete _this;
+    }
+
     OrderingError *OrderingError_create() {
         return new OrderingError();
     }

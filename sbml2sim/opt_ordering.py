@@ -15,14 +15,16 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float]) ->
     workers = int(args.workers)
     parallel_simulator = s2s.ParallelSimulator(workers)
     
+    error_handler = s2s.ordering_error_create()
+    
     for (species, conc) in concentrations.items():
         if sbml.is_input(species):
             sbml.set_initial_concentration(species, conc)
         elif not sbml.is_output(species):
-            parallel_simulator.add_real_concentration(species, conc)
+            error_handler.add_real_concentration(species, conc)
     
     # TODO: choose error
-    parallel_simulator.order_real_concentration()
+    error_handler.order_real_concentration()
     
     kinetic_constants: list[ParameterId] = sbml.get_kinetic_constants()
     
@@ -46,7 +48,6 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float]) ->
     print("[INFO] start optimitation")
     
     attempts = optimizer.budget // len(simulators)
-
     
     for i in range(attempts):
         start_time = time.time()
@@ -56,7 +57,7 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float]) ->
             parameters.append(parameter)
             for (id,value) in parameter.items():
                 sim.set_parameter(id, value.value)
-        sols = parallel_simulator.simulate()
+        sols = parallel_simulator.simulate(error_handler)
         errors = 0
         not_errors = 0
         for (parameter, (value, error)) in zip(parameters, sols):
