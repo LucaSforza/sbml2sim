@@ -8,16 +8,6 @@ import json
 import argparse
 import time
 
-def parse_args():
-    parser = argparse.ArgumentParser(description="Optimize kinetic constants basing on the ordering")
-    parser.add_argument("input_file", help="Path to the SBML input file")
-    parser.add_argument("--proteomics", default="proteomics.json", help="path to proteomics")
-    parser.add_argument("--workers",default=4, help="path to proteomics")
-    parser.add_argument("--tissue",default="breast_cancer_cell", help="path to proteomics")
-    parser.add_argument("--plot", action="store_true", help="Plot the simulation for each kinetic constants found")
-    parser.add_argument("--output-file", default="kinetic_constants.json", help="Output file for the list of kinetic constants that satisfy the constraints")
-    return parser.parse_args()
-
 
 def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float]) -> dict[ParameterId, float]:
     capacity = 40
@@ -87,6 +77,18 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float]) ->
         print(f"[INFO] attempt {i}/{attempts}, time: {elapsed_time}, errors: {errors}/{capacity} not_errors: {not_errors}")
 
     return amm
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Optimize kinetic constants basing on the ordering")
+    parser.add_argument("input_file", help="Path to the SBML input file")
+    parser.add_argument("--proteomics", default="proteomics.json", help="path to proteomics")
+    parser.add_argument("--workers",default=4, help="path to proteomics")
+    parser.add_argument("--tissue",default="breast_cancer_cell", help="path to proteomics")
+    parser.add_argument("--plot", action="store_true", help="Plot the simulation for each kinetic constants found")
+    parser.add_argument("--output-file", default="kinetic_constants.json", help="Output file for the list of kinetic constants that satisfy the constraints")
+    return parser.parse_args()
+
 
 def main():
     args = parse_args()
