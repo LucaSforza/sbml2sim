@@ -12,7 +12,7 @@
 
 #define control(bool_exp) do {\
     if(!(bool_exp)) { \
-        eprintf("[FATAL ERROR] %s:%d: assertion failed: "#bool_exp); \
+        eprintf("[FATAL ERROR] %s:%d: assertion failed: "#bool_exp, __FILE__, __LINE__); \
         exit(1);\
     } \
 } while(0)

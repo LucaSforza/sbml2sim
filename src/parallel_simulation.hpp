@@ -25,9 +25,62 @@ struct Fitness {
     Fitness(int id, bool error): simulation_id(id), error(error) {}
 };
 
+bool comp(const std::pair<SpeciesId, double>& a, const std::pair<SpeciesId, double>& b) {
+    return a.second < b.second;
+}
+
 class ErrorHandler {
+    std::unordered_set<SpeciesId> constrained_species;
+    std::vector<std::pair<SpeciesId, double>> real_conc;
+protected:
+
+    const std::vector<std::pair<SpeciesId, double>>& get_real_concs() const {
+        return this->real_conc;
+    }
+
 public:
-    virtual double error(const SimulationResult& sim_result) = 0;
+    virtual ~ErrorHandler() = default;
+    virtual double error(SimulationResult& sim_result) const = 0;
+
+    void add_real_concentration(const char *id, double value) {
+        control(constrained_species.insert(id).second);
+        this->real_conc.push_back(std::pair(id, value));
+    }
+
+    void order_real_concentration() {
+        std::sort(this->real_conc.begin(), this->real_conc.end(), comp);
+    }
+
+    const std::unordered_set<SpeciesId>& get_constrained_species() const {
+        return this->constrained_species;
+    }
+};
+
+class OrderingError: public ErrorHandler {
+public:
+
+    ~OrderingError() override = default;
+
+    OrderingError() = default;
+
+    double error(SimulationResult& result) const override {
+        std::sort(result.begin(), result.end(), comp);
+        auto real_conc = this->get_real_concs();
+        control(result.size() == real_conc.size());
+        double err = 0.0;
+        for (size_t i = 0; i < result.size(); ++i) {
+            if(result[i].first != real_conc[i].first) {
+                if(result[i].second < -1e-6) {
+                    err += 100.0;
+                }
+                double a = std::log10(std::abs((result[i].second + LITTLE_EPSILON) / (real_conc[i].second + LITTLE_EPSILON)));
+                err += a * a;
+            }
+        }
+        return err;
+    }
+
+    
 };
 
 struct ParameterResult {
@@ -57,28 +110,11 @@ public:
 class ParallelSimulator {
     // TODO: align, false sharing
     std::vector<Simulator*> sims;
-    std::unordered_set<SpeciesId> species;
-    std::vector<std::pair<SpeciesId, double>> real_conc;
+
     int workers;
 
     double ordering_error(SimulationResult& result) const {
-        std::sort(result.begin(), result.end(), comp);
-        assert(result.size() == real_conc.size());
-        double err = 0.0;
-        for (size_t i = 0; i < result.size(); ++i) {
-            if(result[i].first != real_conc[i].first) {
-                if(result[i].second < -1e-6) {
-                    err += 100.0;
-                }
-                double a = std::log10(std::abs((result[i].second + LITTLE_EPSILON) / (real_conc[i].second + LITTLE_EPSILON)));
-                err += a * a;
-            }
-        }
-        return err;
-    }
-
-    static bool comp(const std::pair<SpeciesId, double>& a, const std::pair<SpeciesId, double>& b) {
-        return a.second < b.second;
+        TODO("ordering_error");
     }
 public:
     // ATTENTION: we are not freeing the elements
@@ -93,19 +129,10 @@ public:
         this->sims.push_back(sim);
     }
 
-    void add_real_concentration(const char *id, double value) {
-        assert(this->species.insert(id).second);
-        this->real_conc.push_back(std::pair(id, value));
-    }
-
-    void order_real_concentration() {
-        std::sort(this->real_conc.begin(), this->real_conc.end(), comp);
-    }
-
     /**
      * @returns error
      */
-    Fitness *simulate(ErrorHandler *handler) const {
+    Fitness *simulate(const ErrorHandler *handler) const {
         if(this->workers <= 0) {
             eprintf("[FATAL ERROR] %s:%d: assertion failed this->workers <= 0");
             exit(1);
@@ -117,9 +144,8 @@ public:
         
         #pragma omp parallel for schedule(dynamic)
         for(int i = 0; i < this->sims.size(); ++i) {
-            
             // printf("Thread %d is running\n", omp_get_thread_num());
-            std::optional<SimulationResult> result = this->sims[i]->simulate(this->species);
+            std::optional<SimulationResult> result = this->sims[i]->simulate(handler->get_constrained_species());
             // TODO: choose the error
             if(result.has_value()) {
                 double error = handler->error(result.value());

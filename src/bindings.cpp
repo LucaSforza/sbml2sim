@@ -236,12 +236,16 @@ extern "C" {
         _this->add_worker(worker);
     }
 
-    void ParallelSimulator_add_real_concentration(ParallelSimulator *_this, const char *id, double value) {
+    void ErrorHandler_add_real_concentration(ErrorHandler *_this, const char *id, double value) {
         _this->add_real_concentration(id, value);
     }
 
-    void ParallelSimulator_order_real_concentration(ParallelSimulator *_this) {
+    void ErrorHandler_order_real_concentration(ErrorHandler *_this) {
         _this->order_real_concentration();
+    }
+
+    OrderingError *OrderingError_create() {
+        return new OrderingError();
     }
 
     Fitness *ParallelSimulator_simulate(ParallelSimulator *_this, ErrorHandler *handler) {
