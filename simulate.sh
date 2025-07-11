@@ -11,6 +11,8 @@ output_path=converted_$(basename $file_path)
 
 PYTHON=/venv-sbml2sim/bin/python3
 
+# TODO: - Enable simulation of a model using an external file for kinetic constants.
+
 docker run -it -e \
     --net=host \
     --name sbml2sim sbml2sim \

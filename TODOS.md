@@ -1,3 +1,22 @@
+# 13/06/2025
+
+- Run the project on the cluster and parallelize the computations.
+
+# 12/06/2025
+- Check if the system is stable, otherwise penalize
+- Enable simulation of a model using an external file for kinetic constants.
+
+# 11/06/2025
+
+## TODOs:
+- Enable simulation of a model using an external file for kinetic constants.
+- The constants for a given enzyme are the same across all reactions in which it participates.
+- Check if the system is stable, otherwise penalize
+- Run the project on the cluster and parallelize the computations.
+
+## OPTIONALS_
+- The constants for a given enzyme are the same across all reactions in which it participates.
+
 # 9/06/2025
 
 ## TODOs:

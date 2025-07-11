@@ -73,7 +73,7 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float]) ->
                 optimizer.tell(parameter, value)
             else:
                 errors += 1
-                optimizer.tell(parameter, 10**4)
+                optimizer.tell(parameter, 10**8)
         elapsed_time = time.time() - start_time
         print(f"[INFO] attempt {i}/{attempts}, time: {elapsed_time}, errors: {errors}/{capacity} not_errors: {not_errors}")
 
