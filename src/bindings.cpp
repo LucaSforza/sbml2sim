@@ -244,8 +244,8 @@ extern "C" {
         _this->order_real_concentration();
     }
 
-    Fitness *ParallelSimulator_simulate(ParallelSimulator *_this) {
-        return _this->simulate();
+    Fitness *ParallelSimulator_simulate(ParallelSimulator *_this, ErrorHandler *handler) {
+        return _this->simulate(handler);
     }
 
     bool Fitness_is_error(Fitness *_this, int index) {

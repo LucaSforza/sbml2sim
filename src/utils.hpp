@@ -10,6 +10,13 @@
 #define eprintf(...) fprintf(stdout, __VA_ARGS__)
 #define TODO(msg) assert(false && msg)
 
+#define control(bool_exp) do {\
+    if(!(bool_exp)) { \
+        eprintf("[FATAL ERROR] %s:%d: assertion failed: "#bool_exp); \
+        exit(1);\
+    } \
+} while(0)
+
 class MathMLIterator {
     std::deque<libsbml::ASTNode*> frontier;
 

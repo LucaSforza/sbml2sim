@@ -25,7 +25,7 @@ struct Fitness {
     Fitness(int id, bool error): simulation_id(id), error(error) {}
 };
 
-class ErrorRule {
+class ErrorHandler {
 public:
     virtual double error(const SimulationResult& sim_result) = 0;
 };
@@ -44,7 +44,7 @@ public:
     virtual ParameterResult *get_all_parameters() = 0;
     virtual std::optional<SimulationResult> simulate(const std::unordered_set<SpeciesId>& ids) = 0;
 
-    virtual double simulate_error(const std::unordered_set<SpeciesId>& ids, ErrorRule *rule) {
+    virtual double simulate_error(const std::unordered_set<SpeciesId>& ids, ErrorHandler *rule) {
         std::optional<SimulationResult> result = this->simulate(ids);
         if(result.has_value()) {
             return rule->error(result.value());
@@ -105,8 +105,11 @@ public:
     /**
      * @returns error
      */
-    Fitness *simulate() const {
-        assert(this->workers > 0);
+    Fitness *simulate(ErrorHandler *handler) const {
+        if(this->workers <= 0) {
+            eprintf("[FATAL ERROR] %s:%d: assertion failed this->workers <= 0");
+            exit(1);
+        }
 
         omp_set_num_threads(this->workers);
 
@@ -114,12 +117,12 @@ public:
         
         #pragma omp parallel for schedule(dynamic)
         for(int i = 0; i < this->sims.size(); ++i) {
-            // TODO: random start concentration
+            
             // printf("Thread %d is running\n", omp_get_thread_num());
             std::optional<SimulationResult> result = this->sims[i]->simulate(this->species);
             // TODO: choose the error
             if(result.has_value()) {
-                double error = this->ordering_error(result.value());
+                double error = handler->error(result.value());
                 // TODO: false sharing
                 r[i] = Fitness(i, error);
             } else {

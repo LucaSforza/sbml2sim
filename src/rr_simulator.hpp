@@ -61,6 +61,8 @@ public:
 
     std::optional<SimulationResult> simulate(const std::unordered_set<SpeciesId>& ids) override {
 
+        // TODO: random start concentration
+
         const ls::DoubleMatrix *result = NULL;
 
         const std::string prefix = "avg_";
@@ -136,7 +138,7 @@ public:
         return results;
     }
     
-    double simulate_error(const std::unordered_set<SpeciesId>& ids, ErrorRule *rule) override {
+    double simulate_error(const std::unordered_set<SpeciesId>& ids, ErrorHandler *rule) override {
         // Imposta anche i parametri già scelti
         for (const auto& [id, val] : choosed_ids) {
             this->set_parameter(id.c_str(), val ? 1e2 : 1e-2);
