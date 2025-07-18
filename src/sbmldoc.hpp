@@ -546,7 +546,9 @@ public:
     }
 
     const char *get_compartement(const char *species_id) const {
-        return this->model->getSpecies(species_id)->getCompartment().c_str();
+        libsbml::Species *s = this->model->getSpecies(species_id);
+        if(s == NULL) return NULL;
+        return s->getCompartment().c_str();
     }
 
     std::string convert_to_sbml_string() const {

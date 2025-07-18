@@ -4,7 +4,7 @@ INCLUDE_DIRS= -I./include/
 LIB_DIRS= -L./lib64
 
 CXX =g++
-CXXFLAGS= $(INCLUDE_DIRS) -fPIC
+CXXFLAGS= $(INCLUDE_DIRS) -fPIC -std=c++23
 LDFLAGS= $(LIB_DIRS) -lroadrunner -lsbml -fopenmp
 
 

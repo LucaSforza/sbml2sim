@@ -4,6 +4,7 @@
 #include <vector>
 #include <unordered_set>
 #include <optional>
+#include <expected>
 
 #include <assert.h>
 #include <omp.h>
@@ -23,6 +24,8 @@ struct Fitness {
     Fitness(int id, double fitness): simulation_id(id), fitness(fitness), error(false) { }
 
     Fitness(int id, bool error): simulation_id(id), error(error) {}
+
+    Fitness(int id, bool error, double fitness): simulation_id(id), fitness(fitness), error(error) {}
 };
 
 bool comp(const std::pair<SpeciesId, double>& a, const std::pair<SpeciesId, double>& b) {
@@ -40,7 +43,7 @@ protected:
 
 public:
     virtual ~ErrorHandler() = default;
-    virtual double error(SimulationResult& sim_result) const = 0;
+    virtual double error(std::expected<SimulationResult,double> sim_result) const = 0;
 
     void add_real_concentration(const char *id, double value) {
         control(constrained_species.insert(id).second);
@@ -63,19 +66,25 @@ public:
 
     OrderingError() = default;
 
-    double error(SimulationResult& result) const override {
-        std::sort(result.begin(), result.end(), comp);
-        auto real_conc = this->get_real_concs();
-        control(result.size() == real_conc.size());
+    double error(std::expected<SimulationResult,double> sim_result) const override {
         double err = 0.0;
-        for (size_t i = 0; i < result.size(); ++i) {
-            if(result[i].first != real_conc[i].first) {
-                if(result[i].second < -1e-6) {
-                    err += 100.0;
+        if(sim_result) {
+            SimulationResult result = *sim_result;
+            std::sort(result.begin(), result.end(), comp);
+            auto real_conc = this->get_real_concs();
+            control(result.size() == real_conc.size());
+            for (size_t i = 0; i < result.size(); ++i) {
+                if(result[i].first != real_conc[i].first) {
+                    if(result[i].second < -1e-6) {
+                        err += 100.0;
+                    }
+                    double a = std::log10(std::abs((result[i].second + LITTLE_EPSILON) / (real_conc[i].second + LITTLE_EPSILON)));
+                    err += a * a;
                 }
-                double a = std::log10(std::abs((result[i].second + LITTLE_EPSILON) / (real_conc[i].second + LITTLE_EPSILON)));
-                err += a * a;
             }
+        } else {
+            // TODO: scegli l'orizzonte di simulazione
+            err = 1e6*(1/((sim_result.error())/100.0));
         }
         return err;
     }
@@ -95,16 +104,8 @@ public:
     virtual ~Simulator() {};
     virtual void set_parameter(const char *id, double value) = 0;
     virtual ParameterResult *get_all_parameters() = 0;
-    virtual std::optional<SimulationResult> simulate(const std::unordered_set<SpeciesId>& ids) = 0;
-
-    virtual double simulate_error(const std::unordered_set<SpeciesId>& ids, ErrorHandler *rule) {
-        std::optional<SimulationResult> result = this->simulate(ids);
-        if(result.has_value()) {
-            return rule->error(result.value());
-        } else {
-            return NAN;
-        }
-    }
+    // ritorna un simulation result oppure il tempo in cui il simulatore va in crash
+    virtual std::expected<SimulationResult,double> simulate(const std::unordered_set<SpeciesId>& ids) = 0;
 };
 
 class ParallelSimulator {
@@ -145,15 +146,15 @@ public:
         #pragma omp parallel for schedule(dynamic)
         for(int i = 0; i < this->sims.size(); ++i) {
             // printf("Thread %d is running\n", omp_get_thread_num());
-            std::optional<SimulationResult> result = this->sims[i]->simulate(handler->get_constrained_species());
-            // TODO: choose the error
-            if(result.has_value()) {
-                double error = handler->error(result.value());
-                // TODO: false sharing
-                r[i] = Fitness(i, error);
-            } else {
-                r[i] = Fitness(i, true);
+            auto sim_result = this->sims[i]->simulate(handler->get_constrained_species());
+            bool err = false;
+            if(!sim_result) {
+                err = true;
             }
+            double error = handler->error(sim_result);
+            // TODO: false sharing
+            r[i] = Fitness(i, err, error);
+
         }
         
         return r;

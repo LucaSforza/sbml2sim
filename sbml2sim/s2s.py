@@ -233,7 +233,8 @@ class SBMLDoc:
 
     def get_compartement(self, species_id: str) -> str:
         ptr = lib.SBMLDoc_get_compartement(self.obj, species_id.encode('utf-8'))
-        return ptr.decode('utf-8')
+        if ptr: return ptr.decode('utf-8')
+        else: return ""
 
     def get_num_compartements(self) -> int:
         return lib.SBMLDoc_get_num_compartements(self.obj)
@@ -386,7 +387,7 @@ class ErrorHandler:
 
     def __del__(self):
         if hasattr(self, 'obj') and self.obj:
-            lib.HandlerError_delete(self.obj)
+            lib.ErrorHandler_delete(self.obj)
             self.obj = None
 
 
@@ -436,7 +437,7 @@ class ParallelSimulator:
         r = []
         for i in range(len(self.workers)):
             if lib.Fitness_is_error(result,i):
-                r.append((math.nan,True))
+                r.append((float(lib.Fitness_fitness(result, i)),True))
             else:
                 r.append((float(lib.Fitness_fitness(result, i)),False))
         lib.Fitness_free(result)

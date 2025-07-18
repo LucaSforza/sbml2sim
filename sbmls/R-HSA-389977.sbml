@@ -1,0 +1,1217 @@
+<?xml version='1.0' encoding='utf-8' standalone='no'?>
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" level="3" version="1">
+  <notes>
+    <annotation>
+      <p xmlns="http://www.w3.org/1999/xhtml">SBML generated from Reactome version 93 on 6/23/25, 9:30 PM using JSBML version 1.5.</p>
+    </annotation>
+  </notes>
+  <model id="pathway_389977" metaid="metaid_0" name="Post-chaperonin tubulin folding pathway">
+    <notes>
+      <p xmlns="http://www.w3.org/1999/xhtml">Alpha and beta tubulin folding intermediates are formed through ATP-dependent interaction with TriC/CCT. In order to form a functional heterodimer, these folding intermediates undergo a series of interactions with five proteins: (cofactors A-E) following release from TriC/CCT (reviewed in Cowan and Lewis et al., 2001). These interactions are described in the reactions below. Ultimately, alpha tubulin, when associated with cofactor E, interacts with cofactor D-bound beta-tubulin. The entry of cofactor C into this complex results in the discharge of native heterodimer triggered by GTP hydrolysis in beta tubulin (Tian et al., 1997).</p>
+    </notes>
+    <annotation>
+      <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+        <rdf:Description rdf:about="#metaid_0">
+          <dc:creator>
+            <rdf:Bag>
+              <rdf:li rdf:parseType="Resource">
+                <vCard:N rdf:parseType="Resource">
+                  <vCard:Family>Matthews</vCard:Family>
+                  <vCard:Given>Lisa</vCard:Given>
+                </vCard:N>
+                <vCard:ORG rdf:parseType="Resource">
+                  <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                </vCard:ORG>
+              </rdf:li>
+              <rdf:li rdf:parseType="Resource">
+                <vCard:N rdf:parseType="Resource">
+                  <vCard:Family>Matthews</vCard:Family>
+                  <vCard:Given>Lisa</vCard:Given>
+                </vCard:N>
+                <vCard:ORG rdf:parseType="Resource">
+                  <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                </vCard:ORG>
+              </rdf:li>
+              <rdf:li rdf:parseType="Resource">
+                <vCard:N rdf:parseType="Resource">
+                  <vCard:Family>Weiser</vCard:Family>
+                  <vCard:Given>Joel</vCard:Given>
+                </vCard:N>
+                <vCard:ORG rdf:parseType="Resource">
+                  <vCard:Orgname>OICR</vCard:Orgname>
+                </vCard:ORG>
+              </rdf:li>
+            </rdf:Bag>
+          </dc:creator>
+          <dcterms:created rdf:parseType="Resource">
+            <dcterms:W3CDTF>2009-01-22T00:24:07Z</dcterms:W3CDTF>
+          </dcterms:created>
+          <dcterms:modified rdf:parseType="Resource">
+            <dcterms:W3CDTF>2023-10-12T00:40:25Z</dcterms:W3CDTF>
+          </dcterms:modified>
+          <dcterms:modified rdf:parseType="Resource">
+            <dcterms:W3CDTF>2008-12-01T09:46:41Z</dcterms:W3CDTF>
+          </dcterms:modified>
+          <bqbiol:is>
+            <rdf:Bag>
+              <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-389977" />
+              <rdf:li rdf:resource="https://identifiers.org/GO:0007023" />
+            </rdf:Bag>
+          </bqbiol:is>
+          <bqbiol:isDescribedBy>
+            <rdf:Bag>
+              <rdf:li rdf:resource="https://identifiers.org/pubmed:17709011" />
+            </rdf:Bag>
+          </bqbiol:isDescribedBy>
+        </rdf:Description>
+      </rdf:RDF>
+    </annotation>
+    <listOfCompartments>
+      <compartment constant="true" id="compartment_70101" metaid="metaid_2" name="cytosol" sboTerm="SBO:0000290">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_2">
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/GO:0005829" />
+                </rdf:Bag>
+              </bqbiol:is>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+      </compartment>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species boundaryCondition="false" compartment="compartment_70101" constant="false" hasOnlySubstanceUnits="false" id="species_391236" metaid="metaid_1" name="beta tubulin:GTP: Cofactor D:alpha tubulin:GTP:Cofactor E [cytosol]" sboTerm="SBO:0000253">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">Derived from a Reactome Complex. Here is Reactomes nested structure for this complex: (P68363, Q9BVA1, Q13885, Q9H4B7, Q9BTW9, Q9BUF5, P0DPH8, Q9H853, Q13509, 2x37565, Q9BQE3, Q15813, P0DPH7, P68371, P68366, Q9NY65, Q71U36, P04350, Q6PEY2, A6NHL2). Reactome uses a nested structure for complexes, which cannot be fully represented in SBML Level 3 Version 1 core</p>
+        </notes>
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_1">
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-391236" />
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:hasPart>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P68363" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9BVA1" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q13885" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9H4B7" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9BTW9" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9BUF5" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P0DPH8" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9H853" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q13509" />
+                  <rdf:li rdf:resource="https://identifiers.org/CHEBI:37565" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9BQE3" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q15813" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P0DPH7" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P68371" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P68366" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9NY65" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q71U36" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P04350" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q6PEY2" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:A6NHL2" />
+                </rdf:Bag>
+              </bqbiol:hasPart>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+      </species>
+      <species boundaryCondition="false" compartment="compartment_70101" constant="false" hasOnlySubstanceUnits="false" id="species_379540" metaid="metaid_3" name="TBCD [cytosol]" sboTerm="SBO:0000297">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">Derived from a Reactome EntityWithAccessionedSequence. This is a protein</p>
+        </notes>
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_3">
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9BTW9" />
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-379540" />
+                </rdf:Bag>
+              </bqbiol:is>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+      </species>
+      <species boundaryCondition="false" compartment="compartment_70101" constant="false" hasOnlySubstanceUnits="false" id="species_379546" metaid="metaid_4" name="TBCB [cytosol]" sboTerm="SBO:0000297">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">Derived from a Reactome EntityWithAccessionedSequence. This is a protein</p>
+        </notes>
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_4">
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q99426" />
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-379546" />
+                </rdf:Bag>
+              </bqbiol:is>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+      </species>
+      <species boundaryCondition="false" compartment="compartment_70101" constant="false" hasOnlySubstanceUnits="false" id="species_391240" metaid="metaid_5" name="beta-tubulin:GTP:Cofactor D:alpha-tubulin:GTP:Cofactor E : Cofactor C [cytosol]" sboTerm="SBO:0000253">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">Derived from a Reactome Complex. Here is Reactomes nested structure for this complex: (P68363, Q9BVA1, Q13885, Q9H4B7, Q15814, Q9BTW9, Q9BUF5, P0DPH8, Q9H853, Q13509, 2x37565, Q9BQE3, Q15813, P0DPH7, P68371, P68366, Q9NY65, Q71U36, P04350, Q6PEY2, A6NHL2). Reactome uses a nested structure for complexes, which cannot be fully represented in SBML Level 3 Version 1 core</p>
+        </notes>
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_5">
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-391240" />
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:hasPart>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P68363" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9BVA1" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q13885" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9H4B7" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q15814" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9BTW9" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9BUF5" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P0DPH8" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9H853" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q13509" />
+                  <rdf:li rdf:resource="https://identifiers.org/CHEBI:37565" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9BQE3" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q15813" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P0DPH7" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P68371" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P68366" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9NY65" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q71U36" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P04350" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q6PEY2" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:A6NHL2" />
+                </rdf:Bag>
+              </bqbiol:hasPart>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+      </species>
+      <species boundaryCondition="false" compartment="compartment_70101" constant="false" hasOnlySubstanceUnits="false" id="species_391239" metaid="metaid_6" name="cofactor A:GTP:beta-tubulin folding intermediate [cytosol]" sboTerm="SBO:0000253">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">Derived from a Reactome Complex. Here is Reactomes nested structure for this complex: (Q13509, 37565, Q9BVA1, Q13885, Q9H4B7, O75347, P68371, P04350, Q9BUF5). Reactome uses a nested structure for complexes, which cannot be fully represented in SBML Level 3 Version 1 core</p>
+        </notes>
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_6">
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-391239" />
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:hasPart>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q13509" />
+                  <rdf:li rdf:resource="https://identifiers.org/CHEBI:37565" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9BVA1" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q13885" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9H4B7" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:O75347" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P68371" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P04350" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9BUF5" />
+                </rdf:Bag>
+              </bqbiol:hasPart>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+      </species>
+      <species boundaryCondition="false" compartment="compartment_70101" constant="false" hasOnlySubstanceUnits="false" id="species_391246" metaid="metaid_7" name="GTP:beta-tubulin folding intermediate [cytosol]" sboTerm="SBO:0000253">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">Derived from a Reactome Complex. Here is Reactomes nested structure for this complex: (Q13509, 37565, Q9BVA1, Q13885, Q9H4B7, P68371, P04350, Q9BUF5). Reactome uses a nested structure for complexes, which cannot be fully represented in SBML Level 3 Version 1 core</p>
+        </notes>
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_7">
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-391246" />
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:hasPart>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q13509" />
+                  <rdf:li rdf:resource="https://identifiers.org/CHEBI:37565" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9BVA1" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q13885" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9H4B7" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P68371" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P04350" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9BUF5" />
+                </rdf:Bag>
+              </bqbiol:hasPart>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+      </species>
+      <species boundaryCondition="false" compartment="compartment_70101" constant="false" hasOnlySubstanceUnits="false" id="species_391248" metaid="metaid_8" name="alpha-beta heterodimer [cytosol]" sboTerm="SBO:0000253">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">Derived from a Reactome Complex. Here is Reactomes nested structure for this complex: (P68363, Q9BVA1, Q13885, Q9H4B7, Q9BUF5, P0DPH8, Q13509, Q9H853, 2x37565, Q9BQE3, P0DPH7, P68371, P68366, Q9NY65, P04350, Q71U36, Q6PEY2, A6NHL2). Reactome uses a nested structure for complexes, which cannot be fully represented in SBML Level 3 Version 1 core</p>
+        </notes>
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_8">
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-391248" />
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:hasPart>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P68363" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9BVA1" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q13885" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9H4B7" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9BUF5" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P0DPH8" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q13509" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9H853" />
+                  <rdf:li rdf:resource="https://identifiers.org/CHEBI:37565" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9BQE3" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P0DPH7" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P68371" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P68366" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9NY65" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P04350" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q71U36" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q6PEY2" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:A6NHL2" />
+                </rdf:Bag>
+              </bqbiol:hasPart>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+      </species>
+      <species boundaryCondition="false" compartment="compartment_70101" constant="false" hasOnlySubstanceUnits="false" id="species_391242" metaid="metaid_9" name="Cofactor E:GTP-alpha tubulin folding [cytosol]" sboTerm="SBO:0000253">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">Derived from a Reactome Complex. Here is Reactomes nested structure for this complex: (Q9H853, 37565, Q9BQE3, Q15813, P0DPH7, P68363, P68366, Q9NY65, Q71U36, Q6PEY2, P0DPH8, A6NHL2). Reactome uses a nested structure for complexes, which cannot be fully represented in SBML Level 3 Version 1 core</p>
+        </notes>
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_9">
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-391242" />
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:hasPart>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9H853" />
+                  <rdf:li rdf:resource="https://identifiers.org/CHEBI:37565" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9BQE3" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q15813" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P0DPH7" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P68363" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P68366" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9NY65" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q71U36" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q6PEY2" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P0DPH8" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:A6NHL2" />
+                </rdf:Bag>
+              </bqbiol:hasPart>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+      </species>
+      <species boundaryCondition="false" compartment="compartment_70101" constant="false" hasOnlySubstanceUnits="false" id="species_29372" metaid="metaid_10" name="Pi [cytosol]" sboTerm="SBO:0000247">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">Derived from a Reactome SimpleEntity. This is a small compound</p>
+        </notes>
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_10">
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/CHEBI:43474" />
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-ALL-29372" />
+                </rdf:Bag>
+              </bqbiol:is>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+      </species>
+      <species boundaryCondition="false" compartment="compartment_70101" constant="false" hasOnlySubstanceUnits="false" id="species_391241" metaid="metaid_11" name="Cofactor B:GTP-alpha tubulin [cytosol]" sboTerm="SBO:0000253">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">Derived from a Reactome Complex. Here is Reactomes nested structure for this complex: (Q9H853, 37565, Q9BQE3, P0DPH7, P68363, Q99426, P68366, Q9NY65, Q71U36, Q6PEY2, P0DPH8, A6NHL2). Reactome uses a nested structure for complexes, which cannot be fully represented in SBML Level 3 Version 1 core</p>
+        </notes>
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_11">
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-391241" />
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:hasPart>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9H853" />
+                  <rdf:li rdf:resource="https://identifiers.org/CHEBI:37565" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9BQE3" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P0DPH7" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P68363" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q99426" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P68366" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9NY65" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q71U36" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q6PEY2" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P0DPH8" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:A6NHL2" />
+                </rdf:Bag>
+              </bqbiol:hasPart>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+      </species>
+      <species boundaryCondition="false" compartment="compartment_70101" constant="false" hasOnlySubstanceUnits="false" id="species_391235" metaid="metaid_12" name="GTP-alpha-tubulin folding intermediate [cytosol]" sboTerm="SBO:0000253">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">Derived from a Reactome Complex. Here is Reactomes nested structure for this complex: (Q9H853, 37565, Q9BQE3, P0DPH7, P68363, P68366, Q9NY65, Q71U36, Q6PEY2, P0DPH8, A6NHL2). Reactome uses a nested structure for complexes, which cannot be fully represented in SBML Level 3 Version 1 core</p>
+        </notes>
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_12">
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-391235" />
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:hasPart>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9H853" />
+                  <rdf:li rdf:resource="https://identifiers.org/CHEBI:37565" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9BQE3" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P0DPH7" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P68363" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P68366" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9NY65" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q71U36" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q6PEY2" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P0DPH8" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:A6NHL2" />
+                </rdf:Bag>
+              </bqbiol:hasPart>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+      </species>
+      <species boundaryCondition="false" compartment="compartment_70101" constant="false" hasOnlySubstanceUnits="false" id="species_379538" metaid="metaid_13" name="TBCA [cytosol]" sboTerm="SBO:0000297">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">Derived from a Reactome EntityWithAccessionedSequence. This is a protein</p>
+        </notes>
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_13">
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:O75347" />
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-379538" />
+                </rdf:Bag>
+              </bqbiol:is>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+      </species>
+      <species boundaryCondition="false" compartment="compartment_70101" constant="false" hasOnlySubstanceUnits="false" id="species_379537" metaid="metaid_14" name="TBCC [cytosol]" sboTerm="SBO:0000297">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">Derived from a Reactome EntityWithAccessionedSequence. This is a protein</p>
+        </notes>
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_14">
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q15814" />
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-379537" />
+                </rdf:Bag>
+              </bqbiol:is>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+      </species>
+      <species boundaryCondition="false" compartment="compartment_70101" constant="false" hasOnlySubstanceUnits="false" id="species_391245" metaid="metaid_15" name="Cofactor D:GTP:beta tubulin [cytosol]" sboTerm="SBO:0000253">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">Derived from a Reactome Complex. Here is Reactomes nested structure for this complex: (Q13509, 37565, Q9BVA1, Q13885, Q9H4B7, P68371, Q9BTW9, P04350, Q9BUF5). Reactome uses a nested structure for complexes, which cannot be fully represented in SBML Level 3 Version 1 core</p>
+        </notes>
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_15">
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-391245" />
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:hasPart>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q13509" />
+                  <rdf:li rdf:resource="https://identifiers.org/CHEBI:37565" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9BVA1" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q13885" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9H4B7" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P68371" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9BTW9" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P04350" />
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9BUF5" />
+                </rdf:Bag>
+              </bqbiol:hasPart>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+      </species>
+      <species boundaryCondition="false" compartment="compartment_70101" constant="false" hasOnlySubstanceUnits="false" id="species_379539" metaid="metaid_16" name="TBCE [cytosol]" sboTerm="SBO:0000297">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">Derived from a Reactome EntityWithAccessionedSequence. This is a protein</p>
+        </notes>
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_16">
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:Q15813" />
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-379539" />
+                </rdf:Bag>
+              </bqbiol:is>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+      </species>
+      <species boundaryCondition="false" compartment="compartment_70101" constant="false" hasOnlySubstanceUnits="false" id="species_5216230" metaid="metaid_17" name="ARL2 [cytosol]" sboTerm="SBO:0000297">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">Derived from a Reactome EntityWithAccessionedSequence. This is a protein</p>
+        </notes>
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_17">
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/uniprot:P36404" />
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-5216230" />
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:isHomologTo>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-MMU-5216230" />
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-RNO-5216230" />
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-CFA-5216230" />
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-BTA-5216230" />
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-SSC-5216230" />
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-DRE-5216230" />
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-XTR-5216230" />
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-GGA-5216230" />
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-DME-5216230" />
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-CEL-5216230" />
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-DDI-5216230" />
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-SPO-5216230" />
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-SCE-5216230" />
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-PFA-5216230" />
+                </rdf:Bag>
+              </bqbiol:isHomologTo>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+      </species>
+    </listOfSpecies>
+    <listOfReactions>
+      <reaction compartment="compartment_70101" fast="false" id="reaction_389956" metaid="metaid_18" name="Beta-tubulin:GTP + Cofactor A -&gt;  Beta-tubulin:GTP: Cofactor A" reversible="false">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">Beta-tubulin folding intermediates generated via ATP-dependent interaction with TriC/CCT are captured by tubulin-specific chaperones A and D (TBCA and TBCD) (Tian et al. 1996, Tian et al. 1997) in a reversible reaction forming tubulin intermediate/cofactor complexes Factor A:beta tubulin or Factor D:beta tubulin. TBCD is involved in the tubulin-folding pathway, acting as a GTPase activating protein (GAP) for beta-tubulin. The ADP-ribosylation factor-like protein 2 (ARL2) is able to down-regulate TBCD specifically, thus preventing microtuble disruption (Bhamidipati et al. 2000, Tian et al. 2010).</p>
+        </notes>
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_18">
+              <dc:creator>
+                <rdf:Bag>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Matthews</vCard:Family>
+                      <vCard:Given>Lisa</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Matthews</vCard:Family>
+                      <vCard:Given>Lisa</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Matthews</vCard:Family>
+                      <vCard:Given>Lisa</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                </rdf:Bag>
+              </dc:creator>
+              <dcterms:created rdf:parseType="Resource">
+                <dcterms:W3CDTF>2009-01-22T00:24:07Z</dcterms:W3CDTF>
+              </dcterms:created>
+              <dcterms:modified rdf:parseType="Resource">
+                <dcterms:W3CDTF>2023-03-08T14:40:28Z</dcterms:W3CDTF>
+              </dcterms:modified>
+              <dcterms:modified rdf:parseType="Resource">
+                <dcterms:W3CDTF>2008-12-01T09:46:41Z</dcterms:W3CDTF>
+              </dcterms:modified>
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-389956" />
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-389956" />
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:isDescribedBy>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/pubmed:9265649" />
+                  <rdf:li rdf:resource="https://identifiers.org/pubmed:8706133" />
+                </rdf:Bag>
+              </bqbiol:isDescribedBy>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+        <listOfReactants>
+          <speciesReference constant="true" id="speciesreference_389956_input_379538" sboTerm="SBO:0000010" species="species_379538" stoichiometry="1" />
+          <speciesReference constant="true" id="speciesreference_389956_input_391246" sboTerm="SBO:0000010" species="species_391246" stoichiometry="1" />
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference constant="true" id="speciesreference_389956_output_391239" sboTerm="SBO:0000011" species="species_391239" stoichiometry="1" />
+        </listOfProducts>
+      </reaction>
+      <reaction compartment="compartment_70101" fast="false" id="reaction_389976" metaid="metaid_19" name="Beta-tubulin:GTP:Cofactor D+alpha-tubulin:GTP:Cofactor E-&gt; Beta-tubulin:GTP:Cofactor D:alpha-tubulin:GTP:Cofactor E" reversible="false">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">Factor E:alpha tubulin and Factor D:beta tubulin interact with each other in a reversible reaction to form the complex (Factor E alpha tubulin:Factor D:beta tubulin) (Tian et al., 1997).</p>
+        </notes>
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_19">
+              <dc:creator>
+                <rdf:Bag>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Matthews</vCard:Family>
+                      <vCard:Given>Lisa</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Matthews</vCard:Family>
+                      <vCard:Given>Lisa</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Matthews</vCard:Family>
+                      <vCard:Given>Lisa</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                </rdf:Bag>
+              </dc:creator>
+              <dcterms:created rdf:parseType="Resource">
+                <dcterms:W3CDTF>2009-01-22T00:24:07Z</dcterms:W3CDTF>
+              </dcterms:created>
+              <dcterms:modified rdf:parseType="Resource">
+                <dcterms:W3CDTF>2023-03-08T14:40:28Z</dcterms:W3CDTF>
+              </dcterms:modified>
+              <dcterms:modified rdf:parseType="Resource">
+                <dcterms:W3CDTF>2008-12-01T09:46:41Z</dcterms:W3CDTF>
+              </dcterms:modified>
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-389976" />
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-389976" />
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:isDescribedBy>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/pubmed:9265649" />
+                </rdf:Bag>
+              </bqbiol:isDescribedBy>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+        <listOfReactants>
+          <speciesReference constant="true" id="speciesreference_389976_input_391245" sboTerm="SBO:0000010" species="species_391245" stoichiometry="1" />
+          <speciesReference constant="true" id="speciesreference_389976_input_391242" sboTerm="SBO:0000010" species="species_391242" stoichiometry="1" />
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference constant="true" id="speciesreference_389976_output_391236" sboTerm="SBO:0000011" species="species_391236" stoichiometry="1" />
+        </listOfProducts>
+      </reaction>
+      <reaction compartment="compartment_70101" fast="false" id="reaction_389974" metaid="metaid_20" name="Beta-tubulin:GTP:Cofactor D:alpha-tubulin:GTP:Cofactor E:Cofactor C-&gt; Beta-tubulin:GDP :alpha-tubulin:GTP heterodimer +Cofactor E+ Cofactor D+ Cofactor C+ Pi" reversible="false">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">Beta tubulin within the active (Factor E:alpha tubulin: Factor D:beta tubulin:Factor C )-supercomplex hydrolyzes GTP. This results in the dissociation of the complex and the release of the native tubulin heterodimer (Tian et al., 1997).</p>
+        </notes>
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_20">
+              <dc:creator>
+                <rdf:Bag>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Matthews</vCard:Family>
+                      <vCard:Given>Lisa</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Matthews</vCard:Family>
+                      <vCard:Given>Lisa</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Matthews</vCard:Family>
+                      <vCard:Given>Lisa</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                </rdf:Bag>
+              </dc:creator>
+              <dcterms:created rdf:parseType="Resource">
+                <dcterms:W3CDTF>2009-01-22T00:24:07Z</dcterms:W3CDTF>
+              </dcterms:created>
+              <dcterms:modified rdf:parseType="Resource">
+                <dcterms:W3CDTF>2023-03-08T14:40:28Z</dcterms:W3CDTF>
+              </dcterms:modified>
+              <dcterms:modified rdf:parseType="Resource">
+                <dcterms:W3CDTF>2008-12-01T09:46:41Z</dcterms:W3CDTF>
+              </dcterms:modified>
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-389974" />
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-389974" />
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:isDescribedBy>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/pubmed:9265649" />
+                </rdf:Bag>
+              </bqbiol:isDescribedBy>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+        <listOfReactants>
+          <speciesReference constant="true" id="speciesreference_389974_input_391240" sboTerm="SBO:0000010" species="species_391240" stoichiometry="1" />
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference constant="true" id="speciesreference_389974_output_379540" sboTerm="SBO:0000011" species="species_379540" stoichiometry="1" />
+          <speciesReference constant="true" id="speciesreference_389974_output_379537" sboTerm="SBO:0000011" species="species_379537" stoichiometry="1" />
+          <speciesReference constant="true" id="speciesreference_389974_output_391248" sboTerm="SBO:0000011" species="species_391248" stoichiometry="1" />
+          <speciesReference constant="true" id="speciesreference_389974_output_379539" sboTerm="SBO:0000011" species="species_379539" stoichiometry="1" />
+          <speciesReference constant="true" id="speciesreference_389974_output_29372" sboTerm="SBO:0000011" species="species_29372" stoichiometry="1" />
+        </listOfProducts>
+      </reaction>
+      <reaction compartment="compartment_70101" fast="false" id="reaction_389963" metaid="metaid_21" name="alpha-tubulin:GTP:Cofactor B  +Cofactor E -&gt;  alpha-tubulin:GTP: Cofactor E +Cofactor B" reversible="false">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">The factor B:alpha tubulin complex act as a reservoir capable of accepting or delivering alpha tubulin to cofactor E (Tian et al., 1997). In the reverse reaction, cofactor B may displace cofactor E in the cofactor E:alpha tubulin complex.</p>
+        </notes>
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_21">
+              <dc:creator>
+                <rdf:Bag>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Matthews</vCard:Family>
+                      <vCard:Given>Lisa</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Matthews</vCard:Family>
+                      <vCard:Given>Lisa</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Matthews</vCard:Family>
+                      <vCard:Given>Lisa</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                </rdf:Bag>
+              </dc:creator>
+              <dcterms:created rdf:parseType="Resource">
+                <dcterms:W3CDTF>2009-01-22T00:24:07Z</dcterms:W3CDTF>
+              </dcterms:created>
+              <dcterms:modified rdf:parseType="Resource">
+                <dcterms:W3CDTF>2023-03-08T14:40:28Z</dcterms:W3CDTF>
+              </dcterms:modified>
+              <dcterms:modified rdf:parseType="Resource">
+                <dcterms:W3CDTF>2008-12-01T09:46:41Z</dcterms:W3CDTF>
+              </dcterms:modified>
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-389963" />
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:isDescribedBy>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/pubmed:9265649" />
+                </rdf:Bag>
+              </bqbiol:isDescribedBy>
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-389963" />
+                </rdf:Bag>
+              </bqbiol:is>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+        <listOfReactants>
+          <speciesReference constant="true" id="speciesreference_389963_input_391241" sboTerm="SBO:0000010" species="species_391241" stoichiometry="1" />
+          <speciesReference constant="true" id="speciesreference_389963_input_379539" sboTerm="SBO:0000010" species="species_379539" stoichiometry="1" />
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference constant="true" id="speciesreference_389963_output_379546" sboTerm="SBO:0000011" species="species_379546" stoichiometry="1" />
+          <speciesReference constant="true" id="speciesreference_389963_output_391242" sboTerm="SBO:0000011" species="species_391242" stoichiometry="1" />
+        </listOfProducts>
+      </reaction>
+      <reaction compartment="compartment_70101" fast="false" id="reaction_389972" metaid="metaid_22" name="alpha-tubulin:GTP + Cofactor B -&gt; alpha-tubulin:GTP: Cofactor B" reversible="false">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">Quasi-native alpha-tubulin folding intermediates generated via ATP-dependent interaction with CCT (Tian et al., 1995) are captured in a reversible reaction by cofactors B and/or E (Tian et al., 1997), forming the tubulin intermediate/cofactor complexes Factor B:alpha tubulin or Factor E:alpha tubulin.</p>
+        </notes>
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_22">
+              <dc:creator>
+                <rdf:Bag>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Matthews</vCard:Family>
+                      <vCard:Given>Lisa</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Matthews</vCard:Family>
+                      <vCard:Given>Lisa</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Matthews</vCard:Family>
+                      <vCard:Given>Lisa</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                </rdf:Bag>
+              </dc:creator>
+              <dcterms:created rdf:parseType="Resource">
+                <dcterms:W3CDTF>2009-01-22T00:24:07Z</dcterms:W3CDTF>
+              </dcterms:created>
+              <dcterms:modified rdf:parseType="Resource">
+                <dcterms:W3CDTF>2023-03-08T14:40:28Z</dcterms:W3CDTF>
+              </dcterms:modified>
+              <dcterms:modified rdf:parseType="Resource">
+                <dcterms:W3CDTF>2008-12-01T09:46:41Z</dcterms:W3CDTF>
+              </dcterms:modified>
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-389972" />
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-389972" />
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:isDescribedBy>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/pubmed:9265649" />
+                  <rdf:li rdf:resource="https://identifiers.org/pubmed:7592580" />
+                </rdf:Bag>
+              </bqbiol:isDescribedBy>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+        <listOfReactants>
+          <speciesReference constant="true" id="speciesreference_389972_input_391235" sboTerm="SBO:0000010" species="species_391235" stoichiometry="1" />
+          <speciesReference constant="true" id="speciesreference_389972_input_379546" sboTerm="SBO:0000010" species="species_379546" stoichiometry="1" />
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference constant="true" id="speciesreference_389972_output_391241" sboTerm="SBO:0000011" species="species_391241" stoichiometry="1" />
+        </listOfProducts>
+      </reaction>
+      <reaction compartment="compartment_70101" fast="false" id="reaction_389964" metaid="metaid_23" name="Beta-tubulin:GTP:Cofactor D:alpha-tubulin:GTP:Cofactor E+ Cofactor C-&gt; Beta-tubulin:GTP:Cofactor D:alpha-tubulin:GTP:Cofactor E:Cofactor C" reversible="false">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">Entry of cofactor C to the factor E:alpha tubulin: factor D:beta tubulin complex generates the active alpha:beta-supercomplex (Tian et al., 1997).</p>
+        </notes>
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_23">
+              <dc:creator>
+                <rdf:Bag>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Matthews</vCard:Family>
+                      <vCard:Given>Lisa</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Matthews</vCard:Family>
+                      <vCard:Given>Lisa</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Matthews</vCard:Family>
+                      <vCard:Given>Lisa</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                </rdf:Bag>
+              </dc:creator>
+              <dcterms:created rdf:parseType="Resource">
+                <dcterms:W3CDTF>2009-01-22T00:24:07Z</dcterms:W3CDTF>
+              </dcterms:created>
+              <dcterms:modified rdf:parseType="Resource">
+                <dcterms:W3CDTF>2023-03-08T14:40:28Z</dcterms:W3CDTF>
+              </dcterms:modified>
+              <dcterms:modified rdf:parseType="Resource">
+                <dcterms:W3CDTF>2008-12-01T09:46:41Z</dcterms:W3CDTF>
+              </dcterms:modified>
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-389964" />
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:isDescribedBy>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/pubmed:9265649" />
+                </rdf:Bag>
+              </bqbiol:isDescribedBy>
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-389964" />
+                </rdf:Bag>
+              </bqbiol:is>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+        <listOfReactants>
+          <speciesReference constant="true" id="speciesreference_389964_input_391236" sboTerm="SBO:0000010" species="species_391236" stoichiometry="1" />
+          <speciesReference constant="true" id="speciesreference_389964_input_379537" sboTerm="SBO:0000010" species="species_379537" stoichiometry="1" />
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference constant="true" id="speciesreference_389964_output_391240" sboTerm="SBO:0000011" species="species_391240" stoichiometry="1" />
+        </listOfProducts>
+      </reaction>
+      <reaction compartment="compartment_70101" fast="false" id="reaction_389978" metaid="metaid_24" name="alpha-tubulin:GTP + Cofactor E -&gt;  alpha-tubulin:GTP:Cofactor E" reversible="false">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">Quasi-native alpha-tubulin folding intermediates generated via ATP-dependent interaction with CCT (Tian et al., 1995) are captured in a reversible reaction by cofactors B and/or E (Tian et al., 1997), forming the tubulin intermediate/cofactor complexes Factor B:alpha tubulin or Factor E:alpha tubulin.</p>
+        </notes>
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_24">
+              <dc:creator>
+                <rdf:Bag>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Matthews</vCard:Family>
+                      <vCard:Given>Lisa</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Matthews</vCard:Family>
+                      <vCard:Given>Lisa</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Matthews</vCard:Family>
+                      <vCard:Given>Lisa</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                </rdf:Bag>
+              </dc:creator>
+              <dcterms:created rdf:parseType="Resource">
+                <dcterms:W3CDTF>2009-01-22T00:24:07Z</dcterms:W3CDTF>
+              </dcterms:created>
+              <dcterms:modified rdf:parseType="Resource">
+                <dcterms:W3CDTF>2023-03-08T14:40:28Z</dcterms:W3CDTF>
+              </dcterms:modified>
+              <dcterms:modified rdf:parseType="Resource">
+                <dcterms:W3CDTF>2008-12-01T09:46:41Z</dcterms:W3CDTF>
+              </dcterms:modified>
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-389978" />
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-389978" />
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:isDescribedBy>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/pubmed:9265649" />
+                  <rdf:li rdf:resource="https://identifiers.org/pubmed:7592580" />
+                </rdf:Bag>
+              </bqbiol:isDescribedBy>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+        <listOfReactants>
+          <speciesReference constant="true" id="speciesreference_389978_input_391235" sboTerm="SBO:0000010" species="species_391235" stoichiometry="1" />
+          <speciesReference constant="true" id="speciesreference_389978_input_379539" sboTerm="SBO:0000010" species="species_379539" stoichiometry="1" />
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference constant="true" id="speciesreference_389978_output_391242" sboTerm="SBO:0000011" species="species_391242" stoichiometry="1" />
+        </listOfProducts>
+      </reaction>
+      <reaction compartment="compartment_70101" fast="false" id="reaction_389969" metaid="metaid_25" name="Beta-tubulin:GTP + Cofactor D -&gt;  Beta-tubulin:GTP: Cofactor D" reversible="false">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">Beta-tubulin folding intermediates generated via ATP-dependent interaction with TriC/CCT are captured by tubulin-specific chaperones A and D (TBCA and TBCD) (Tian et al. 1996, Tian et al. 1997) in a reversible reaction forming tubulin intermediate/cofactor complexes Factor A:beta tubulin or Factor D:beta tubulin. TBCD is involved in the tubulin-folding pathway, acting as a GTPase activating protein (GAP) for beta-tubulin. The ADP-ribosylation factor-like protein 2 (ARL2) is able to down-regulate TBCD specifically, thus preventing microtuble disruption (Bhamidipati et al. 2000, Tian et al. 2010).</p>
+        </notes>
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_25">
+              <dc:creator>
+                <rdf:Bag>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Matthews</vCard:Family>
+                      <vCard:Given>Lisa</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Jassal</vCard:Family>
+                      <vCard:Given>Bijay</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>OICR</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Matthews</vCard:Family>
+                      <vCard:Given>Lisa</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Matthews</vCard:Family>
+                      <vCard:Given>Lisa</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                </rdf:Bag>
+              </dc:creator>
+              <dcterms:created rdf:parseType="Resource">
+                <dcterms:W3CDTF>2009-01-22T00:24:07Z</dcterms:W3CDTF>
+              </dcterms:created>
+              <dcterms:modified rdf:parseType="Resource">
+                <dcterms:W3CDTF>2023-03-08T14:40:28Z</dcterms:W3CDTF>
+              </dcterms:modified>
+              <dcterms:modified rdf:parseType="Resource">
+                <dcterms:W3CDTF>2008-12-01T09:46:41Z</dcterms:W3CDTF>
+              </dcterms:modified>
+              <dcterms:modified rdf:parseType="Resource">
+                <dcterms:W3CDTF>2015-02-11T16:33:22Z</dcterms:W3CDTF>
+              </dcterms:modified>
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-389969" />
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:isDescribedBy>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/pubmed:20740604" />
+                  <rdf:li rdf:resource="https://identifiers.org/pubmed:10831612" />
+                </rdf:Bag>
+              </bqbiol:isDescribedBy>
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-389969" />
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:isDescribedBy>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/pubmed:9265649" />
+                  <rdf:li rdf:resource="https://identifiers.org/pubmed:8706133" />
+                </rdf:Bag>
+              </bqbiol:isDescribedBy>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+        <listOfReactants>
+          <speciesReference constant="true" id="speciesreference_389969_input_379540" sboTerm="SBO:0000010" species="species_379540" stoichiometry="1" />
+          <speciesReference constant="true" id="speciesreference_389969_input_391246" sboTerm="SBO:0000010" species="species_391246" stoichiometry="1" />
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference constant="true" id="speciesreference_389969_output_391245" sboTerm="SBO:0000011" species="species_391245" stoichiometry="1" />
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference id="modifierspeciesreference_389969_negativeregulator_5216230" sboTerm="SBO:0000020" species="species_5216230">
+            <notes>
+              <p xmlns="http://www.w3.org/1999/xhtml">This describes an Event/CatalystActivity that is negatively regulated by the Regulator (e.g., allosteric inhibition, competitive inhibition</p>
+            </notes>
+          </modifierSpeciesReference>
+        </listOfModifiers>
+      </reaction>
+      <reaction compartment="compartment_70101" fast="false" id="reaction_389955" metaid="metaid_26" name="Beta-tubulin:GTP: Cofactor A+ Cofactor D -&gt;  Beta-tubulin:GTP:Cofactor D + Cofactor A" reversible="false">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">Factor A:beta tubulin complex act as a reservoir capable of accepting or delivering its target tubulin protein to cofactor D (Tian et al., 1997). In the reverse reaction, Cofactor A may displace cofactor D in a cofactor D:beta tubulin complex.</p>
+        </notes>
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_26">
+              <dc:creator>
+                <rdf:Bag>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Matthews</vCard:Family>
+                      <vCard:Given>Lisa</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Matthews</vCard:Family>
+                      <vCard:Given>Lisa</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                  <rdf:li rdf:parseType="Resource">
+                    <vCard:N rdf:parseType="Resource">
+                      <vCard:Family>Matthews</vCard:Family>
+                      <vCard:Given>Lisa</vCard:Given>
+                    </vCard:N>
+                    <vCard:ORG rdf:parseType="Resource">
+                      <vCard:Orgname>NYU School of Medicine, Department of Biochemistry</vCard:Orgname>
+                    </vCard:ORG>
+                  </rdf:li>
+                </rdf:Bag>
+              </dc:creator>
+              <dcterms:created rdf:parseType="Resource">
+                <dcterms:W3CDTF>2009-01-22T00:24:07Z</dcterms:W3CDTF>
+              </dcterms:created>
+              <dcterms:modified rdf:parseType="Resource">
+                <dcterms:W3CDTF>2023-03-08T14:40:28Z</dcterms:W3CDTF>
+              </dcterms:modified>
+              <dcterms:modified rdf:parseType="Resource">
+                <dcterms:W3CDTF>2008-12-01T09:46:41Z</dcterms:W3CDTF>
+              </dcterms:modified>
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-389955" />
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/reactome:R-HSA-389955" />
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:isDescribedBy>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="https://identifiers.org/pubmed:9265649" />
+                </rdf:Bag>
+              </bqbiol:isDescribedBy>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+        <listOfReactants>
+          <speciesReference constant="true" id="speciesreference_389955_input_379540" sboTerm="SBO:0000010" species="species_379540" stoichiometry="1" />
+          <speciesReference constant="true" id="speciesreference_389955_input_391239" sboTerm="SBO:0000010" species="species_391239" stoichiometry="1" />
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference constant="true" id="speciesreference_389955_output_379538" sboTerm="SBO:0000011" species="species_379538" stoichiometry="1" />
+          <speciesReference constant="true" id="speciesreference_389955_output_391245" sboTerm="SBO:0000011" species="species_391245" stoichiometry="1" />
+        </listOfProducts>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

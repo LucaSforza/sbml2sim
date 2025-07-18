@@ -65,6 +65,7 @@ def convert_ibaq_to_concentrations(sbml: s2s.SBMLDoc, proteomics: Proteomics ,ti
     
     for species_id, (_, tissue_list) in proteomics.items():
         id = sbml.get_compartement(species_id)
+        if not id: continue
         volume_liters = sbml.get_volume_compartement(id)
         atomic_weight = ptc.get_mol_weight(tissue_list[0])
         print(f"[INFO] volume compartement {id}: {volume_liters}")

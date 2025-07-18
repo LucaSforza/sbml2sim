@@ -1,6 +1,7 @@
 #ifndef RR_SIMULATOR_
 #define RR_SIMULATOR_
 
+
 #include <rr/rrRoadRunner.h>
 
 #include "parallel_simulation.hpp"
@@ -59,7 +60,7 @@ public:
         return result;
     }
 
-    std::optional<SimulationResult> simulate(const std::unordered_set<SpeciesId>& ids) override {
+    std::expected<SimulationResult,double> simulate(const std::unordered_set<SpeciesId>& ids) override {
 
         // TODO: random start concentration
 
@@ -69,9 +70,14 @@ public:
 
         try {
             result = simulator.simulate();
-        } catch (const std::exception& e) {
+        } catch (const rr::IntegratorException& ie) {
             // TODO: return a Simulation Result
-            return std::nullopt;
+            double crash_time = simulator.getCurrentTime();
+            return std::unexpected(crash_time);
+        } catch (const std::exception& e) {
+            double crash_time = simulator.getCurrentTime();
+            eprintf("[FATAL ERROR] crashed at: %lf\n", crash_time);
+            exit(1);
         }
 
         assert(result != NULL);
@@ -137,7 +143,7 @@ public:
         }
         return results;
     }
-    
+    /*
     double simulate_error(const std::unordered_set<SpeciesId>& ids, ErrorHandler *rule) override {
         // Imposta anche i parametri già scelti
         for (const auto& [id, val] : choosed_ids) {
@@ -166,7 +172,7 @@ public:
             }
         }
         return 0.0;
-    }
+    } */
 
 };
 
