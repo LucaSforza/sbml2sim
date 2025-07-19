@@ -113,6 +113,7 @@ protected:
 
 
 class Search_Solutions_Velocity: public rr_Simulator {
+    // not a boolean velocity
     std::unordered_map<ParameterId, bool> choosed_ids;
     std::vector<ParameterId> unchoosed_ids;
 
@@ -138,16 +139,16 @@ public:
         for (size_t j = 0; j < best_assigns.size(); j++) {
             for (size_t i = 0; i < unchoosed_ids.size(); ++i) {
                 results[j][i].paramater_id = strdup(unchoosed_ids[i].c_str()); // TODO: not duplicate??
-                results[j][i].constant = best_assigns[j][i] ? 1e2 : 1e-2;
+                results[j][i].constant = best_assigns[j][i] ? 1e3 : 1e-3; // TODO: choose
             }
         }
         return results;
     }
-    /*
-    double simulate_error(const std::unordered_set<SpeciesId>& ids, ErrorHandler *rule) override {
+    
+    double simulate_error(const std::unordered_set<SpeciesId>& ids,const ErrorHandler *handler, int *errors) override {
         // Imposta anche i parametri già scelti
         for (const auto& [id, val] : choosed_ids) {
-            this->set_parameter(id.c_str(), val ? 1e2 : 1e-2);
+            this->set_parameter(id.c_str(), val ? 1e3 : 1e-3);
         }
 
         std::vector<bool> curr_assign(unchoosed_ids.size(), false);
@@ -160,19 +161,19 @@ public:
             for (size_t i = 0; i < unchoosed_ids.size(); ++i) {
                 bool value = (mask >> i) & 1;
                 curr_assign[i] = value;
-                this->set_parameter(unchoosed_ids[i].c_str(), value ? 1e2 : 1e-2);
+                this->set_parameter(unchoosed_ids[i].c_str(), value ? 1e3 : 1e-3);
             }
 
-            std::optional<SimulationResult> result = simulate(ids);
-            if (result.has_value()) {
-                double error = 1e6*rule->error(*result);
+            std::expected<SimulationResult,double> result = simulate(ids);
+            if (result) {
+                double error = 1e6*handler->error(*result);
                 if(error < 1e-12) { // if(error == 0.0)
                     best_assigns.push_back(curr_assign);
                 }
             }
         }
         return 0.0;
-    } */
+    } 
 
 };
 

@@ -106,6 +106,15 @@ public:
     virtual ParameterResult *get_all_parameters() = 0;
     // ritorna un simulation result oppure il tempo in cui il simulatore va in crash
     virtual std::expected<SimulationResult,double> simulate(const std::unordered_set<SpeciesId>& ids) = 0;
+    virtual double simulate_error(const std::unordered_set<SpeciesId>& ids,const ErrorHandler *handler, int *errors) {
+        std::expected<SimulationResult,double> result = this->simulate(ids);
+        if(result) {
+            *errors = 0;
+        } else {
+            *errors = 1;
+        }
+        return handler->error(result);
+    }
 };
 
 class ParallelSimulator {
@@ -146,18 +155,26 @@ public:
         #pragma omp parallel for schedule(dynamic)
         for(int i = 0; i < this->sims.size(); ++i) {
             // printf("Thread %d is running\n", omp_get_thread_num());
-            auto sim_result = this->sims[i]->simulate(handler->get_constrained_species());
-            bool err = false;
-            if(!sim_result) {
-                err = true;
-            }
-            double error = handler->error(sim_result);
-            // TODO: false sharing
-            r[i] = Fitness(i, err, error);
-
+            int errors = 0;
+            double fitness = this->sims[i]->simulate_error(handler->get_constrained_species(), handler, &errors);
+            r[i] = Fitness(i, errors > 0, fitness);
         }
         
         return r;
+    }
+
+    void simulate_only(const ErrorHandler *handler) const {
+        if(this->workers <= 0) {
+            eprintf("[FATAL ERROR] %s:%d: assertion failed this->workers <= 0");
+            exit(1);
+        }
+
+        omp_set_num_threads(this->workers);
+
+        #pragma omp parallel for schedule(dynamic)
+        for(int i = 0; i < this->sims.size(); ++i) {
+            this->sims[i]->simulate_error(handler->get_constrained_species(), handler, NULL);
+        }
     }
 };
 
