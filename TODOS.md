@@ -1,3 +1,20 @@
+# 21/07/2025 - 31/07/2025
+
+- Use randomized initial concentrations for each restart; run the simulation multiple times during evaluation of loss function.
+- Run the project on the cluster and parallelize the computations.
+- Check if the system is stable, otherwise penalize
+- Complete the class to execute all possible combinations.
+- write an email to the prof with all the results
+
+# 20/07/2025
+
+- make the project presentable
+- Improve the simulation script to allow plotting of individual constrained species, including the true value, as well as a plot showing all constrained species together.
+- Support multiple kinetic constant files as input.
+
+# 19/07/2025
+- resolve TODOs.
+
 # 13/06/2025
 
 - Run the project on the cluster and parallelize the computations.
