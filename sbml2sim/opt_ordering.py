@@ -22,6 +22,7 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float]) ->
         if sbml.is_input(species):
             sbml.set_initial_concentration(species, conc)
         elif not sbml.is_output(species):
+            sbml.set_initial_concentration(species, conc)
             error_handler.add_real_concentration(species, conc)
     
     # TODO: choose error

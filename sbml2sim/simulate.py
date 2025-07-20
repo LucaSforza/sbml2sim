@@ -3,11 +3,12 @@ from typing import Any
 import numpy as np
 import roadrunner as rr
 
-from s2s import SBMLDoc
-from bioutils import SpeciesId
+from s2s import SBMLDoc, set_seed
+from bioutils import SpeciesId, ParameterId, convert_ibaq_to_concentrations
 import pandas as pd
 import argparse
-import sys
+import json 
+import time
 
 SimulationResult=Any
 
@@ -99,6 +100,7 @@ def simulate(sbml: SBMLDoc,concentration: dict[SpeciesId, float],tissue: str,  p
     return penalty(sbml, r,concentration, tissue, plot, output_file_name)
 
 # returns the result of the simulation
+# TODO: plot the real concentrations
 def run(sbml: SBMLDoc, plot=False,only_avg=False, output_file="simulation") -> SimulationResult:
     file_sbml = sbml.convert_to_string()
     r = rr.RoadRunner(file_sbml)
@@ -116,47 +118,43 @@ def run(sbml: SBMLDoc, plot=False,only_avg=False, output_file="simulation") -> S
         plt.title('Simulation Results')
         plt.savefig(output_file_png)
     return sim
-
-EPSILON=1e-12
-
-# IDEA: use this penalty in genetic algorithms by parallelizing
-# IDEA: write this is C++?
-def protein_order_penalty(
-    sbml: SBMLDoc,
-    sim_concentration: dict[SpeciesId, float],
-    concentration: dict[SpeciesId, float]
-) -> float:
-    """
-    Computes a penalty based on the order of protein concentrations.
-    The penalty increases if the simulated order of protein concentrations does not match the expected order.
-    """
-    # Filter and sort simulated concentrations for proteins
-    # TODO: is_protein check if the protein is not an input or output?
-    sim_concs = [(id, conc) for (id, conc) in sim_concentration.items() if conc is not None and sbml.is_protein(id)]
-    sim_concs.sort(key=lambda x: x[1])
-
-    # Filter and sort target concentrations for proteins
-    target_concs = [(id, conc) for (id, conc) in concentration.items() if sbml.is_protein(id)]
-    target_concs.sort(key=lambda x: x[1])
-
-    # Calculate penalty if the order does not match
-    error: float = 0.0
-    for (sim_id, sim_conc), (target_id, _) in zip(sim_concs, target_concs):
-        if sim_id != target_id:
-            # Penalize mismatch in order
-            error += (math.log10(sim_conc + EPSILON) - math.log10(concentration[sim_id] + EPSILON)) ** 2
-    return error
         
         
 def parse_args():
     parser = argparse.ArgumentParser(description="Simulate SBML model and plot results.")
     parser.add_argument("input_file", help="Path to the SBML input file")
-    parser.add_argument("--plot", action="store_true", help="Plot the simulation results")
+    parser.add_argument("--plot", default=True, action="store_true", help="Plot the simulation results")
     parser.add_argument("--only-avg", action="store_true", help="Plot only avg_* columns")
     parser.add_argument("--output-file", default="simulation", help="Base name for output files (csv/png)")
+    parser.add_argument("--kinetic-constants", default=None, help="file path to kientic constants")
+    parser.add_argument("--proteomics", default=None, help="file path to proteomics")
+    parser.add_argument("--tissue", default="breast_cancer_cell", help="tissue name")
     return parser.parse_args()
 
-if __name__ == "__main__":
+def main():
     args = parse_args()
+    seed = int(time.time())
+    set_seed(seed)
     sbml = SBMLDoc(args.input_file)
+    sbml.random_start_concentration()
+    if args.kinetic_constants is not None:
+        kinetic_constants: list[dict[ParameterId, float]] = None
+        with open(args.kinetic_constants) as f:
+            kinetic_constants = json.load(f)
+        if not isinstance(kinetic_constants, list):
+            kinetic_constants = [kinetic_constants]
+        # TODO: choose the element in the list
+        for param_id, value in kinetic_constants[5].items():
+            sbml.set_parameter(param_id, value)
+    if args.proteomics is not None:
+        proteomics = None
+        with open(args.proteomics) as f:
+            proteomics = json.load(f)
+        concentrations = convert_ibaq_to_concentrations(sbml, proteomics, args.tissue)
+        for (species, conc) in concentrations.items():
+            if sbml.is_input(species) or not sbml.is_output(species):
+                sbml.set_initial_concentration(species, conc)
     run(sbml, plot=args.plot, only_avg=args.only_avg, output_file=args.output_file)
+
+if __name__ == "__main__":
+    main()
