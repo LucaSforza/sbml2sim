@@ -156,7 +156,7 @@ def search_for_kinetic_constants(sbml: s2s.SBMLDoc,file_path: str,  tissue: str,
     result: dict[str, dict[ParameterId, float]] = recommendation.value
     set_sbml_for_attempt(sbml, TISSUE, result["kinetic_constants"], result["output_constants"], concentrations)
     sbml.save_converted_file(file_path.replace(".", "-kinetic-constants."))
-    sim.simulate(sbml, 10**(-1), 0, 0,concentrations, tissue,  plot=True, output_file_name="kinetic")
+    sim.simulate(sbml ,concentrations, tissue,  plot=True, output_file_name="kinetic")
     return result
 
 def main():

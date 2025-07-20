@@ -101,7 +101,7 @@ def simulate(sbml: SBMLDoc,concentration: dict[SpeciesId, float],tissue: str,  p
 
 # returns the result of the simulation
 # TODO: plot the real concentrations
-def run(sbml: SBMLDoc, plot=False,only_avg=False, output_file="simulation") -> SimulationResult:
+def run(sbml: SBMLDoc, plot=False,only_avg=False, output_file="simulation", concentrations: dict[SpeciesId, float]=None) -> SimulationResult:
     file_sbml = sbml.convert_to_string()
     r = rr.RoadRunner(file_sbml)
     output_file_csv = output_file+".csv"
@@ -109,14 +109,42 @@ def run(sbml: SBMLDoc, plot=False,only_avg=False, output_file="simulation") -> S
     sim = r.simulate(0, 100, output_file=output_file_csv)
     if plot:
         import matplotlib.pyplot as plt
-
-        df = pd.read_csv(output_file_csv)
-        cols = [col for col in df.columns if col.find("time") == -1 and (not only_avg or col.startswith('avg_')) and (only_avg or not col.startswith('avg_')) and not sbml.is_output(col.replace("avg_","",1))]
-        df[cols].plot()
-        plt.xlabel('Time')
-        plt.ylabel('Value')
-        plt.title('Simulation Results')
-        plt.savefig(output_file_png)
+        if concentrations:
+            df = pd.read_csv(output_file_csv)
+            cols = [
+                col for col in df.columns if col.find("time") == -1 
+                and concentrations.get(col.strip("[]")) is not None and (not only_avg or col.startswith('avg_')) 
+                and (only_avg or not col.startswith('avg_')) and not sbml.is_output(col.replace("avg_","",1))
+            ]
+            for (i,species) in enumerate(cols, start=1):
+                print("[INFO] plot species: ", species)
+                real_conc = concentrations[species.strip("[]")]
+                sim_conc = float(df[species].iloc[-1])
+                plt.plot(df["time"],df[species], label=species, linewidth=2.5)
+                plt.axhline(y=real_conc, color='r', linestyle='--', label=f"{species} (real value)")
+                plt.title(f"{species} concentration over time")
+                plt.xlabel("Time")
+                plt.ylabel("mol/L")
+                plt.yscale('log')
+                min_conc = real_conc if real_conc < sim_conc else sim_conc
+                max_conc = real_conc if real_conc > sim_conc else sim_conc
+                plt.ylim(bottom=10**(math.log(min_conc, 10) - 5), top=10**(math.log(max_conc, 10)+ 5))
+                plt.legend([f"{species} mol/L"])
+                plt.legend()
+                plt.savefig(output_file+"_"+str(i)+".png")
+                plt.clf()
+            
+        else:
+            df = pd.read_csv(output_file_csv)
+            cols = [col for col in df.columns if col.find("time") == -1 
+                    and (not only_avg or col.startswith('avg_')) and (only_avg or not col.startswith('avg_')) 
+                    and not sbml.is_output(col.replace("avg_","",1))
+                ]
+            df[cols].plot()
+            plt.xlabel('Secondi')
+            plt.ylabel('Concentrazione mol/L')
+            plt.title('Simulazione')
+            plt.savefig(output_file_png)
     return sim
         
         
@@ -129,6 +157,8 @@ def parse_args():
     parser.add_argument("--kinetic-constants", default=None, help="file path to kientic constants")
     parser.add_argument("--proteomics", default=None, help="file path to proteomics")
     parser.add_argument("--tissue", default="breast_cancer_cell", help="tissue name")
+    parser.add_argument("--plot-constrained", action="store_true", help="plot only constrained species")
+    parser.add_argument("--log-parameters", action="store_true", help="plot only constrained species")
     return parser.parse_args()
 
 def main():
@@ -144,8 +174,11 @@ def main():
         if not isinstance(kinetic_constants, list):
             kinetic_constants = [kinetic_constants]
         # TODO: choose the element in the list
-        for param_id, value in kinetic_constants[5].items():
-            sbml.set_parameter(param_id, value)
+        for param_id, value in kinetic_constants[0].items():
+            if args.log_parameters:
+                sbml.set_parameter(param_id, 10**value)
+            else:
+                sbml.set_parameter(param_id, value)
     if args.proteomics is not None:
         proteomics = None
         with open(args.proteomics) as f:
@@ -154,7 +187,12 @@ def main():
         for (species, conc) in concentrations.items():
             if sbml.is_input(species) or not sbml.is_output(species):
                 sbml.set_initial_concentration(species, conc)
-    run(sbml, plot=args.plot, only_avg=args.only_avg, output_file=args.output_file)
+    plot_concentrations = None
+    if args.plot_constrained:
+        print("[INFO] plot concentrations")
+        plot_concentrations = concentrations
+        
+    run(sbml, plot=args.plot, only_avg=args.only_avg, output_file=args.output_file, concentrations=plot_concentrations)
 
 if __name__ == "__main__":
     main()
