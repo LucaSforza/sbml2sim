@@ -59,6 +59,8 @@ public:
     }
 };
 
+#define WATER_CONC 55.0
+
 class OrderingError: public ErrorHandler {
 public:
 
@@ -75,11 +77,16 @@ public:
             control(result.size() == real_conc.size());
             for (size_t i = 0; i < result.size(); ++i) {
                 if(result[i].first != real_conc[i].first) {
-                    if(result[i].second < -1e-6) {
-                        err += 100.0;
+                    if(result[i].second > WATER_CONC) {
+                        // unstable
+                        err += 100;
+                    } else {
+                        if(result[i].second < -1e-6) {
+                            err += 100.0;
+                        }
+                        double a = std::log10(std::abs((result[i].second + LITTLE_EPSILON) / (real_conc[i].second + LITTLE_EPSILON)));
+                        err += a * a;
                     }
-                    double a = std::log10(std::abs((result[i].second + LITTLE_EPSILON) / (real_conc[i].second + LITTLE_EPSILON)));
-                    err += a * a;
                 }
             }
         } else {
