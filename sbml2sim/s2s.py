@@ -362,8 +362,20 @@ class Simulator:
     def set_parameter(self, id: str, value: float):
         lib.Simulator_set_parameter(self.obj, id.encode('utf-8'), c_double(value))
         
+    lib.Simulator_random_start_concentrations.restype = None
+    lib.Simulator_random_start_concentrations.argtypes = [c_void_p]
+
+    def random_start_concentrations(self):
+        lib.Simulator_random_start_concentrations(self.obj)
+        
 def rr_simualtor(doc: SBMLDoc) -> Simulator:
     return Simulator(lib.rr_Simulator_create(doc.obj))
+
+lib.rr_Simulator_set_unknown_id.restype = None
+lib.rr_Simulator_set_unknown_id.argtypes = [c_void_p, c_char_p]
+
+def rr_simulator_set_unknown_species(_this: Simulator, id: str):
+    lib.rr_Simulator_set_unknown_id(_this.obj, id.encode('utf-8'))
 
 class ErrorHandler:
     

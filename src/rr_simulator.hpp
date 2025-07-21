@@ -10,6 +10,8 @@ class rr_Simulator : public Simulator {
 
     rr::RoadRunner simulator;
 
+    std::vector<SpeciesId> unknown_ids;
+
 public:
     virtual ~rr_Simulator() override = default;
 
@@ -104,6 +106,20 @@ public:
 
         return simResult;
     } // simulale()
+
+    void random_start_concentrations() override {
+        for(const SpeciesId &id : this->unknown_ids) {
+            double min_exp = -10;
+            double max_exp = -6;
+            double scale = static_cast<double>(rand()) / RAND_MAX;
+            double x = min_exp + scale * (max_exp - min_exp);
+            this->simulator.setValue("init("+id+")", pow(10,x));
+        }
+    }
+
+    void set_unknown_id(SpeciesId id) {
+        this->unknown_ids.push_back(id);
+    }
 
 protected:
     const rr::RoadRunner& get_simulator() {

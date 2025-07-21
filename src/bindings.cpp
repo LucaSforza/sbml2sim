@@ -278,4 +278,12 @@ extern "C" {
         }
         unchoosed_ids(result);
     } */
+
+    void Simulator_random_start_concentrations(Simulator *_this) {
+        _this->random_start_concentrations();
+    }
+
+    void rr_Simulator_set_unknown_id(rr_Simulator *_this, const char *id) {
+        _this->set_unknown_id(id);
+    }
 }

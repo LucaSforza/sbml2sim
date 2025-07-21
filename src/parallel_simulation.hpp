@@ -79,7 +79,7 @@ public:
                 if(result[i].first != real_conc[i].first) {
                     if(result[i].second > WATER_CONC) {
                         // unstable
-                        err += 100;
+                        err += 100.0;
                     } else {
                         if(result[i].second < -1e-6) {
                             err += 100.0;
@@ -122,6 +122,8 @@ public:
         }
         return handler->error(result);
     }
+
+    virtual void random_start_concentrations() = 0;
 };
 
 class ParallelSimulator {

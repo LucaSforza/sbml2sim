@@ -1,10 +1,16 @@
 # 21/07/2025 - 31/07/2025
 
-- Use randomized initial concentrations for each restart; run the simulation multiple times during evaluation of loss function.
+- get all unknown ids 
 - Run the project on the cluster and parallelize the computations.
 - Check if the system is stable, otherwise penalize
 - Complete the class to execute all possible combinations.
 - write an email to the prof with all the results
+
+## Completed
+
+- Check if the system is stable, otherwise penalize
+- Use randomized initial concentrations for each restart; run the simulation multiple times during evaluation of loss function.
+
 
 # 20/07/2025
 
