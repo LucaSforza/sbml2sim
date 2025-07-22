@@ -3,6 +3,7 @@
 
 
 #include <rr/rrRoadRunner.h>
+#include <rr/rrLogger.h>
 
 #include "parallel_simulation.hpp"
 
@@ -10,7 +11,7 @@ class rr_Simulator : public Simulator {
 
     rr::RoadRunner simulator;
 
-    std::vector<SpeciesId> unknown_ids;
+    std::unordered_set<SpeciesId> known_ids;
 
 public:
     virtual ~rr_Simulator() override = default;
@@ -20,6 +21,7 @@ public:
         options.start = 0;
         options.duration = 100;
         simulator.setSimulateOptions(options);
+        rr::Logger::disableConsoleLogging();
         // Seleziona solo le colonne che iniziano per 'avg_'
         // TODO:
         /* std::vector<std::string> allColumns = simulator.getSelectionList();
@@ -108,17 +110,20 @@ public:
     } // simulale()
 
     void random_start_concentrations() override {
-        for(const SpeciesId &id : this->unknown_ids) {
-            double min_exp = -10;
-            double max_exp = -6;
-            double scale = static_cast<double>(rand()) / RAND_MAX;
-            double x = min_exp + scale * (max_exp - min_exp);
-            this->simulator.setValue("init("+id+")", pow(10,x));
+        const std::vector<std::string>& speciesIds = simulator.getFloatingSpeciesIds();
+        for(const std::string& id : speciesIds) {
+            if (known_ids.find(id) == known_ids.end()) {
+                double min_exp = -10;
+                double max_exp = -6;
+                double scale = static_cast<double>(rand()) / RAND_MAX;
+                double x = min_exp + scale * (max_exp - min_exp);
+                simulator.setValue("init(" + id + ")", pow(10, x));
+            }
         }
     }
 
-    void set_unknown_id(SpeciesId id) {
-        this->unknown_ids.push_back(id);
+    void set_known_id(SpeciesId id) {
+        this->known_ids.insert(id);
     }
 
 protected:

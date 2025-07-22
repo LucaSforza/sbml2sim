@@ -371,11 +371,11 @@ class Simulator:
 def rr_simualtor(doc: SBMLDoc) -> Simulator:
     return Simulator(lib.rr_Simulator_create(doc.obj))
 
-lib.rr_Simulator_set_unknown_id.restype = None
-lib.rr_Simulator_set_unknown_id.argtypes = [c_void_p, c_char_p]
+lib.rr_Simulator_set_known_id.restype = None
+lib.rr_Simulator_set_known_id.argtypes = [c_void_p, c_char_p]
 
-def rr_simulator_set_unknown_species(_this: Simulator, id: str):
-    lib.rr_Simulator_set_unknown_id(_this.obj, id.encode('utf-8'))
+def rr_simulator_set_known_species(_this: Simulator, id: str):
+    lib.rr_Simulator_set_known_id(_this.obj, id.encode('utf-8'))
 
 class ErrorHandler:
     

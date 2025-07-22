@@ -283,7 +283,8 @@ extern "C" {
         _this->random_start_concentrations();
     }
 
-    void rr_Simulator_set_unknown_id(rr_Simulator *_this, const char *id) {
-        _this->set_unknown_id(id);
+    void rr_Simulator_set_known_id(rr_Simulator *_this, const char *id) {
+        _this->set_known_id(id);
     }
+
 }

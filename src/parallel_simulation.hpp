@@ -76,22 +76,31 @@ public:
             auto real_conc = this->get_real_concs();
             control(result.size() == real_conc.size());
             for (size_t i = 0; i < result.size(); ++i) {
-                if(result[i].first != real_conc[i].first) {
-                    if(result[i].second > WATER_CONC) {
+                bool not_good = false;    
+                if(result[i].second > WATER_CONC || result[i].second < -1e-6) {
+                    // unstable
+                    not_good = true;
+                }
+                if(result[i].first != real_conc[i].first || not_good) {
+                    if(result[i].second > WATER_CONC || result[i].second < -1e-6) {
                         // unstable
-                        err += 100.0;
+                        not_good = true;
+                    }
+                    double a = std::log10(std::abs((result[i].second + LITTLE_EPSILON) / (real_conc[i].second + LITTLE_EPSILON)));
+                    if(not_good) {
+                        err += 1e4*a*a;
                     } else {
-                        if(result[i].second < -1e-6) {
-                            err += 100.0;
-                        }
-                        double a = std::log10(std::abs((result[i].second + LITTLE_EPSILON) / (real_conc[i].second + LITTLE_EPSILON)));
                         err += a * a;
                     }
                 }
             }
         } else {
             // TODO: scegli l'orizzonte di simulazione
-            err = 1e6*(1/((sim_result.error())/100.0));
+            double error = sim_result.error();
+            if(error < 1e-12) {
+                error = 1e-12;
+            }
+            err = 1e6*(1/((error)/100.0));
         }
         return err;
     }
@@ -165,8 +174,20 @@ public:
         for(int i = 0; i < this->sims.size(); ++i) {
             // printf("Thread %d is running\n", omp_get_thread_num());
             int errors = 0;
-            double fitness = this->sims[i]->simulate_error(handler->get_constrained_species(), handler, &errors);
-            r[i] = Fitness(i, errors > 0, fitness);
+            double fitness_sum = 0.0;
+            int error_count = 0;
+            int restarts = 10; // puoi cambiare il numero di restarts qui
+
+            for (int restart = 0; restart < restarts; ++restart) {
+                this->sims[i]->random_start_concentrations();
+                int errors = 0;
+                double fitness = this->sims[i]->simulate_error(handler->get_constrained_species(), handler, &errors);
+                fitness_sum += fitness;
+                error_count += errors;
+            }
+
+            double avg_fitness = fitness_sum / (double)restarts;
+            r[i] = Fitness(i, error_count > 0, avg_fitness);
         }
         
         return r;

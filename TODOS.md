@@ -1,11 +1,12 @@
 # 21/07/2025 - 31/07/2025
 
-- get all unknown ids 
-- Complete the class to execute all possible combinations.
+- Write a script that, given two lists of possible assignments for kinetic constants, computes their Cartesian product.
 - write an email to the prof with all the results
+
 
 ## Extras
 - Montecarlo simulation
+- Complete the class to execute all possible combinations.
 
 ## Completed
 

@@ -135,7 +135,7 @@ def search_for_kinetic_constants(sbml: s2s.SBMLDoc,file_path: str,  tissue: str,
         # Parameter: output constant
         output_param_dict[oc] = ng.p.Scalar(lower=-20.0, upper=0.0)
     parametrization = ng.p.Dict(**{ "kinetic_constants": ng.p.Dict(**kinetic_param_dict), "output_constants": ng.p.Dict(**output_param_dict) })
-    optimizer = ng.optimizers.NGOpt(parametrization=parametrization, budget=3_000)
+    optimizer = ng.optimizers.NGOpt(parametrization=parametrization, budget=20)
 
     def ng_objective(ng_params):
         # hidden parameters sbml and concentrations
