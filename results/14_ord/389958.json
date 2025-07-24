@@ -1,0 +1,962 @@
+[
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 1000,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 0.001
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 1000,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 1000,
+    "k_forcat_reaction_389980": 1000,
+    "k_forcat_reaction_389954": 0.001,
+    "k_forcat_reaction_389970": 1000
+  },
+  {
+    "k_forcat_reaction_390453": 0.001,
+    "k_forcat_reaction_389961": 0.001,
+    "k_forcat_reaction_390459": 0.001,
+    "k_forcat_reaction_389980": 0.001,
+    "k_forcat_reaction_389954": 1000,
+    "k_forcat_reaction_389970": 1000
+  }
+]

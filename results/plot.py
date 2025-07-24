@@ -1,3 +1,4 @@
+import math
 import sys
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -7,7 +8,7 @@ def plot_concentration(csv: pd.DataFrame, tissue_concentration: dict[str, float]
     plt.plot(csv["time"], csv[name], label=name, linewidth=2.5)
     plt.axhline(y=tissue_concentration[stripped_name], color='r', linestyle='--', label=f"{stripped_name} (real value)")
     plt.title(f"{stripped_name} concentration over time")
-    plt.xlabel("Time")
+    plt.xlabel("Secondi")
     plt.ylabel("mol/L")
     plt.yscale('log')
     plt.ylim(1e-5, 1)
@@ -25,10 +26,27 @@ def plot_utility(log_file_path: str):
                 utility = float(line.split(":")[-1])
                 plt.scatter(attempt, utility, color='blue', s=5)
         plt.yscale("log")
-        plt.xlabel("attempt")
-        plt.ylabel("utility")
+        plt.xlabel("tentativo")
+        plt.ylabel("loss")
         plt.savefig("log.png")
         plt.clf()
+    best_utility = math.inf
+    best_utilities = []
+    attempt = 0
+    with open(log_file_path) as f:
+        for line in f.readlines():
+            if line.startswith("[INFO] utility:"):
+                attempt += 1
+                utility = float(line.split(":")[-1])
+                if utility < best_utility:
+                    best_utility = utility
+                best_utilities.append(best_utility)
+    plt.plot(range(1, attempt + 1), best_utilities, color='blue', linewidth=2)
+    plt.yscale("log")
+    plt.xlabel("tentativo")
+    plt.ylabel("best loss")
+    plt.savefig("log.png")
+    plt.clf()
 
 def main():
     # TODO: riplotta kinetic.png
@@ -52,7 +70,7 @@ def main():
         tissue_concentration[tissue+"_"+key] = value
     print(tissue_concentration)
     
-    csv = pd.read_csv("kinetic.csv")
+    csv = pd.read_csv("11/kinetic.csv")
     for col in csv.columns:
         stripped_col = col.strip("[]")
         if stripped_col in tissue_concentration.keys():
@@ -63,7 +81,7 @@ def main():
         if col.startswith("avg_"):
             plt.plot(csv["time"], csv[col])
             plt.title(f"Concentration over time")
-            plt.xlabel("Time")
+            plt.xlabel("Secondi")
             plt.ylabel("mol/L")
             # plt.yscale('log')
     plt.savefig("kinetic2.png")
@@ -72,4 +90,4 @@ def main():
 # TODO: ristampa kinetic.png con meno cose nella leggenda e in base logaritmica
 if "__main__" == __name__:
     main()
-    # plot_utility("log")
+    plot_utility("11/log")
