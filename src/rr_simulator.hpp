@@ -66,8 +66,6 @@ public:
 
     std::expected<SimulationResult,double> simulate(const std::unordered_set<SpeciesId>& ids) override {
 
-        // TODO: random start concentration
-
         const ls::DoubleMatrix *result = NULL;
 
         const std::string prefix = "avg_";
@@ -75,7 +73,6 @@ public:
         try {
             result = simulator.simulate();
         } catch (const rr::IntegratorException& ie) {
-            // TODO: return a Simulation Result
             double crash_time = simulator.getCurrentTime();
             return std::unexpected(crash_time);
         } catch (const std::exception& e) {
@@ -86,14 +83,26 @@ public:
 
         assert(result != NULL);
 
-        SimulationResult simResult;
-        simResult.reserve(ids.size());
-
-
+        std::vector<std::pair<SpeciesId, double>> constrained;
+        constrained.reserve(ids.size());
+        std::vector<std::pair<SpeciesId, double>> not_constrained;
+        std::unordered_map<SpeciesId, double> old_values;
         // Ottieni l'indice dell'ultima riga (fine simulazione)
         int lastRow = result->numRows() - 1;
 
+        // Prendi l'id quando il tempo è all'80%
         const std::vector<std::string>& cols = result->getColNames();
+        int eightyPercentRow = static_cast<int>(result->numRows() * 0.8);
+        if (eightyPercentRow >= result->numRows()) eightyPercentRow = result->numRows() - 1;
+        // Salva in old_values tutte le specie che iniziano per 'avg_' all'80% del tempo
+        for (int i = 0; i < result->numCols(); ++i) {
+            const std::string& col = cols[i];
+            if (col.compare(0, prefix.size(), prefix) == 0) {
+                const std::string& clean_name = col.substr(prefix.size());
+                double value = (*result)(eightyPercentRow, i);
+                old_values[clean_name] = value;
+            }
+        }
 
         for (int i = 0; i < result->numCols(); ++i) {
             const std::string& col = cols[i];
@@ -101,10 +110,20 @@ public:
                 const std::string& clean_name = col.substr(prefix.size());
                 if(ids.find(clean_name) != ids.end()) {
                     double value = (*result)(lastRow, i);
-                    simResult.emplace_back(clean_name, value);
+                    constrained.emplace_back(clean_name, value);
+                } else {
+                    // TODO: controllare che non sia di output
+                    double value = (*result)(lastRow, i);
+                    not_constrained.emplace_back(clean_name, value);
                 }
             }
         }
+
+        SimulationResult simResult;
+
+        simResult.constrained = constrained;
+        simResult.not_constrained = not_constrained;
+        simResult.old_values  = old_values;
 
         return simResult;
     } // simulale()

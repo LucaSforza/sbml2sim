@@ -6,4 +6,3 @@ parameters.json
 *.cfg
 lib/
 bin/
-results/

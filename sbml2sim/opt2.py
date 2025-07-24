@@ -43,7 +43,7 @@ def init_model(sbml: s2s.SBMLDoc, file_path: str, tissue: str, concentrations: d
     return new_sbml
    
 def assign_parameters(
-    sbml: s2s.SBMLDoc,
+    sbml: s2s.Simulator,
     parameters: dict[ParameterId, float] | None
 ):
     if parameters is None: return
@@ -51,7 +51,7 @@ def assign_parameters(
         sbml.set_parameter(param_id, 10**value)
  
 def set_sbml_for_attempt(
-    sbml: s2s.SBMLDoc,
+    sbml: s2s.Simulator,
     tissue: str,
     kinetic_constants: dict[ParameterId, float] | None,
     output_constants: dict[ParameterId, float] | None,
@@ -61,8 +61,7 @@ def set_sbml_for_attempt(
     if kinetic_constants is None and output_constants is None:
         print("[FATAL ERROR] kinetic constants AND constants are None")
         exit(1)
-    sbml.random_start_concentration()
-    assign_concentrations(sbml,tissue, concentrations)
+    sbml.random_start_concentrations()
     # TODO: reset initial value for avg non-constant parameters
     assign_parameters(sbml, kinetic_constants)
     assign_parameters(sbml, output_constants)
@@ -73,11 +72,11 @@ best_results = math.inf
 
 def utility_function(
     ng_params: dict[str, dict[ParameterId, float]],
-    sbml: s2s.SBMLDoc,
+    simulator: s2s.ParallelSimulator,
+    model: s2s.Simulator,
+    error_handler: s2s.ErrorHandler,
     concentrations: dict[SpeciesId, float],
     tissue_name: str,
-    p: float,
-    S: float,
 ) -> float:
     """
     Funzione di utilità che prende in input:
@@ -86,42 +85,35 @@ def utility_function(
     """
     global attempts, best_results
     start_time = time.time()
-    set_sbml_for_attempt(sbml, tissue_name, ng_params.value.get("kinetic_constants"), ng_params.value.get("output_constants"), concentrations)
+    set_sbml_for_attempt(model, tissue_name, ng_params.value.get("kinetic_constants"), ng_params.value.get("output_constants"), concentrations)
     attempts += 1
     print(f"[INFO] attempt: {attempts}")
     # print(f"[INFO] params:\n {ng_params}")
     # Le chiavi di ng_params sono sempre 'f', 'k_1', 'k_2'
-    result = 0.0
-    integration_errors = 0
+    (total_loss, total_is_error) = (0.0,False)
+    for _ in range(10):
+        (loss, is_error) = simulator.simulate(error_handler)[0]
+        total_loss += loss
+        is_error = is_error or total_is_error
 
-    (steady_pen, bio_pen) = sim.simulate(sbml, concentrations, tissue_name)
-    if math.isnan(steady_pen) or math.isnan(bio_pen):
+    total_loss = total_loss/10.0
+    if math.isnan(loss):
         print("[FATAL ERORR] utility function returned NaN")
         exit(1)
-    if math.isinf(steady_pen):
-        if steady_pen < 0:
-            print("[FATAL ERROR] Negative infinity returned by simulate function. An unexpected error occurred.")
-            exit(1)
-        else:
-            end_time = time.time()
-            print(f"[INFO] Simulation {attempts} ended WITH errors in {end_time - start_time:.2f} seconds")
-            return math.inf
-
-    result += bio_pen*(1 - p)*S + steady_pen*p*S
+    stringa = "WITHOUT"
+    if total_is_error: stringa = "WITH"
     end_time = time.time()
-    print(f"[INFO] Simulation {attempts} ended WITHOUT errors in {end_time - start_time:.2f} seconds")
-    utility = result
-    if utility < best_results:
-        best_results = utility
-    print(f"[INFO] utility: {utility}")
+    if total_loss < best_results:
+        best_results = total_loss
+    print(f"[INFO] Simulation {attempts} ended {stringa} errors in {end_time - start_time:.2f} seconds")
+    print(f"[INFO] utility: {total_loss}")
     print(f"[INFO] best utility: {best_results}")
-    
-    return utility
+    return loss
 
 
 TISSUE="breast_cancer_cell" # TODO: param
 
-def search_for_kinetic_constants(sbml: s2s.SBMLDoc,file_path: str,  tissue: str, concentrations: dict[SpeciesId, float]) -> dict[ParameterId, float]:
+def search_for_kinetic_constants(sbml: s2s.SBMLDoc, tissue: str, concentrations: dict[SpeciesId, float], model: s2s.Simulator, simulator: s2s.ParallelSimulator, error_handler: s2s.ErrorHandler) -> dict[ParameterId, float]:
     print("[INFO] Opt kinetic constants") 
     kinetic_constants: list[ParameterId] = sbml.get_kinetic_constants()
     output_constants: list[ParameterId] = sbml.get_output_constants()
@@ -137,11 +129,11 @@ def search_for_kinetic_constants(sbml: s2s.SBMLDoc,file_path: str,  tissue: str,
         # Parameter: output constant
         output_param_dict[oc] = ng.p.Scalar(lower=-20.0, upper=0.0)
     parametrization = ng.p.Dict(**{ "kinetic_constants": ng.p.Dict(**kinetic_param_dict), "output_constants": ng.p.Dict(**output_param_dict) })
-    optimizer = ng.optimizers.NGOpt(parametrization=parametrization, budget=3000)
+    optimizer = ng.optimizers.NGOpt(parametrization=parametrization, budget=30_000)
 
     def ng_objective(ng_params):
         # hidden parameters sbml and concentrations
-         return utility_function(ng_params, sbml, concentrations, tissue, 0.1, 10**4)
+         return utility_function(ng_params, simulator,model, error_handler, concentrations, tissue)
     print("[INFO] Start Opt")
     start_opt = time.time()
     for _ in range(optimizer.budget):
@@ -156,14 +148,10 @@ def search_for_kinetic_constants(sbml: s2s.SBMLDoc,file_path: str,  tissue: str,
     with open("parameters_kinetic_constants.json", "w") as f:
         json.dump(recommendation.value, f)
     result: dict[str, dict[ParameterId, float]] = recommendation.value
-    set_sbml_for_attempt(sbml, TISSUE, result["kinetic_constants"], result["output_constants"], concentrations)
-    sbml.save_converted_file(file_path.replace(".", "-kinetic-constants."))
-    sim.simulate(sbml ,concentrations, tissue,  plot=True, output_file_name="kinetic")
     return result
 
-def main():
+def main(file_path: str):
     global best_results, attempts
-    file_path = parse_args()
 
     sbml: s2s.SBMLDoc = s2s.SBMLDoc(file_path)
     # ref: https://bionumbers.hms.harvard.edu/bionumber.aspx?id=115154&ver=1&trm=cell+size+breast+cancer+cell+human+&org=
@@ -176,12 +164,24 @@ def main():
     concentrations: dict[SpeciesId, float] = convert_ibaq_to_concentrations(sbml, proteomics, TISSUE)
     print(concentrations)
     # replica il modello per il tessuto del cancro al seno
-    print("[INFO] init model")
-    sbml = init_model(sbml, file_path, TISSUE, concentrations)
     # le costanti cinetiche rappresentato un esponente x. Per avere il valore calcolcare 10^x
-    result = search_for_kinetic_constants(sbml, file_path, TISSUE, concentrations)
+    model = s2s.rr_simualtor(sbml)
+    simualtor = s2s.ParallelSimulator(1)
+    simualtor.add_worker(model) # TODO: cambia nome funzione
+    error_handler = s2s.classical_error_create()
+    for (species, conc) in concentrations.items():
+        if sbml.is_input(species):
+            sbml.set_initial_concentration(species, conc)
+        elif not sbml.is_output(species):
+            sbml.set_initial_concentration(species, conc)
+            error_handler.add_real_concentration(species, conc)
+        else:
+            error_handler.add_output(species)
+    # TODO: error handler
+    result = search_for_kinetic_constants(sbml, TISSUE, concentrations, model, simualtor, error_handler)
     
     print("[INFO] kinetic costants: ")
     print(result["kinetic_constants"])
-    print("[INFO] output constants")
-    print(result["output_constants"])
+    
+    with open("ord_params.json", "w") as f:
+        json.dump(result["kinetic_constants"],f)

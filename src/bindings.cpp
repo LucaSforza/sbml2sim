@@ -252,6 +252,10 @@ extern "C" {
         return new OrderingError();
     }
 
+    ClassicalError *ClassicalError_create() {
+        return new ClassicalError();
+    }
+
     Fitness *ParallelSimulator_simulate(ParallelSimulator *_this, ErrorHandler *handler) {
         return _this->simulate(handler);
     }
@@ -285,6 +289,10 @@ extern "C" {
 
     void rr_Simulator_set_known_id(rr_Simulator *_this, const char *id) {
         _this->set_known_id(id);
+    }
+
+    void ErrorHandler_add_output(ErrorHandler *_this, const char *id) {
+        _this->add_output(id);
     }
 
 }

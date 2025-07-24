@@ -35,11 +35,8 @@ def steady_state_residual(sbml, r: rr.RoadRunner, sim) -> float:
     return result
 
 def check_for_inconsistency(sim) -> float:
-    # ritorna 10**30 moltiplicato per il numero di specie che hanno concentrazione negativa
     names = [name for name in sim.colnames if not name.startswith("avg_") and name not in ("time", "get_time")]
-    # Trova gli indici delle specie rilevanti
     indices = [i for i, name in enumerate(sim.colnames) if name in names]
-    # Prendi i valori all'ultimo tempo simulato
     values = sim[-1, indices]
     penalty_value = np.linalg.norm(values[values < -1e-1], ord=1)
     return penalty_value
@@ -144,6 +141,7 @@ def run(sbml: SBMLDoc, plot=False,only_avg=False, output_file="simulation", conc
             plt.xlabel('Secondi')
             plt.ylabel('Concentrazione mol/L')
             plt.title('Simulazione')
+            plt.yscale('log')
             plt.savefig(output_file_png)
     return sim
         
@@ -154,7 +152,7 @@ def parse_args():
     parser.add_argument("--plot", default=True, action="store_true", help="Plot the simulation results")
     parser.add_argument("--only-avg", action="store_true", help="Plot only avg_* columns")
     parser.add_argument("--output-file", default="simulation", help="Base name for output files (csv/png)")
-    parser.add_argument("--kinetic-constants", default=None, help="file path to kientic constants")
+    parser.add_argument("--kinetic-constants", default="ord_params.json", help="file path to kientic constants")
     parser.add_argument("--proteomics", default=None, help="file path to proteomics")
     parser.add_argument("--tissue", default="breast_cancer_cell", help="tissue name")
     parser.add_argument("--plot-constrained", action="store_true", help="plot only constrained species")
@@ -174,6 +172,7 @@ def main():
         if not isinstance(kinetic_constants, list):
             kinetic_constants = [kinetic_constants]
         # TODO: choose the element in the list
+        print(kinetic_constants)
         for param_id, value in kinetic_constants[0].items():
             if args.log_parameters:
                 sbml.set_parameter(param_id, 10**value)

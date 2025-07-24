@@ -391,6 +391,12 @@ class ErrorHandler:
     def order_real_concentration(self):
         lib.ErrorHandler_order_real_concentration(self.obj)
 
+    lib.ErrorHandler_add_output.restype = None
+    lib.ErrorHandler_add_output.argtypes = [c_void_p, c_char_p]
+
+    def add_output(self, id: str):
+        lib.ErrorHandler_add_output(self.obj, id.encode('utf-8'))
+
     def __init__(self, obj):
         self.obj = obj
 
@@ -408,6 +414,12 @@ lib.OrderingError_create.argtypes = []
 
 def ordering_error_create():
     return ErrorHandler(lib.OrderingError_create())
+
+lib.ClassicalError_create.restype = c_void_p
+lib.ClassicalError_create.argtypes = []
+
+def classical_error_create():
+    return ErrorHandler(lib.ClassicalError_create())
 
 class ParallelSimulator:
     lib.ParallelSimulator_create.restype = c_void_p
