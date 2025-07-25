@@ -6,16 +6,9 @@ import matplotlib.pyplot as plt
 def plot_concentration(csv: pd.DataFrame, tissue_concentration: dict[str, float], name: str, stripped_name: str):
     print(f"[INFO] start plotting {name}")
     plt.plot(csv["time"], csv[name], label=name, linewidth=2.5)
-    plt.axhline(y=tissue_concentration[stripped_name], color='r', linestyle='--', label=f"{stripped_name} (real value)")
-    plt.title(f"{stripped_name} concentration over time")
-    plt.xlabel("Secondi")
-    plt.ylabel("mol/L")
-    plt.yscale('log')
-    plt.ylim(1e-5, 1)
+    plt.axhline(y=tissue_concentration[stripped_name], color='r', linestyle='--')
     plt.legend([f"{stripped_name} mol/L"])
-    plt.legend()
-    plt.savefig(stripped_name+".png")
-    plt.clf()
+
     
 def plot_utility(log_file_path: str):
     attempt = 0
@@ -71,11 +64,19 @@ def main():
     print(tissue_concentration)
     
     csv = pd.read_csv("11/kinetic.csv")
+    plt.xlabel("Secondi")
+    plt.ylabel("mol/L")
+    plt.yscale('log')
+    plt.ylim(1e-5, 1)
+    plt.title(f"Concentrazione delle specie vincolate")
     for col in csv.columns:
         stripped_col = col.strip("[]")
         if stripped_col in tissue_concentration.keys():
             plot_concentration(csv, tissue_concentration, col, stripped_col)
-
+    plt.legend()
+    plt.savefig("contrained.png")
+    plt.clf()
+    
     print(f"[INFO] start plotting all concentration")
     for col in csv.columns:
         if col.startswith("avg_"):
@@ -90,4 +91,4 @@ def main():
 # TODO: ristampa kinetic.png con meno cose nella leggenda e in base logaritmica
 if "__main__" == __name__:
     main()
-    plot_utility("11/log")
+    # plot_utility("11/log")
