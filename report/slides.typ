@@ -2,7 +2,7 @@
 #import "@preview/fletcher:0.5.8" as fletcher: diagram, node, edge
 
 #show: slides.with(
-  title: "Stima delle costanti cinetiche delle reazioni di un modello biologico",
+  title: "Simulazione del ripiegamento proteico mediato da chaperoni nel cancro",
   // subtitle: "Algoritmo naive per il clustering",
   authors: "Luca Sforza 2050030",
 )
@@ -19,9 +19,17 @@
 
 = Introduzione
 
+== Introduzione
+
+La simulazione quantitativa di processi biologici richiede modelli dinamici e permetterebbe di studiare i comportamenti di un paziente virtuale ed effettuare esperimenti per trovare la giusta combinazione di farmaci per trattare malattie.
+
+In questo progetto ci si concentra nella simulazione del ripiegamento proteico mediato da chaperoni nel cancro.
+
+All'interno di una cellula le entitià chimiche (come le proteine) sono tutte molto compatte, rendondo difficile un ripiegamento corretto dei peptidi. Le proteine chaperoni permettono di lasciare spazio al peptide all'interno della cellula.
+
 == Cos'è un modello?
 
-Un modello è una rappresentazione astratta di un sistema reale, che permette di descriverne il comportamento
+Un modello è una rappresentazione astratta di un sistema reale, che permette di descriverne il comportamento.
 
 #let bent-edge(from, to, ..args) = {
   let midpoint = (from, 50%, to)
@@ -79,12 +87,24 @@ Molti modelli biologici sono disponibili, come quelli di *Reactome* @milacic2024
 
 Questi sono modelli sono qualitativi e non descrivono la dinamica del sistema o gli stati iniziali, ma solo la sua descrizione biologica.
 
-Per poter rendere questi modelli simulabili è necessario aggiungere le equazioni differenziali.
+Per poter rendere questi modelli simulabili è necessario aggiungere equazioni differenziali ordinarie ed aggiungere le grandezze dei vari compartimenti.
 
 
 #figure(
   image("logo.png")
 )
+
+== Grandezza compartimenti
+
+#figure(
+  image("cell.png", width: 40%)
+)
+
+I compartimenti sono: il nucleo, il citoplasma e la membrana plasmatica.
+
+Questi dati sono stati presi da *bionumbers* @milo2010bionumbers. Per ottenere questi dati è necessario conoscere il tessuto di riferimento (carcinoma mammario), il volume totale della cellula (in litri) e la proporzione tra nucleo e citoplasma.
+
+Invece per la membrana plasmatica è stata modellata come una sfera di diametro 10 nanometri.
 
 == Simulazione del modello
 
@@ -94,7 +114,7 @@ $S$ è la concentrazione di una specie.
 
 Il moto del sistema è descritto dalle leggi cinetiche delle reazioni, che a loro volta descrivono la velocità di una reazione @klipp2009systems[cap. 3].
 
-Sia $R = {1,...,n}$ l'insieme degli identificatori delle reazioni, sia $S$ la concentrazione di una singola specie. $v_i$ è la velocità della reazione $i in R$. $R_S subset.eq R$ è l'insieme delle reazioni dove $S$ è reagente. $P_S subset.eq R$ è l'insieme delle reazioni dove $S$ è prodotto. $n^S_i$ è la stechiometria di $S$ nella reazione $i in R$. 
+Sia $R = {1,...,m}$ l'insieme degli identificatori delle reazioni, sia $S$ la concentrazione di una singola specie. $v_i$ è la velocità della reazione $i in R$. $R_S subset.eq R$ è l'insieme delle reazioni dove $S$ è reagente. $P_S subset.eq R$ è l'insieme delle reazioni dove $S$ è prodotto. $n^S_i$ è la stechiometria di $S$ nella reazione $i in R$. 
 
 Allora:
 
@@ -106,7 +126,7 @@ $
 
 Le velocità delle reazioni sono descritte dalle leggi cinetiche.
 
-La legge utilizzata per ogni reazione è la mass action rule, la velocità di una reazione è proporzionale alla concentrazione dei reagenti:
+La legge utilizzata per ogni reazione è la *mass action rule*: la velocità di una reazione è proporzionale alla concentrazione dei reagenti:
 
 Siano $A_1, A_2, ..., A_n$ le specie reagenti, $n_i$ la stechiometria del reagente $i$ 
 
@@ -130,12 +150,12 @@ $
 $
 
 
-$H(S)$ è la hill function che è definita come segue:
+$H(M)$ è la hill function che è definita come segue:
 
 $
   H( S) = cases(
-    (S^h)/(K_(a)^h + S^h) "se "S" è attivatore",
-    (K_(i)^h)/(K_i^h + S^h) "se "S" è un inibitore" ,
+    (S^h)/(K_(a)^h + M^h) "se "M" è attivatore",
+    (K_(i)^h)/(K_i^h + M^h) "se "M" è un inibitore" ,
   )
 $
 
@@ -148,9 +168,13 @@ $K_(a)$ e $K_(i)$ sono nuovi parametri introdotti nel modello poiché ignoti.
 
 Per le costanti cinetiche non abbiamo dati sperimentali su cui affidarci, quindi vanno stimate.
 
-Un modo per farlo è definire una *loss function* e minimizzarla usando tecniche di *ricerca localre* ottenendo dei parametri realistici per il sistema.
+Un modo per farlo è definire una *loss function* e minimizzarla usando tecniche di *ricerca locare* ottenendo dei parametri realistici per il sistema.
 
-La loss function codifica l'errore della scelta dei parametri, minimizzarla vuol dire trovare i giusti parametri.
+L'*agente* esegue la search in un ambiente non determinitisco (gli input di cui la concentrazione media è sconosciuta), nel continuo (i parametri hanno valori in $RR$).
+
+Dato che i parametri sono continui non possiamo utilizzare le tecniche classiche viste nel corso. Per esempio steepest descend richiede di esplorare tutto il vicinato, ma è impossibile se (come in questo caso) il vicinato è infinito.
+
+La loss function codifica l'errore della scelta dei parametri, minimizzarla vuol dire trovare i parametri che spiegano i dati osservati.
 
 Siano $theta$ le costanti cincetiche del sistema (ovvero i paramentri).
 
@@ -275,7 +299,7 @@ Per valutare le performance lo si può fare con $cal(L)("optimizer"."recommend")
 Per ottimizzare la funzione è stato usato il seguente algoritmo:
 #figure(
 pseudocode-list[
-  + *for* $i$ *in* range(*budget*) *do*
+  + *for* $"_"$ *in* range(*budget*) *do*
     + $theta <- "optimizer"."ask"()$;
     + $"optimizer"."tell"(theta, cal(L)(theta))$
   + *end for*;
@@ -303,7 +327,7 @@ pseudocode-list[
 
 == Random Search
 
-Tra gli algoritmi che *Wizard* può scegliere ce ne sono veramente tanti, ma ecco una breve descrizione dei principali algoritmi.
+Sono molti gli algoritmi che *Wizard* può scegliere, ma ecco una breve descrizione di alcuni degli algoritmi presenti in Nevergrad.
 
 // TODO: mettere piu' roba
 
@@ -355,8 +379,6 @@ pseudocode-list[
 ]
 )
 
-L'algoritmo OnePlusOne è particolarmente utile quando lo spazio dei parametri è continuo e di dimensione moderata, ed è stato ampiamente usato nel contesto dell'ottimizzazione evolutiva. Il suo vantaggio principale è la capacità di adattarsi automaticamente alla scala del problema, migliorando progressivamente l'efficienza della ricerca.
-
 
 #pagebreak()
 
@@ -365,30 +387,16 @@ L'algoritmo OnePlusOne è particolarmente utile quando lo spazio dei parametri �
 == Grafici
 
 #figure(
-  grid(
-      columns: 2,
-      image("breast_cancer_cell_species_379537.png"),
-      image("breast_cancer_cell_species_379538.png"),
-  )
-)
-#figure(
-grid(
-      columns: 2,
-      image("breast_cancer_cell_species_379539.png"),
-      image("breast_cancer_cell_species_379540.png"),
-    )
-)
-
-
-#figure(
-  image("breast_cancer_cell_species_379546.png", width: 60%)
+  image("contrained.png")
 )
 
 All'inizio della simulazione, i valori delle concentrazioni vengono impostati uguali a quelli ottenuti dai dati sperimentali.
 Questo approccio serve a far partire il simulatore già vicino a uno stato di equilibrio.
 Partire vicino all'equilibrio rende più semplice e veloce il processo di ottimizzazione, perché il simulatore deve fare meno aggiustamenti per trovare i parametri migliori.
 
-Tuttavia, non tutte le specie chimiche riescono a raggiungere esattamente i valori sperimentali. Questo è normale, perché l'ottimizzazione black box è una tecnica che non assicura l'ottimalità, quindi può non trovare la soluzione perfetta per tutte le specie.
+Tuttavia, non tutte le specie chimiche riescono a raggiungere esattamente i valori sperimentali. Questo è normale, perché l'ottimizzazione black box, essendo una tecnica di ricerca locale,  non assicura l'ottimalità, quindi può non trovare la soluzione perfetta per tutte le specie.
+
+In più alcune specie in input di cui non si conoscono i dati sperimentali sono random, infatti le costanti cinetiche trovate riescono a spiegare in fenomeno osservato in media.
 
 #figure(
   grid(
@@ -401,9 +409,21 @@ Tuttavia, non tutte le specie chimiche riescono a raggiungere esattamente i valo
 
 Da questo ultimo plot si può visualizzare la stabilità del sistema. All'inizio della simulazione non è stabile, ma arriva velocemente ad un punto di stabilità.
 
+== Rasoio di Occam
+
+Il rasoio di Occam è un principio filosofico secondo cui, tra più modelli che spiegano adeguatamente i dati osservati, si preferisce quello più semplice. 
+
+In questo contesto, il modello proposto con i parametri trovati è in grado di descrivere i dati sperimentali senza introdurre complessità superflua, soddisfacendo così il criterio di semplicità suggerito dal rasoio di Occam.
+
+== Search
+
 #figure(
-  image("log.png", width: 80%),
-  caption: [Andamento della funzione di utilità (loss) durante i tentativi dell’ottimizzatore.]
+  grid(
+    columns: 2,
+    image("log_best.png"),
+    image("log.png"),
+  ),
+  caption: [Andamento della loss function durante i tentativi dell'ottimizzatore.]
 )
 
 #bibliography("refs.bib", title: "Bibliografia")
