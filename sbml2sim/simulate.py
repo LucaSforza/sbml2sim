@@ -141,7 +141,7 @@ def run(sbml: SBMLDoc, plot=False,only_avg=False, output_file="simulation", conc
             plt.xlabel('Secondi')
             plt.ylabel('Concentrazione mol/L')
             plt.title('Simulazione')
-            plt.yscale('log')
+            # plt.yscale('log')
             plt.savefig(output_file_png)
     return sim
         

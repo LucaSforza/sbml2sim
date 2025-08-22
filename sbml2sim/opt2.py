@@ -61,7 +61,7 @@ def set_sbml_for_attempt(
     if kinetic_constants is None and output_constants is None:
         print("[FATAL ERROR] kinetic constants AND constants are None")
         exit(1)
-    sbml.random_start_concentrations()
+    # sbml.random_start_concentrations()
     # TODO: reset initial value for avg non-constant parameters
     assign_parameters(sbml, kinetic_constants)
     assign_parameters(sbml, output_constants)
@@ -88,25 +88,19 @@ def utility_function(
     set_sbml_for_attempt(model, tissue_name, ng_params.value.get("kinetic_constants"), ng_params.value.get("output_constants"), concentrations)
     attempts += 1
     print(f"[INFO] attempt: {attempts}")
-    # print(f"[INFO] params:\n {ng_params}")
-    # Le chiavi di ng_params sono sempre 'f', 'k_1', 'k_2'
-    (total_loss, total_is_error) = (0.0,False)
-    for _ in range(10):
-        (loss, is_error) = simulator.simulate(error_handler)[0]
-        total_loss += loss
-        is_error = is_error or total_is_error
 
-    total_loss = total_loss/10.0
+    (loss, is_error) = simulator.simulate(error_handler)[0]
+
     if math.isnan(loss):
         print("[FATAL ERORR] utility function returned NaN")
         exit(1)
     stringa = "WITHOUT"
-    if total_is_error: stringa = "WITH"
+    if is_error: stringa = "WITH"
     end_time = time.time()
-    if total_loss < best_results:
-        best_results = total_loss
+    if loss < best_results:
+        best_results = loss
     print(f"[INFO] Simulation {attempts} ended {stringa} errors in {end_time - start_time:.2f} seconds")
-    print(f"[INFO] utility: {total_loss}")
+    print(f"[INFO] utility: {loss}")
     print(f"[INFO] best utility: {best_results}")
     return loss
 
