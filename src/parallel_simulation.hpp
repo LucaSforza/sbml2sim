@@ -154,33 +154,21 @@ public:
             
             control(result.size() == real_conc.size());
             for (size_t i = 0; i < result.size(); ++i) {
-                bool not_good = false;    
-                if(result[i].second > WATER_CONC || result[i].second < -1e-6) {
-                    // unstable
-                    not_good = true;
-                }
-                double a = std::log10(std::abs((result[i].second) / (this->get_real_conc(result[i].first))));
-                if(not_good) {
-                    err += 1e4*a*a;
-                } else {
-                    err += a * a;
-                }
+                double a = result[i].second - this->get_real_conc(result[i].first);
+                err += a*a;
 
-                double b = (std::log10(simResult.old_values[result[i].first]) - std::log10(result[i].second));
+                double b = (simResult.old_values[result[i].first] - result[i].second);
                 err += b*b;
             }
 
             const auto& outputs = this->get_outputs();
             
             for (const auto& nc : simResult.not_constrained) {
-                if (outputs.find(nc.first) == outputs.end() && (nc.second > WATER_CONC || nc.second < -1e-6)) {
-                    // not bounded
-                    double a = std::log10(std::abs((nc.second)));
-                    err += a;
-                    double b = (std::log10(simResult.old_values[nc.first]) - std::log10(nc.second));
+                if (outputs.find(nc.first) == outputs.end()) {
+                    double b = (simResult.old_values[nc.first] - nc.second);
                     err += b*b;
                 }
-            } 
+            }
 
 
         } else {
