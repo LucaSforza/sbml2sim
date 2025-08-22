@@ -69,7 +69,7 @@ public:
         make_all_input_costant_species(model, inputs);
         this->outputs = collect_all_outputs(model);
         // create_a_fake_reaction_for_all_outputs(model, outputs);
-
+        // create_a_fake_reaction_for_all_inputs(model, inputs);
         for (const auto &input : this->inputs) {
             std::cout << "[INPUT] " << input << std::endl;
         }
@@ -577,6 +577,32 @@ public:
             }
         }
         return output_constants;
+    }
+
+    std::vector<std::string> get_input_constants() const {
+        std::vector<std::string> input_constants;
+        for (u_int i = 0; i < model->getNumParameters(); ++i) {
+            libsbml::Parameter* param = model->getParameter(i);
+            const std::string& id = param->getId();
+            if (!id.empty() && strncmp(id.c_str(), "input_", 6) == 0) {
+                input_constants.push_back(id);
+            }
+        }
+        return input_constants;
+    }
+
+    std::vector<std::string> get_input_species() const {
+        std::vector<std::string> input_species;
+        input_species.reserve(this->inputs.size());
+        for (u_int i = 0; i < model->getNumSpecies(); ++i) {
+            libsbml::Species *s = model->getSpecies(i);
+            if (s == nullptr) continue;
+            if (this->inputs.find(s->getId()) != this->inputs.end()) {
+                input_species.push_back(s->getId());
+            }
+        }
+        assert(input_species.size() == this->inputs.size());
+        return input_species;
     }
 
     bool is_output(const char *species_id) const {

@@ -183,6 +183,14 @@ extern "C" {
         return new std::vector<std::string>(_this->get_output_constants());
     }
 
+    const std::vector<std::string>* SBMLDoc_get_input_constants(const SBMLDoc* _this) {
+        return new std::vector<std::string>(_this->get_input_constants());
+    }
+
+    const std::vector<std::string>* SBMLDoc_get_input_species(const SBMLDoc* _this) {
+        return new std::vector<std::string>(_this->get_input_species());
+    }
+
     void SBMLDoc_delete_string_vector(const std::vector<std::string>* vec) {
         delete vec;
     }
@@ -222,6 +230,10 @@ extern "C" {
 
     void Simulator_set_parameter(Simulator *_this, const char *id, double value) {
         _this->set_parameter(id, value);
+    }
+
+    void Simulator_set_initial_concentration(Simulator *_this, const char *species_id, double value) {
+        _this->set_initial_concentration(species_id, value);
     }
 
     ParallelSimulator *ParallelSimulator_create(int workers) {

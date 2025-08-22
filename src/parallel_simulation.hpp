@@ -191,9 +191,9 @@ struct ParameterResult {
 
 class Simulator {
 public:
-    // TODO: random start concentration for input that are not known
     virtual ~Simulator() {};
     virtual void set_parameter(const char *id, double value) = 0;
+    virtual void set_initial_concentration(const char *species_id, double value) = 0;
     virtual ParameterResult *get_all_parameters() = 0;
     // ritorna un simulation result oppure il tempo in cui il simulatore va in crash
     virtual std::expected<SimulationResult,double> simulate(const std::unordered_set<SpeciesId>& ids) = 0;

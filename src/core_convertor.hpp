@@ -949,4 +949,28 @@ void create_a_fake_reaction_for_all_outputs(libsbml::Model *model, const Outputs
     }
 }
 
+void create_a_fake_reaction_for_all_inputs(libsbml::Model *model,const Inputs &inputs) {
+    for(const std::string &species_id : inputs) {
+        libsbml::Species *s = model->getSpecies(species_id);
+        assert(s != NULL);
+        libsbml::Reaction *r = model->createReaction();
+        r->setId("generate_input_"+species_id);
+        r->setName("Create input species of the pathway: "+species_id);
+        r->setReversible(false);
+        r->setCompartment(s->getCompartment());
+        libsbml::SpeciesReference* sr = r->createProduct();
+        sr->setSpecies(s->getId());
+        sr->setId("sr_input_" + species_id);
+        sr->setStoichiometry(1.0);
+        sr->setSBOTerm(s->getSBOTerm());
+        libsbml::KineticLaw* kl = r->createKineticLaw();
+        libsbml::Parameter *p = model->createParameter();
+        p->setId("input_"+species_id);
+        p->setConstant(true);
+        p->setValue(1e-7); // default
+        std::string formula = p->getId();
+        kl->setFormula(formula);
+    }
+}
+
 #endif // CORE_CONVERTOR_HPP_

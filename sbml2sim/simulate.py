@@ -157,6 +157,7 @@ def parse_args():
     parser.add_argument("--tissue", default="breast_cancer_cell", help="tissue name")
     parser.add_argument("--plot-constrained", action="store_true", help="plot only constrained species")
     parser.add_argument("--log-parameters", action="store_true", help="plot only constrained species")
+    parser.add_argument("--random", action="store_true", help="random start concentrations")
     return parser.parse_args()
 
 def main():
@@ -164,7 +165,8 @@ def main():
     seed = int(time.time())
     set_seed(seed)
     sbml = SBMLDoc(args.input_file)
-    sbml.random_start_concentration()
+    if args.random:
+        sbml.random_start_concentration()
     if args.kinetic_constants is not None:
         kinetic_constants: list[dict[ParameterId, float]] = None
         with open(args.kinetic_constants) as f:

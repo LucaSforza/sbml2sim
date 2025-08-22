@@ -161,6 +161,9 @@ class SBMLDoc:
     lib.SBMLDoc_get_output_constants.restype = c_void_p
     lib.SBMLDoc_get_output_constants.argtypes = [c_void_p]
 
+    lib.SBMLDoc_get_input_constants.restype = c_void_p
+    lib.SBMLDoc_get_input_constants.argtypes = [c_void_p]
+
     lib.SBMLDoc_delete_string_vector.restype = None
     lib.SBMLDoc_delete_string_vector.argtypes = [c_void_p]
 
@@ -329,6 +332,28 @@ class SBMLDoc:
         lib.SBMLDoc_delete_string_vector(ptr)
         return result
 
+    def get_input_constants(self) -> list[str]:
+        result = []
+        ptr = lib.SBMLDoc_get_input_constants(self.obj)
+        size = lib.SBMLDoc_string_vector_size(ptr)
+        for i in range(size):
+            s = lib.SBMLDoc_string_vector_get(ptr, i)
+            if s:
+                result.append(str(s.decode('utf-8')))
+        lib.SBMLDoc_delete_string_vector(ptr)
+        return result
+
+    def get_input_species(self) -> list[str]:
+        result = []
+        ptr = lib.SBMLDoc_get_input_species(self.obj)
+        size = lib.SBMLDoc_string_vector_size(ptr)
+        for i in range(size):
+            s = lib.SBMLDoc_string_vector_get(ptr, i)
+            if s:
+                result.append(str(s.decode('utf-8')))
+        lib.SBMLDoc_delete_string_vector(ptr)
+        return result 
+
     def __del__(self):
         if hasattr(self, 'obj') and self.obj:
             lib.SBMLDoc_delete(self.obj)
@@ -364,6 +389,12 @@ class Simulator:
         
     lib.Simulator_random_start_concentrations.restype = None
     lib.Simulator_random_start_concentrations.argtypes = [c_void_p]
+    
+    lib.Simulator_set_initial_concentration.restype = None
+    lib.Simulator_set_initial_concentration.argtypes = [c_void_p, c_char_p, c_double]
+
+    def set_initial_concentration(self, species_id: str, value: float):
+        lib.Simulator_set_initial_concentration(self.obj, species_id.encode('utf-8'), c_double(value))
 
     def random_start_concentrations(self):
         lib.Simulator_random_start_concentrations(self.obj)

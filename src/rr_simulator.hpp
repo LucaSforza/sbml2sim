@@ -140,6 +140,13 @@ public:
             }
         }
     }
+    void set_initial_concentration(const char *species_id, double value) override {
+        if (!species_id) return;
+        std::string id(species_id);
+        // set initial concentration via RoadRunner "init(name)"
+        simulator.setValue("init(" + id + ")", value);
+        known_ids.insert(id);
+    }
 
     void set_known_id(SpeciesId id) {
         this->known_ids.insert(id);
