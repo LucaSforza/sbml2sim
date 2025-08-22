@@ -399,6 +399,26 @@ class Simulator:
     def random_start_concentrations(self):
         lib.Simulator_random_start_concentrations(self.obj)
         
+    def set_parameters(self, params: dict[str, float | dict[str, float]]):
+        kinetic_costants = params.get("kinetic_constants")
+        # TODO: generalizza: sia input di valori costanti sia una costante di getto
+        input_initial_values = params.get("input_constants")
+        # TODO: generalizza: sia output di valori costanti sia una costante di getto
+        output_constants = params.get("output_constants")
+        
+        if kinetic_costants is None and input_initial_values is None and output_constants is None:
+            for (param, value) in params.items():
+                # TODO:  generalizza scelta tra logaritmico oppure no
+                self.set_parameter(param, 10**value)
+        else:
+            for (param, value) in kinetic_costants.items():
+                self.set_parameter(param, 10**value)
+            for (param, value) in output_constants.items():
+                self.set_parameter(param, value)
+            for (param, value) in input_initial_values.items():
+                self.set_initial_concentration(param, value)
+        
+        
 def rr_simualtor(doc: SBMLDoc) -> Simulator:
     return Simulator(lib.rr_Simulator_create(doc.obj))
 
