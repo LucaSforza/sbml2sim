@@ -27,6 +27,8 @@ In questo progetto ci si concentra nella simulazione del ripiegamento proteico m
 
 All'interno di una cellula le entitià chimiche (come le proteine) sono tutte molto compatte, rendondo difficile un ripiegamento corretto dei peptidi. Le proteine chaperoni permettono di lasciare spazio al peptide all'interno della cellula.
 
+Il software sviluppato per questo progetto si può trovare nella repository pubblica: #link("https://github.com/LucaSforza/sbml2sim")
+
 == Cos'è un modello?
 
 Un modello è una rappresentazione astratta di un sistema reale, che permette di descriverne il comportamento.

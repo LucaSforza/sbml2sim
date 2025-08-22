@@ -106,6 +106,8 @@ Invece di ottimizzare direttamente i valori delle costanti cinetiche, si ottimiz
 In questo modo, il problema viene riformulato come la ricerca di un vettore $theta in [-6, 6]^d$, dove
 $d$ è il numero di costanti cinetiche e ciascuna costante è poi ricostruita come $k_i = 10^(theta_i)$.
 
+#pagebreak()
+
 == Loss function
 
 L'ottimizzatore deve indovinare quindi un vettore $theta in [-6, 6]^d$ che minimizza una loss function da definire.
@@ -116,8 +118,6 @@ I requisiti per le costanti cinetiche da scegliere sono i seguenti:
 
 + Il sistema deve terminare in uno stato di stabilità.
 + Il valore delle proteine di cui si conoscono le concentrazione medie devono combaciare con il valore delle concentrazioni simulate.
-
-=== Modellazione della Loss function
 
 Sia $n$ il numero di specie nel modello.
 
@@ -135,28 +135,34 @@ Sia $T$ l'orizzonte della simulazione.
 
 $x(t, theta)$ lo stato del sistema al tempo $t$ con i parametri del sistema $theta$.
 
-$accent(x, tilde)(t, theta)$ = $x(t, theta) + epsilon$ dove $epsilon$ è un disturbo casuale. 
-Il disturbo avviene perché alcune specie in input non si conoscono le concentrazioni medie,
-quindi viene assegnato un valore casuale in un certo range realistico.
+$
+  accent(x, tilde)(t', theta) = limits(EE)_(t in [0,t']) x(t, theta) = 1/t' integral_0^t' x(t,theta) space d t
+  
+$
 
-Quindi le costanti cincetiche da trovare devono minimizzare la loss function per un qualsiasi valore
-per le specie in input di cui non si hanno i dati.
 
-Inoltre le costanti cinetiche, per essere realistiche, devono portare lo stato del sistema in uno stato di equilibrio.
+Abbiamo che $accent(x, tilde)(t, theta)$ è il valor medio dello stato della simulazione con i parametri $theta$ fino al tempo $t$.
+
+Con $accent(x, tilde)_i (t, theta)$ abbiamo il valore medio della specie $i$-esima fino al tempo $t$.
+
+=== Stabilità
+
+Le costanti cinetiche, per essere realistiche, devono portare lo stato del sistema in uno stato di equilibrio.
 
 Dobbiamo quindi definire una funzione di utilità che penalizzi i sistemi che non raggiungono uno stato stazionario.
 
-Sia $accent(m, tilde)_i (t, theta)$ la concentrazione media della specie $i$ al tempo $t$ con i parametri $theta$.
 
-Introduciamo un iper-parametro $phi in [0,1]$ che rappresenta la frazione dell’orizzonte temporale $T$ considerata per valutare la stabilità.
+Introduciamo un iper-parametro $phi in [0,1]$ che rappresenta la frazione dell'orizzonte temporale considerata per valutare la stabilità.
 
 Definiamo quindi:
 
 $
-  cal(L)_1(theta) =  sum_(i=1)^n (accent(m, tilde)_i (phi dot T, theta) - accent(m, tilde)_i (T, theta))^2
+  cal(L)_1(theta) =  sum_(i=1)^n (accent(x, tilde)_i (phi dot T, theta) - accent(x, tilde)_i (T, theta))^2
 $
 
 Per i test, ho scelto $phi approx 0.80$, in modo da valutare la variazione delle concentrazioni medie tra la fase finale e quella immediatamente precedente della simulazione. Questo permette di ignorare le fluttuazioni iniziali dovute alle condizioni iniziali e concentrarsi sulla stabilità asintotica del sistema.
+
+=== Fitting dei dati osservati
 
 Adesso dobbiamo vincolare il valore delle specie di cui si conosce la concentrazione media.
 
@@ -164,10 +170,10 @@ Sia: $
 cal(D) = {(S_i, y) | S_i "si conoscono le concentrazioni" and "y è la concentrazione mol/L"}$
 
 $
-  cal(L)_2(theta) = sum_((S_i, y) in cal(D)) (log_10 (accent(x,tilde)_i (T, theta)) - log_10 (y))^2
+  cal(L)_2(theta) = sum_((S_i, y) in cal(D)) (accent(x,tilde)_i (T, theta) - y)^2
 $
 
-Ho adottato un errore quadratico sulla scala logaritmica per la funzione di loss $cal(L)_2$ al fine di confrontare in modo coerente le concentrazioni simulate con i dati osservati. Questo approccio consente di trattare in maniera naturale quantità che variano su piu' ordini di grandezza.
+=== Gestione degli errori
 
 Durante la simulazione possono verificarsi errori di integrazione numerica, tipicamente quando le costanti cinetiche assumono valori troppo elevati, causando una variazione troppo rapida delle concentrazioni delle specie che tendono rapidamente a $-infinity$ o $+infinity$.
 
@@ -179,6 +185,8 @@ $
     0 "altrimenti"
   )
 $
+
+=== Unione delle funzioni di loss
 
 La loss function finale è:
 
