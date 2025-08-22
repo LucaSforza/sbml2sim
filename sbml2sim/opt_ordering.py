@@ -164,7 +164,7 @@ def parse_args():
     parser.add_argument("--tissue",default="breast_cancer_cell", help="path to proteomics")
     parser.add_argument("--plot", action="store_true", help="Plot the simulation for each kinetic constants found")
     parser.add_argument("--output-file", default="kinetic_constants.json", help="Output file for the list of kinetic constants that satisfy the constraints")
-    parser.add_argument("--budget", default="10000", help="Budget for the optimizator")
+    parser.add_argument("--budget", default="3000", help="Budget for the optimizator")
     parser.add_argument("--parallel-degree", default="40", help="Paralle degree of the optimizator")
     parser.add_argument("--scalar", action="store_true", help="Set this param if the domain is scalar")
     parser.add_argument("--unify", action="store_true", help="unify 2 set of kinetic constants")
@@ -172,13 +172,14 @@ def parse_args():
     parser.add_argument("--file2", default=None, help="file2 to unify")
     parser.add_argument("--file3", default=None, help="file3 to unify (optional)")
     parser.add_argument("--serial", action="store_true", help="run serial")
+    parser.add_argument("--optimizer", default=None, help="select algoritm")
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
     if args.serial:
-        opt2.main(args.input_file)
+        opt2.main(args)
         return
     seed = int(time.time())
     # TODO: set seed

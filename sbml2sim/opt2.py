@@ -7,6 +7,8 @@ from typing import Any
 
 import nevergrad as ng
 
+from optimizer import *
+
 from bioutils import convert_ibaq_to_concentrations, get_proteomics, assign_concentrations, set_compartement_size, SpeciesId, ParameterId, UniprodId
 import s2s as s2s
 from proteomic import proteomic
@@ -113,7 +115,7 @@ def utility_function(
 
 TISSUE="breast_cancer_cell" # TODO: param
 
-def search_for_kinetic_constants(known_input: list[str], sbml: s2s.SBMLDoc, tissue: str, concentrations: dict[SpeciesId, float], model: s2s.Simulator, simulator: s2s.ParallelSimulator, error_handler: s2s.ErrorHandler) -> dict[ParameterId, float]:
+def search_for_kinetic_constants(budget: str, optimizer: str, known_input: list[str], sbml: s2s.SBMLDoc, tissue: str, concentrations: dict[SpeciesId, float], model: s2s.Simulator, simulator: s2s.ParallelSimulator, error_handler: s2s.ErrorHandler) -> dict[ParameterId, float]:
     print("[INFO] Opt kinetic constants") 
     kinetic_constants: list[ParameterId] = sbml.get_kinetic_constants()
     output_constants: list[ParameterId] = sbml.get_output_constants()
@@ -129,13 +131,35 @@ def search_for_kinetic_constants(known_input: list[str], sbml: s2s.SBMLDoc, tiss
     output_param_dict = {}
     for oc in output_constants:
         # Parameter: output constant
-        output_param_dict[oc] = ng.p.Scalar(lower=-20.0, upper=0.0)
+        output_param_dict[oc] = ng.p.Scalar(lower=-12, upper=-2)
     
     input_param_dict = {}
     for ic in input_species:
         input_param_dict[ic] = ng.p.Scalar(lower=-20.0, upper=-2.0)
+        
+    opt = NevergradOpt(model, simulator, error_handler)
+    
+    
     parametrization = ng.p.Dict(**{ "kinetic_constants": ng.p.Dict(**kinetic_param_dict), "output_constants": ng.p.Dict(**output_param_dict), "input_constants": ng.p.Dict(**input_param_dict) })
-    optimizer = ng.optimizers.NGOpt(parametrization=parametrization, budget=3_000)
+    
+    args = {"params": parametrization}
+    
+    if optimizer:
+        args["optimizer"] = optimizer
+    
+    if budget:
+        args["budget"] = int(budget)
+    
+    
+    start = time.time()
+    result, best = opt.minimize(args)
+    print(f"[INFO] ended optimitation in {time.time() - start}")
+    print(f"[INFO] best value: {best}")
+    print("[INFO] result (JSON):")
+    print(json.dumps(result, indent=2, default=lambda o: str(o)))
+    
+    return result
+    """optimizer = ng.optimizers.NGOpt(parametrization=parametrization, budget=3_000)
 
     def ng_objective(ng_params):
         # hidden parameters sbml and concentrations
@@ -154,12 +178,12 @@ def search_for_kinetic_constants(known_input: list[str], sbml: s2s.SBMLDoc, tiss
     with open("parameters_kinetic_constants.json", "w") as f:
         json.dump(recommendation.value, f)
     result: dict[str, dict[ParameterId, float]] = recommendation.value
-    return result
+    return result"""
 
-def main(file_path: str):
+def main(args: Any):
     global best_results, attempts
 
-    sbml: s2s.SBMLDoc = s2s.SBMLDoc(file_path)
+    sbml: s2s.SBMLDoc = s2s.SBMLDoc(args.input_file)
     # ref: https://bionumbers.hms.harvard.edu/bionumber.aspx?id=115154&ver=1&trm=cell+size+breast+cancer+cell+human+&org=
     volume_cell_breast_cancer_cell = 1.76 * 10**12  # nanometers
     set_compartement_size(sbml, volume_cell_breast_cancer_cell)
@@ -186,7 +210,7 @@ def main(file_path: str):
     simualtor = s2s.ParallelSimulator(1)
     simualtor.add_worker(model) # TODO: cambia nome funzione
     # TODO: error handler
-    result = search_for_kinetic_constants(known_input, sbml, TISSUE, concentrations, model, simualtor, error_handler)
+    result = search_for_kinetic_constants(args.budget, args.optimizer, known_input, sbml, TISSUE, concentrations, model, simualtor, error_handler)
     
     print("[INFO] kinetic costants: ")
     print(result["kinetic_constants"])

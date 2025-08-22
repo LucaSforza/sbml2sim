@@ -407,16 +407,15 @@ class Simulator:
         output_constants = params.get("output_constants")
         
         if kinetic_costants is None and input_initial_values is None and output_constants is None:
-            for (param, value) in params.items():
-                # TODO:  generalizza scelta tra logaritmico oppure no
-                self.set_parameter(param, 10**value)
+            print("[ERROR] parameters are void")
+            exit(1)
         else:
             for (param, value) in kinetic_costants.items():
                 self.set_parameter(param, 10**value)
             for (param, value) in output_constants.items():
-                self.set_parameter(param, value)
+                self.set_parameter(param, 10**value)
             for (param, value) in input_initial_values.items():
-                self.set_initial_concentration(param, value)
+                self.set_initial_concentration(param, 10**value)
         
         
 def rr_simualtor(doc: SBMLDoc) -> Simulator:
