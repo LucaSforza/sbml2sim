@@ -44,9 +44,6 @@ class NevergradOpt(Optimizer):
         budget: int = cfg.get("budget", 3000)
         optimizer_name: str = cfg.get("optimizer", "NGOpt")
 
-        optimizer_cls = getattr(ng.optimizers, optimizer_name, ng.optimizers.OnePlusOne)
-        opt = optimizer_cls(parametrization=parametrization, budget=budget)
-
         def objective(params):
             global attempt, best_value
             attempt += 1
@@ -61,8 +58,16 @@ class NevergradOpt(Optimizer):
             if loss < best_value:
                 best_value = loss
             print(f"[INFO] termineted {str_err} error in {time.time() - start_time}")
-            return loss
+            if err:
+                return math.inf
+            else:
+                return loss
+
+        optimizer_cls = getattr(ng.optimizers, optimizer_name, ng.optimizers.OnePlusOne)
+        if optimizer_name == "BayesianOptimization":
+            opt = ng.optimizers._BO(parametrization=parametrization, budget=budget,init_budget=20, utility_kind="ei")
+        else:
+            opt = optimizer_cls(parametrization=parametrization, budget=budget, num_workers=1)
 
         recommendation = opt.minimize(objective)
-        attempt = 0
         return recommendation.value, best_value

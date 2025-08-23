@@ -14,6 +14,9 @@ import s2s as s2s
 from proteomic import proteomic
 import proteomic as ptc
 import simulate as sim
+import random as _py_random
+import numpy as _np
+import os as _os
 
 PROGRAM_NAME = sys.argv[0]
 
@@ -182,7 +185,19 @@ def search_for_kinetic_constants(budget: str, optimizer: str, known_input: list[
 
 def main(args: Any):
     global best_results, attempts
-
+    # Imposta un seed casuale per questa esecuzione e rendilo riproducibile dove possibile
+    random_seed = secrets.randbits(64)
+    print(f"[INFO] Random seed: {random_seed}")
+    _py_random.seed(random_seed)
+    try:
+        _np.random.seed(int(random_seed % (2**32)))
+    except Exception:
+        pass
+    _os.environ["PYTHONHASHSEED"] = str(random_seed)
+    try:
+        s2s.set_seed(random_seed)
+    except Exception:
+        pass
     sbml: s2s.SBMLDoc = s2s.SBMLDoc(args.input_file)
     # ref: https://bionumbers.hms.harvard.edu/bionumber.aspx?id=115154&ver=1&trm=cell+size+breast+cancer+cell+human+&org=
     volume_cell_breast_cancer_cell = 1.76 * 10**12  # nanometers
@@ -211,7 +226,6 @@ def main(args: Any):
     simualtor.add_worker(model) # TODO: cambia nome funzione
     # TODO: error handler
     result = search_for_kinetic_constants(args.budget, args.optimizer, known_input, sbml, TISSUE, concentrations, model, simualtor, error_handler)
-    
     print("[INFO] kinetic costants: ")
     print(result["kinetic_constants"])
     

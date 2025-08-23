@@ -173,6 +173,8 @@ $
   cal(L)_2(theta) = sum_((S_i, y) in cal(D)) (accent(x,tilde)_i (T, theta) - y)^2
 $
 
+
+
 === Gestione degli errori
 
 Durante la simulazione possono verificarsi errori di integrazione numerica, tipicamente quando le costanti cinetiche assumono valori troppo elevati, causando una variazione troppo rapida delle concentrazioni delle specie che tendono rapidamente a $-infinity$ o $+infinity$.

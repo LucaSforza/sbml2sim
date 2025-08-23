@@ -139,13 +139,19 @@ public:
 };
 
 class ClassicalError: public ErrorHandler {
+
+    double S = 1.5;
+    double p = 0.8;
 public:
     ~ClassicalError() override = default;
 
     ClassicalError() = default;
 
+    ClassicalError(double S, double p): S(S), p(p) {}
+
     double error(std::expected<SimulationResult,double> sim_result) const override {
-        double err = 0.0;
+        double l1 = 0.0;
+        double l2 = 0.0;
         if(sim_result) {
             SimulationResult simResult = *sim_result;
             std::vector<std::pair<SpeciesId,double>>& result = simResult.constrained;
@@ -155,10 +161,10 @@ public:
             control(result.size() == real_conc.size());
             for (size_t i = 0; i < result.size(); ++i) {
                 double a = result[i].second - this->get_real_conc(result[i].first);
-                err += a*a;
+                l2 += a*a;
 
                 double b = (simResult.old_values[result[i].first] - result[i].second);
-                err += b*b;
+                l1 += b*b;
             }
 
             const auto& outputs = this->get_outputs();
@@ -166,10 +172,14 @@ public:
             for (const auto& nc : simResult.not_constrained) {
                 if (outputs.find(nc.first) == outputs.end()) {
                     double b = (simResult.old_values[nc.first] - nc.second);
-                    err += b*b;
+                    l1 += b*b;
                 }
             }
 
+            printf("[INFO] L1 = %e\n", p*l1);
+            printf("[INFO] L2 = %e\n", (1-p)*l2);
+
+            return S*(p*l1 + (1-p)*l2);
 
         } else {
             // TODO: scegli l'orizzonte di simulazione
@@ -177,9 +187,8 @@ public:
             if(error < 1e-12) {
                 error = 1e-12;
             }
-            err = 1e6*(1/((error)/100.0));
+            return 1e6*(1/((error)/100.0));
         }
-        return err;
     } 
 };
 

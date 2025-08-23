@@ -160,6 +160,45 @@ def parse_args():
     parser.add_argument("--random", action="store_true", help="random start concentrations")
     return parser.parse_args()
 
+def main2():
+    args = parse_args()
+    sbml = SBMLDoc(args.input_file)
+    if args.random:
+        sbml.random_start_concentration()
+    if args.kinetic_constants is not None:
+        kinetic_constants: dict[str, dict[ParameterId, float]] = None
+        with open(args.kinetic_constants) as f:
+            kinetic_constants = json.load(f)
+        k_constants = kinetic_constants["kinetic_constants"]
+        output_constants = kinetic_constants["output_constants"]
+        input_constants = kinetic_constants["input_constants"]
+        
+        for (param, value) in k_constants.items():
+            if args.log_parameters:
+                sbml.set_parameter(param, 10**value)
+            else:
+                sbml.set_parameter(param, value)
+            
+        for (param, value) in output_constants.items():
+            sbml.set_parameter(param, 10**value)
+            
+        for (species, value) in input_constants.items():
+            sbml.set_initial_concentration(species, 10**value)
+    if args.proteomics is not None:
+        proteomics = None
+        with open(args.proteomics) as f:
+            proteomics = json.load(f)
+        concentrations = convert_ibaq_to_concentrations(sbml, proteomics, args.tissue)
+        for (species, conc) in concentrations.items():
+            if sbml.is_input(species) or not sbml.is_output(species):
+                sbml.set_initial_concentration(species, conc)
+    plot_concentrations = None
+    if args.plot_constrained:
+        print("[INFO] plot concentrations")
+        plot_concentrations = concentrations
+        
+    run(sbml, plot=args.plot, only_avg=args.only_avg, output_file=args.output_file, concentrations=plot_concentrations)
+
 def main():
     args = parse_args()
     seed = int(time.time())
@@ -196,4 +235,4 @@ def main():
     run(sbml, plot=args.plot, only_avg=args.only_avg, output_file=args.output_file, concentrations=plot_concentrations)
 
 if __name__ == "__main__":
-    main()
+    main2()
