@@ -137,11 +137,13 @@ def run(sbml: SBMLDoc, plot=False,only_avg=False, output_file="simulation", conc
                     and (not only_avg or col.startswith('avg_')) and (only_avg or not col.startswith('avg_')) 
                     and not sbml.is_output(col.replace("avg_","",1))
                 ]
-            df[cols].plot()
+            for col in cols:
+                plt.plot(df["time"], df[col])
             plt.xlabel('Secondi')
             plt.ylabel('Concentrazione mol/L')
             plt.title('Simulazione')
-            # plt.yscale('log')
+            plt.ylim(bottom=1e-24)
+            plt.yscale('log')
             plt.savefig(output_file_png)
     return sim
         

@@ -60,7 +60,7 @@ $
 
 == Leggi Cinetiche
 
-Dato che i modelli di Reactome sono qualitativi e non quantitativi mancano totalmente le leggi cinetiche. Le legge utilizzata è la mass action rule, la velocità di una reazione è proporzionale alla concentrazione dei reagenti. Ad essa è stata aggiunta la _hill function_ per modellare i modificatori delle reazioni.
+Dato che i modelli di Reactome sono qualitativi e non quantitativi mancano totalmente le leggi cinetiche. La legge utilizzata è la mass action rule, la velocità di una reazione è proporzionale alla concentrazione dei reagenti. Ad essa è stata aggiunta la _hill function_ per modellare i modificatori delle reazioni.
 Quindi la velocità $v$ di una reazione $R$ è definita come segue:
 
 Siano $A_1, A_2, ..., A_n$ le specie reagenti, $n_i$ la stechiometria del reagente $i$ e $M_1, M_2, ..., M_m$ le specie modificatrici.
@@ -91,13 +91,13 @@ Per le costanti cinetiche non abbiamo dati sperimentali su cui affidarci, quindi
 
 Un modo per farlo è definire una *loss function* e minimizzarla ottenendo cosi' dei parametri realistici per il sistema.
 
-Siano $theta$ le costanti cincetiche del sistema (ovvero i paramentri).
+Siano $theta$ le costanti cinetiche del sistema (ovvero i parametri).
 
-Dovremmo dare un dominio a queste variabili, anche perché l'ottimizzatore riesce ad essere piu' efficiente se i parametri sono *bounded*.
+Dovremmo dare un dominio a queste variabili, anche perché l'ottimizzatore riesce ad essere più efficiente se i parametri sono *bounded*.
 
 Se $theta_i$ è una singola costante cinetica, allora un range di valori ragionevole è $theta_i in [10^(-6), 10^6]$.
 
-Tuttavia, questo approccio presenta una problema: le costanti cinetiche possono variare su diversi ordini di grandezza. Di conseguenza, un intervallo ampio come $[10^(-6), 10^6]$ può causare problemi all'ottimizzatore, il quale tende a esplorare maggiormente le regioni dell'intervallo con valori elevati, trascurando invece le zone vicine allo zero. Questo squilibrio nella distribuzione dei punti esplorati può compromettere l'efficacia della ricerca.
+Tuttavia, questo approccio presenta un problema: le costanti cinetiche possono variare su diversi ordini di grandezza. Di conseguenza, un intervallo ampio come $[10^(-6), 10^6]$ può causare problemi all'ottimizzatore, il quale tende a esplorare maggiormente le regioni dell'intervallo con valori elevati, trascurando invece le zone vicine allo zero. Questo squilibrio nella distribuzione dei punti esplorati può compromettere l'efficacia della ricerca.
 
 Per superare questa limitazione, è possibile adottare un'ottimizzazione in scala logaritmica.
 
@@ -208,11 +208,11 @@ Per questo progetto ho scelto $S = 10^4$ e $p = 0.1$, quindi ho privileggiato l'
 
 La suite di ottimizzatori usati per questo progetto è Nevergrad @nevergrad, sviluppato da Meta.
 
-Nevergrad utilizza una vasta gamma di ottimizzatori utilizzabili. Uno di questo è *Wizard* che opera come meta-euristica su quale algoritmo di ottimizzazione va usato, selezionando anche gli iper-parametri.
 
-Inoltre gli ottimizzatori di Nevegrad si basano sul patter _ask and tell_.
 
-Ossia ogni ottimizzatore ha un intefaccia in cui permettono di richiedere dei parametri
+Inoltre gli ottimizzatori di Nevergrad si basano sul pattern _ask and tell_.
+
+Ossia ogni ottimizzatore ha un interfaccia in cui permettono di richiedere dei parametri
 che rappresenta il tentativo di ottimizzare la funzione. ($theta <- "optimizer"."ask()"$).
 
 Invece la _tell_ permette di informare l'ottimizzatore la _loss_ dei parametri scelti.($"optimizer"."tell"(theta, cal(L)(theta))$)
@@ -229,7 +229,7 @@ pseudocode-list[
 ]
 )
 
-Ma si potrebbe fare di meglio con il seguente algoritmo (non implementato per questo progetto, solo un idea).
+Ma si potrebbe fare di meglio con il seguente algoritmo (non implementato per questo progetto, solo un' idea).
 
 #figure(
 pseudocode-list[
@@ -248,7 +248,7 @@ pseudocode-list[
 
 Questo algoritmo ha due vantaggi rispetto al precedente:
 
-+ La funzione di _loss_ può essere parallelizzata. RoadRunner (simulatore di sistemi biologici) permette di eseguire in parallelo piu' modelli.
++ La funzione di _loss_ può essere parallelizzata. RoadRunner (simulatore di sistemi biologici) permette di eseguire in parallelo più modelli.
 + *Wizard* può scegliere un algoritmo diverso per ottimizzare che sfrutta il fatto di poter richiedere più parametri contemporaneamente rispetto dal grado di parallelismo (numero di soluzione che possono essere calcolate contemporaneamente).
 
 == Alcuni algoritmi utilizzati da Nevergrad
@@ -257,17 +257,17 @@ Tra gli algoritmi che *Wizard* può scegliere ce ne sono veramente tanti, ma ecc
 
 === Random Search
 
-La random search @wikipedia-randomsearch è uno degli algoritmi di ottimizzazione black box più semplici. All'inizio seleziona un parametro casuale nello spazio delle soluzioni. Successivamente, ad ogni iterazione, genera nuovi parametri casuali all'interno di un'ipersfera di raggio $r$ centrata sull'attuale soluzione migliore (raccomandation). Se la loss calcolata sui nuovi parametri è inferiore a quella corrente, la raccomandation viene aggiornata con i nuovi valori trovati.
+La random search @wikipedia-randomsearch è uno degli algoritmi di ottimizzazione black box più semplici. All'inizio seleziona un parametro casuale nello spazio delle soluzioni. Successivamente, ad ogni iterazione, genera nuovi parametri casuali all'interno di un'ipersfera di raggio $r$ centrata sull'attuale soluzione migliore (recommendation). Se la loss calcolata sui nuovi parametri è inferiore a quella corrente, la recommendation viene aggiornata con i nuovi valori trovati.
 
 #figure(
   pseudocode-list[
     + ask(*self*: _optimizer_) $->$ _Parameter_:
-      + *if* *self*.raccomandation *is* *None* *then* *return* parametro casuale
+      + *if* *self*.recommendation *is* *None* *then* *return* parametro casuale
       + Sia *self*.r iper-parametro del modello che è il raggio di una ipersfera
-      + *return* parametro casuale all'interno dell'ipersfera di raggio *self*.r con centro *self*.raccomandation
+      + *return* parametro casuale all'interno dell'ipersfera di raggio *self*.r con centro *self*.recommendation
     + tell(*self*: _optimizer_, $theta$: _Parameter_, loss: _Real_):
-      + *if* *self*.raccomandation.loss > loss *then*
-        + *self*.raccomandation = $theta$
+      + *if* *self*.recommendation.loss > loss *then*
+        + *self*.recommendation = $theta$
   ]
 )
 
@@ -276,20 +276,20 @@ La random search @wikipedia-randomsearch è uno degli algoritmi di ottimizzazion
 
 L'algoritmo OnePlusOne Evolution Strategy @one_plus_one_es è una strategia euristica di ottimizzazione iterativa basata su mutazioni casuali.
 
-L'idea è molto semplice: si parte da una soluzione casuale iniziale, e ad ogni iterazione viene generata una nuova soluzione mutata a partire da quella attuale (chiamato anche _parent_). Se la nuova soluzione ha una loss inferiore rispetto a quella precedente, allora viene accettata come nuova raccomandation.
+L'idea è molto semplice: si parte da una soluzione casuale iniziale, e ad ogni iterazione viene generata una nuova soluzione mutata a partire da quella attuale (chiamato anche _parent_). Se la nuova soluzione ha una loss inferiore rispetto a quella precedente, allora viene accettata come nuova recommendation.
 
-La mutazione è un disturbo sulle variabili di decisione $cal(N) (0,sigma)$ e $sigma$ cambia dinamicamente durante l'esecuzione dell'algoritmo in base al successo delle mutazioni precedenti, secondo una regola euristica chiamata 1/5th success rule.
+La mutazione è una perturbazione delle variabili di decisione con distribuzione $cal(N) (0,sigma)$ e $sigma$ cambia dinamicamente durante l'esecuzione dell'algoritmo in base al successo delle mutazioni precedenti, secondo una regola euristica chiamata 1/5th success rule.
 
 Secondo questa regola, se più di 1 mutazione su 5 viene accettata (cioè migliora la loss), allora l'algoritmo aumenta il passo di mutazione $sigma$ per esplorare più velocemente. Se invece meno di 1 su 5 migliora, $sigma$ viene ridotto, per favorire l'esplorazione locale.
 
 #figure(
 pseudocode-list[
   + ask(*self*: _optimizer_) $->$ _Parameter_:
-    + *if* *self*.raccomandation *is* *None* *then* *return* parametro casuale
-    + *return* parametro mutato da *self*.raccomandation con deviazione standard $sigma$
+    + *if* *self*.recommendation *is* *None* *then* *return* parametro casuale
+    + *return* parametro mutato da *self*.recommendation con deviazione standard $sigma$
   + tell(*self*: _optimizer_, $theta$: _Parameter_, loss: _Real_):
-    + *if* loss < *self*.raccomandation.loss *then*
-      + *self*.raccomandation = $theta$
+    + *if* loss < *self*.recommendation.loss *then*
+      + *self*.recommendation = $theta$
       + aggiungi 1 alla finestra di successi
     + *else*:
       + aggiungi 0 alla finestra di successi
@@ -300,55 +300,103 @@ pseudocode-list[
     + *end if*;
 ]
 )
-)
+
 
 L'algoritmo OnePlusOne è particolarmente utile quando lo spazio dei parametri è continuo e di dimensione moderata, ed è stato ampiamente usato nel contesto dell'ottimizzazione evolutiva. Il suo vantaggio principale è la capacità di adattarsi automaticamente alla scala del problema, migliorando progressivamente l'efficienza della ricerca.
 
+=== CMA-ES
+
+Come OnePlusOne è una strategia evolutiva. Ad ogni iterazione nuovi individui (soluzioni candidate) vengono selezionati partendo dalle generazioni precedenti e variandone gli attributi, nel nostro caso il valore delle costanti cinetiche.
+
+L'algoritmo mantiene una media $mu in RR^n$ che rappresenta il centro della ricerca, e una covarianza $C in RR^(n crossmark n)$ che modella la forma della distribuzione. Abbiamo anche che $C = B dot D^2 dot B^T$ per qualche $B,D in RR^(n crossmark n)$.
+
+Come OnePlusOne questo algoritmo mantiene un $sigma > 0$ che controlla la scala delle evoluzioni.
+
+Ad ogni generazione vengono prodotti $lambda$ campioni.
+
+#pagebreak()
+
+Ecco lo pseudocodice della ask e della tell per l'algoritmo CMA-ES.
+
+#figure(
+pseudocode-list[
+  + ask(*self*: _optimizer_) $->$ _Parameter_:
+    + *if* *self*.offspring $= emptyset$ *then* 
+      + *for* k *in* 1..$lambda$ *do*
+        + $z_k tilde cal(N)(0,I)$ \# gaussiana multivariata centrata in zero e covarianza l'identità
+        + $y_k = B dot D dot z_k$
+        + $x_k = mu + sigma dot y_k$
+        + *self*.offspring = *self*.offspring $union {x_k}$
+    + *return* pop da *self*.offspring
+  + tell(*self*: _optimizer_, $theta$: _Parameter_, loss: _Real_):
+    + \# aggiungi il candidato e il fitness al buffer
+    + *self*.offspring_buffer = *self*.offspring_buffer $union {(theta, "loss")}$
+
+    + *if* |*self*.offspring_buffer| $= lambda$ *then*
+      + Aggiorna media $mu$ passo $lambda$ e matrice di covarianza
+      // TODO: se ti va migliora altrimenti scialla
+]
+)
+
+Questo algoritmo cerca i punti dove valutare la funzione obiettivo all'interno di una distribuzione gaussiana multivariata centrata in $mu$ che varia a seguito delle osservazioni della funzione.
+
+Ogni generazione osserva quali punti la funzione è migliorata e la media si muove verso la discesa.
+
+$sigma$ regola (esattamente come in OnePlusOne) quanto velocemente si devono muovere i nuovi punti candidati.
+
+=== Differential Evolution
+
+La Differential Evolution (DE) è un metodo evolutivo per spazi continui. Mantiene una popolazione di vettori in $RR^n$ e, per ogni individuo, costruisce un donatore per differenza tra membri della popolazione, applica un crossover per ottenere un trial, poi fa selezione tra genitore e trial. Parametri chiave: fattore di scala $F in (0,2)$, probabilità di crossover $C R in [0,1]$, dimensione della popolazione $N p$.
+
+#figure(
+pseudocode-list[
+  + ask(*self*: _optimizer_) $->$ _Parameter_:
+    + *if* *self*.population *is None then inizializza* $N p$ punti casuali
+    + scegli un genitore $x_i$ dalla popolazione
+    + scegli tre indici distinti $r_1, r_2, r_3$ diversi da $i$
+    + $v = x_(r_1) + F dot (x_(r_2) - x_(r_3))$   \# mutazione
+    + scegli un indice $j_"rand"$ in ${1,..,n}$
+    + *for* $j$ *in* 1..n:
+      + *if* $U(0,1) < C R$ or $j = j_"rand"$:
+        + $theta_j = v_j$ \# scegli la componente mutata
+      + *else*
+        + $theta_j = x_(i,j)$ \# scegli la componente $j$ del genitore $i$
+      + *end if*
+    + *end for*
+    + *return* $theta$ 
+  + tell(*self*: _optimizer_, $theta$: _Parameter_, loss: _Real_):
+    + trova il genitore $x_i$ usato per costruire $theta$
+    + if loss $<$ $cal(L)$($x_i$):
+      + sostituisci il genitore con i parametri $theta$
+]
+)
+
+=== Wizard
+
+Wizard è un sistema di gestione degli ottimizzatori in Nevergrad che permette di scegliere automaticamente l'algoritmo più adatto in base al problema da risolvere. Questo sistema analizza le caratteristiche dello spazio dei parametri, come la dimensionalità, la continuità o discrezionalità delle variabili, e il budget di valutazioni disponibili.
+
+Wizard utilizza euristiche basate su esperimenti empirici per selezionare l'algoritmo che massimizza le probabilità di successo. Ad esempio, per problemi con spazi di parametri continui e di alta dimensionalità, potrebbe scegliere CMA-ES, mentre per spazi discreti o misti potrebbe preferire algoritmi come Random Search o Differential Evolution.
+
+Inoltre, Wizard può adattarsi dinamicamente durante l'ottimizzazione, cambiando strategia se rileva che l'algoritmo corrente non sta producendo miglioramenti significativi. Questo approccio flessibile rende Nevergrad particolarmente potente per problemi complessi e poco strutturati.
 
 #pagebreak()
 
 = Risultati
-#figure(
-  grid(
-    columns: 1,
-    rows: 3,
-    //gutter: 2mm,
-    grid(
-      columns: 3,
-      image("breast_cancer_cell_species_379537.png"),
-      image("breast_cancer_cell_species_379538.png"),
-      
-    ),
-    grid(
-      columns: 2,
-      image("breast_cancer_cell_species_379539.png"),
-      image("breast_cancer_cell_species_379540.png"),
-    ),
-      image("breast_cancer_cell_species_379546.png", width: 55%)
-  ),
-   caption: [Concentrazione delle specie vincolate dalla loss function $cal(L)_2$ rispetto ai dati sperimentali],
-)
 
-All'inizio della simulazione, i valori delle concentrazioni vengono impostati uguali a quelli ottenuti dai dati sperimentali.
-Questo approccio serve a far partire il simulatore già vicino a uno stato di equilibrio.
-Partire vicino all'equilibrio rende più semplice e veloce il processo di ottimizzazione, perché il simulatore deve fare meno aggiustamenti per trovare i parametri migliori.
+In questa sezione verranno presentati i confronti tra i diversi algoritmi, valutando la loro capacità di eseguire il fitting dei dati in modo efficace.
 
-Tuttavia, non tutte le specie chimiche riescono a raggiungere esattamente i valori sperimentali. Questo è normale, perché l'ottimizzazione black box è una tecnica che non assicura l'ottimalità, quindi può non trovare la soluzione perfetta per tutte le specie.
 
 #figure(
   grid(
-    columns: 2,
-    image("kinetic2.png"),
-    image("kinetic_log.png")
+    image("l2_comparison.png", width: 80%),
+    image("compare.png", width: 80%),
   ),
-  caption: [Concentrazioni medie di tutte le specie presenti nel sistema: a sinistra scala lineare, a destra scala logaritmica.]
+  caption: [Nella prima immagine si può vedere il valore della funzione $cal(L)_2$ dai vari algoritmi, CMA non riesce a fare un buon fitting, mentre gli altri algoritmi sì.]
 )
 
-Da questo ultimo plot si può visualizzare la stabilità del sistema. All'inizio della simulazione non è stabile, ma arriva velocemente ad un punto di stabilità.
-
 #figure(
-  image("log.png", width: 80%),
-  caption: [Andamento della funzione di utilità (loss) durante i tentativi dell’ottimizzatore.]
+  image("simulation.png"),
+  caption: [Valori delle specie che fanno parte dello stato del sistema con le costanti cinetiche trovate dall'algoritmo Differential Evolution.]
 )
 
 #pagebreak()

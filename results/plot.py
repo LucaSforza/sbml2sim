@@ -41,6 +41,46 @@ def plot_utility(log_file_path: str):
     plt.savefig("log.png")
     plt.clf()
 
+
+def plot_l2():
+    directories = ["cma", "de", "oneplusone", "randomsearch", "wizard"]
+    
+    for algo in directories:
+        with open(algo+"/log") as f:
+            for line in f.readlines():
+                if "[INFO] best value:" in line:
+                    best_value = float(line.split(":")[-1])
+                    print(f"[INFO] Best value for {algo}: {best_value}")
+                    plt.bar(algo, best_value)
+    plt.ylabel("Best Loss")
+    plt.yscale('log')
+    plt.title("Confronto dei Migliori valori di loss tra gli Algoritmi")
+    plt.savefig("l2_comparison.png")
+    plt.clf()
+    
+def plot_search():
+    directories = ["cma", "de", "oneplusone", "randomsearch", "wizard"]
+    
+    for algo in directories:
+        best_utility = math.inf
+        best_utilities = []
+        with open(algo+"/log") as f:
+            attempt = 0
+            print(f"[INFO] algo {algo}")
+            for line in f.readlines():
+                if line.startswith("[INFO] loss:"):
+                    attempt += 1
+                    utility = float(line.split(":")[-1])
+                    if utility < best_utility:
+                        best_utility = utility
+                    best_utilities.append(best_utility)            
+        plt.plot(range(1, attempt + 1), best_utilities, linewidth=2, label=algo)
+    plt.legend()
+    plt.yscale("log")
+    plt.xlabel("tentativo")
+    plt.ylabel("best loss")
+    plt.savefig("compare.png") 
+
 def main():
     # TODO: riplotta kinetic.png
     # TODO: prendi tutte le informazioni dai log
@@ -90,5 +130,6 @@ def main():
     
 # TODO: ristampa kinetic.png con meno cose nella leggenda e in base logaritmica
 if "__main__" == __name__:
-    main()
+    # main()
     # plot_utility("11/log")
+    plot_search()
