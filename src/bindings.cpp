@@ -2,6 +2,8 @@
 #include "parallel_simulation.hpp"
 #include "rr_simulator.hpp"
 
+#include "loss_function.hpp"
+
 extern "C" {
 
     SBMLDoc *SBMLDoc_new(const char *file_path) {

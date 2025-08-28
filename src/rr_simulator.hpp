@@ -83,9 +83,9 @@ public:
 
         assert(result != NULL);
 
-        std::vector<std::pair<SpeciesId, double>> constrained;
+        std::unordered_map<SpeciesId, double> constrained;
         constrained.reserve(ids.size());
-        std::vector<std::pair<SpeciesId, double>> not_constrained;
+        std::unordered_map<SpeciesId, double> not_constrained;
         std::unordered_map<SpeciesId, double> old_values;
         // Ottieni l'indice dell'ultima riga (fine simulazione)
         int lastRow = result->numRows() - 1;
@@ -110,13 +110,41 @@ public:
                 const std::string& clean_name = col.substr(prefix.size());
                 if(ids.find(clean_name) != ids.end()) {
                     double value = (*result)(lastRow, i);
-                    constrained.emplace_back(clean_name, value);
+                    constrained[clean_name] = value;
                 } else {
                     // TODO: controllare che non sia di output
                     double value = (*result)(lastRow, i);
-                    not_constrained.emplace_back(clean_name, value);
+                    not_constrained[clean_name] = value;
                 }
             }
+        }
+
+        // Calcola minimi e massimi per ogni "avg_" durante tutta la simulazione
+        std::vector<std::pair<SpeciesId, double>> min_values;
+        std::vector<std::pair<SpeciesId, double>> max_values;
+
+        int nRows = result->numRows();
+        int nCols = result->numCols();
+        min_values.reserve(nCols);
+        max_values.reserve(nCols);
+
+        for (int c = 0; c < nCols; ++c) {
+            const std::string& col = cols[c];
+            if (col.compare(0, prefix.size(), prefix) != 0) continue;
+
+            const SpeciesId clean_name = col.substr(prefix.size());
+            // Inizializza con il valore nella prima riga
+            double v0 = (*result)(0, c);
+            double minv = v0;
+            double maxv = v0;
+            // Scorri tutte le righe per trovare min e max
+            for (int r = 1; r < nRows; ++r) {
+                double v = (*result)(r, c);
+                if (v < minv) minv = v;
+                if (v > maxv) maxv = v;
+            }
+            min_values.emplace_back(clean_name, minv);
+            max_values.emplace_back(clean_name, maxv);
         }
 
         SimulationResult simResult;
@@ -124,6 +152,8 @@ public:
         simResult.constrained = constrained;
         simResult.not_constrained = not_constrained;
         simResult.old_values  = old_values;
+        simResult.mins = min_values;
+        simResult.maxs = max_values; 
 
         return simResult;
     } // simulale()
