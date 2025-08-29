@@ -1,52 +1,22 @@
-{
-  "kinetic_constants": {
-    "k_forcat_reaction_390459": 5.511184027479065,
-    "k_forcat_reaction_6814409": 5.837549788256852,
-    "k_activator_modifierspeciesreference_6814409_catalyst_201711": -4.829104512036663,
-    "k_forcat_reaction_389954": -3.1507201803671077,
-    "k_forcat_reaction_6814120": 3.7796005947270386,
-    "k_forcat_reaction_6814124": -5.7455611342153246,
-    "k_forcat_reaction_6814418": 5.919452704826256,
-    "k_forcat_reaction_6814121": 3.110066013502033,
-    "k_forcat_reaction_389978": -5.278620361511474,
-    "k_forcat_reaction_8850539": -1.0427433573147107,
-    "k_forcat_reaction_8850529": 1.5374233674556312,
-    "k_forcat_reaction_389956": 0.4121747658377245,
-    "k_forcat_reaction_8850560": -3.721424906258587,
-    "k_forcat_reaction_389974": -2.7397780027408967,
-    "k_forcat_reaction_389963": -4.58861231064869,
-    "k_forcat_reaction_389964": -5.13152281460995,
-    "k_forcat_reaction_6814119": 3.7383138410464873,
-    "k_forcat_reaction_8850534": 0.5868653390981102,
-    "k_forcat_reaction_389955": -1.8501360104439273,
-    "k_forcat_reaction_389976": 0.7472373452702359,
-    "k_forcat_reaction_390453": 3.8873899667333087,
-    "k_forcat_reaction_389961": -3.425294531455991,
-    "k_forcat_reaction_389972": -2.0251375795540794,
-    "k_forcat_reaction_8850527": -1.7645007099839503,
-    "k_forcat_reaction_391266": -2.4218578328263716,
-    "k_forcat_reaction_389980": 3.741291597959686,
-    "k_forcat_reaction_389969": 1.0504146077322947,
-    "k_inhibitor_modifierspeciesreference_389969_negativeregulator_5216230": 1.5811600703244197,
-    "k_forcat_reaction_389970": -1.362664793110084,
-    "k_forcat_reaction_390470": 3.6835391884951534
+[
+  {
+    "k_input_species_391287": 1e-05,
+    "k_output_species_391287": 1e-05,
+    "k_input_species_391267": 0.001,
+    "k_output_species_391267": 0.001,
+    "k_input_species_390455": 1e-06,
+    "k_output_species_390455": 1e-06,
+    "k_forcat_reaction_391266": 0.001,
+    "k_forcat_reaction_390470": 1e-06
   },
-  "output_constants": {},
-  "input_constants": {
-    "species_167413": -13.279384313347794,
-    "species_391287": -17.165437395899506,
-    "species_8850544": -19.907323323852356,
-    "species_390445": -19.42897114487601,
-    "species_8850528": -19.576728669637177,
-    "species_29438": -3.2823968448841554,
-    "species_390476": -15.060253871054814,
-    "species_390501": -19.589965516235193,
-    "species_6814207": -2.982379696428549,
-    "species_8850547": -5.230609866809054,
-    "species_391235": -19.71568406893328,
-    "species_167442": -17.116746448617288,
-    "species_391246": -19.99877331064315,
-    "species_113592": -14.133679435889196,
-    "species_201711": -19.687631206056093
+  {
+    "k_input_species_391287": 1e-05,
+    "k_output_species_391287": 1e-05,
+    "k_input_species_391267": 0.001,
+    "k_output_species_391267": 0.001,
+    "k_input_species_390455": 1e-05,
+    "k_output_species_390455": 1e-05,
+    "k_forcat_reaction_391266": 0.0001,
+    "k_forcat_reaction_390470": 0.0001
   }
-}
+]

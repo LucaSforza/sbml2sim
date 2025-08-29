@@ -85,18 +85,12 @@ public:
             int errors = 0;
             double fitness_sum = 0.0;
             int error_count = 0;
-            int restarts = 1; // TODO: cambiare il numero di restarts
-
-            for (int restart = 0; restart < restarts; ++restart) {
-                // this->sims[i]->random_start_concentrations();
-                int errors = 0;
-                double fitness = this->sims[i]->simulate_error(handler->get_constrained_species(), handler, &errors);
-                fitness_sum += fitness;
-                error_count += errors;
-            }
-
-            double avg_fitness = fitness_sum / (double)restarts;
-            r[i] = Fitness(i, error_count > 0, avg_fitness);
+            auto result = this->sims[i]->simulate(handler->get_constrained_species());
+            if(!result) error_count += 1;
+            
+            fitness_sum += handler->error(result);
+    
+            r[i] = Fitness(i, error_count > 0, fitness_sum);
         }
         
         return r;

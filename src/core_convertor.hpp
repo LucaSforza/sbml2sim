@@ -941,7 +941,7 @@ void create_a_fake_reaction_for_all_outputs(libsbml::Model *model, const Outputs
         sr->setSBOTerm(s->getSBOTerm());
         libsbml::KineticLaw* kl = r->createKineticLaw();
         libsbml::Parameter *p = model->createParameter();
-        p->setId("output_"+species_id);
+        p->setId("k_output_"+species_id);
         p->setConstant(true);
         p->setValue(1.0); // default
         std::string formula = p->getId() + "*" + sr->getId();
@@ -965,10 +965,14 @@ void create_a_fake_reaction_for_all_inputs(libsbml::Model *model,const Inputs &i
         sr->setSBOTerm(s->getSBOTerm());
         libsbml::KineticLaw* kl = r->createKineticLaw();
         libsbml::Parameter *p = model->createParameter();
-        p->setId("input_"+species_id);
+        p->setId("k_input_"+species_id);
         p->setConstant(true);
-        p->setValue(1e-7); // default
-        std::string formula = p->getId();
+        p->setValue(1e-7);
+        libsbml::Parameter *p2 = model->createParameter();
+        p2->setId("k_output_"+species_id);
+        p2->setConstant(true);
+        p2->setValue(1e-7); // default
+        std::string formula = p->getId() + "-" + p2->getId() + "*"+ sr->getId();
         kl->setFormula(formula);
     }
 }

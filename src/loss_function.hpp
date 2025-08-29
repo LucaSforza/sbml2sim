@@ -261,6 +261,8 @@ public:
                 result += max_val - 1;
             }
         }
+
+        return result;
     }
 
 };

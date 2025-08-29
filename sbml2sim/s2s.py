@@ -360,6 +360,24 @@ class SBMLDoc:
             self.obj = None
 
 
+lib.SBMLDoc_input.restype = c_void_p
+lib.SBMLDoc_input.argtypes = [c_char_p]
+
+lib.SBMLDoc_input_output.restype = c_void_p
+lib.SBMLDoc_input_output.argtypes = [c_char_p]
+
+def SBMLDoc_input(file_path: str) -> SBMLDoc:
+    obj = lib.SBMLDoc_input(file_path.encode('utf-8'))
+    result = SBMLDoc()
+    result.obj = obj
+    return result
+
+def SBMLDoc_input_output(file_path: str) -> SBMLDoc:
+    obj = lib.SBMLDoc_input_output(file_path.encode('utf-8'))
+    result = SBMLDoc()
+    result.obj = obj
+    return result
+
 def replicate_model_per_tissue(file_path: str, tissues: list[str]):
     obj = lib.replicate_model_per_tissue(file_path.encode('utf-8'),_list_to_pointer(tissues), len(tissues))
     result = SBMLDoc()
@@ -448,10 +466,14 @@ class ErrorHandler:
         lib.ErrorHandler_add_output(self.obj, id.encode('utf-8'))
 
     def __init__(self, obj):
+        self.garbage = []
         self.obj = obj
 
     lib.ErrorHandler_delete.restype = None
     lib.ErrorHandler_delete.argtypes = [c_void_p]
+    
+    def add_gargabe(self, obj):
+        self.garbage.append(obj)
 
     def __del__(self):
         if hasattr(self, 'obj') and self.obj:
@@ -470,6 +492,63 @@ lib.ClassicalError_create.argtypes = []
 
 def classical_error_create():
     return ErrorHandler(lib.ClassicalError_create())
+
+# ErrorSum bindings
+lib.ErrorSum_create.restype = c_void_p
+lib.ErrorSum_create.argtypes = []
+
+lib.ErrorSum_create_with_params.restype = c_void_p
+lib.ErrorSum_create_with_params.argtypes = [c_double, c_double]
+
+lib.ErrorSum_add_handler.restype = None
+lib.ErrorSum_add_handler.argtypes = [c_void_p, c_void_p]
+
+lib.ErrorSum_delete.restype = None
+lib.ErrorSum_delete.argtypes = [c_void_p]
+
+def error_sum_create():
+    return ErrorHandler(lib.ErrorSum_create())
+
+def error_sum_create_with_params(horizon: float, scale: float):
+    return ErrorHandler(lib.ErrorSum_create_with_params(horizon, scale))
+
+def error_sum_add_handler(_this: ErrorHandler, handler: ErrorHandler):
+    _this.add_gargabe(handler)
+    lib.ErrorSum_add_handler(_this.obj, handler.obj)
+
+
+# StabilityError bindings
+lib.StabilityError_create.restype = c_void_p
+lib.StabilityError_create.argtypes = []
+
+lib.StabilityError_delete.restype = None
+lib.StabilityError_delete.argtypes = [c_void_p]
+
+def stability_error_create():
+    return ErrorHandler(lib.StabilityError_create())
+
+
+# FittingError bindings
+lib.FittingError_create.restype = c_void_p
+lib.FittingError_create.argtypes = []
+
+lib.FittingError_create_epsilon.restype = c_void_p
+lib.FittingError_create_epsilon.argtypes = [c_double]
+
+lib.FittingError_add_constrain.restype = None
+lib.FittingError_add_constrain.argtypes = [c_void_p, c_char_p, c_char_p]
+
+lib.FittingError_delete.restype = None
+lib.FittingError_delete.argtypes = [c_void_p]
+
+def fitting_error_create():
+    return ErrorHandler(lib.FittingError_create())
+
+def fitting_error_create_epsilon(epsilon: float):
+    return ErrorHandler(lib.FittingError_create_epsilon(epsilon))
+
+def fitting_error_add_constrain(_this: ErrorHandler, id1: str, id2: str):
+    lib.FittingError_add_constrain(_this.obj, id1.encode('utf-8'), id2.encode('utf-8'))
 
 class ParallelSimulator:
     lib.ParallelSimulator_create.restype = c_void_p

@@ -7,7 +7,15 @@
 extern "C" {
 
     SBMLDoc *SBMLDoc_new(const char *file_path) {
-        return new SBMLDoc(file_path);
+        return SBMLDoc::normal_sbml(file_path);
+    }
+
+    SBMLDoc *SBMLDoc_input(const char *file_path) {
+        return SBMLDoc::input_normal_species(file_path);
+    }
+
+    SBMLDoc *SBMLDoc_input_output(const char *file_path) {
+        return SBMLDoc::input_output_normal_species(file_path);
     }
 
     int SBMLDoc_number_of_kinetic_costant(const SBMLDoc *_this) {
@@ -307,6 +315,46 @@ extern "C" {
 
     void ErrorHandler_add_output(ErrorHandler *_this, const char *id) {
         _this->add_output(id);
+    }
+
+    ErrorSum *ErrorSum_create() {
+        return new ErrorSum();
+    }
+
+    ErrorSum *ErrorSum_create_with_params(double horizon, double scale) {
+        return new ErrorSum(horizon, scale);
+    }
+
+    void ErrorSum_add_handler(ErrorSum *_this, ErrorHandler *handler) {
+        _this->add_handler(handler);
+    }
+
+    void ErrorSum_delete(ErrorSum *_this) {
+        delete _this;
+    }
+
+    StabilityError *StabilityError_create() {
+        return new StabilityError();
+    }
+
+    void StabilityError_delete(StabilityError *_this) {
+        delete _this;
+    }
+
+    FittingError *FittingError_create() {
+        return new FittingError();
+    }
+
+    FittingError *FittingError_create_epsilon(double epsilon) {
+        return new FittingError(epsilon);
+    }
+
+    void FittingError_add_constrain(FittingError *_this, const char *id1, const char *id2) {
+        _this->add_constrain(std::string(id1), std::string(id2));
+    }
+
+    void FittingError_delete(FittingError *_this) {
+        delete _this;
     }
 
 }

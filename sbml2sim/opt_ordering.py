@@ -52,7 +52,7 @@ def parameters_to_optimize(args, parameterId: ParameterId) -> ng.p.Parameter:
         print("[FATAL ERROR] unexpected error")
         exit(1)
     else:
-        return ng.p.Choice([10**(-3),1,  10**3])
+        return ng.p.Choice([10**i for i in range(-6, -2)])
 
 def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], seed: int) -> dict[ParameterId, float]:
     workers = int(args.workers)
@@ -60,8 +60,9 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], se
     parallel_degree = int(args.parallel_degree)
     parallel_simulator = s2s.ParallelSimulator(workers)
 
-    error_handler = s2s.ordering_error_create()
-    
+    error_handler = s2s.error_sum_create()
+    s2s.error_sum_add_handler(error_handler, s2s.stability_error_create())
+    """
     for (species, conc) in concentrations.items():
         if sbml.is_input(species):
             sbml.set_initial_concentration(species, conc)
@@ -72,6 +73,7 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], se
             error_handler.add_output(species)
     # TODO: choose error
     error_handler.order_real_concentration()
+    """
     
     kinetic_constants: list[ParameterId] = sbml.get_kinetic_constants()
 
@@ -103,13 +105,13 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], se
         
         
     parametrization = ng.p.Dict(**kinetic_param_dict)
-    optimizer = ng.optimizers.DiscreteOnePlusOne(parametrization=parametrization, budget=budget, num_workers=parallel_degree)
+    optimizer = ng.optimizers.RandomSearch(parametrization=parametrization, budget=budget, num_workers=parallel_degree)
     
     
     for _ in range(parallel_degree):
         sim = s2s.rr_simualtor(sbml)
-        for (species, _) in concentrations.items():
-            s2s.rr_simulator_set_known_species(sim, species)
+        #for (species, _) in concentrations.items():
+        #    s2s.rr_simulator_set_known_species(sim, species)
         parallel_simulator.add_worker(sim)
     simulators = parallel_simulator.get_simulators()
     
@@ -118,7 +120,7 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], se
     print("[INFO] start optimitation")
     
     attempts = optimizer.budget // len(simulators)
-    
+    best_result_global = math.inf
     for i in range(attempts):
         if len(amm) >= 100:
             return amm
@@ -132,6 +134,7 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], se
         start_time = time.time()
         sols = parallel_simulator.simulate(error_handler)
         elapsed_time = time.time() - start_time
+
         errors = 0
         not_errors = 0
         best_result = math.inf
@@ -150,8 +153,10 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], se
             else:
                 errors += 1
                 optimizer.tell(parameter, value)
+        if best_result < best_result_global:
+            best_result_global = best_result
         total_elapsed_time = time.time() - total_start_time
-        print(f"[INFO] attempt {i+1}/{attempts}, best value: {best_result}, time: {elapsed_time}, total time: {total_elapsed_time}, errors: {errors}/{parallel_degree} not_errors: {not_errors}")
+        print(f"[INFO] attempt {i+1}/{attempts}, best value: {best_result}, best result global: {best_result_global}, time: {elapsed_time}, total time: {total_elapsed_time}, errors: {errors}/{parallel_degree} not_errors: {not_errors}")
 
     return amm
 
@@ -194,7 +199,7 @@ def main():
     concentrations = convert_ibaq_to_concentrations(sbml, proteomics, args.tissue)
     print("[INFO] random start concentrations")
     sys.stdout.flush()
-    sbml.random_start_concentration() # TODO: start random concentration every restart
+    # sbml.random_start_concentration() # TODO: start random concentration every restart
     sols: dict[str, dict[Any]] = optimize(sbml, args, concentrations, seed)
     
     result: list[dict[ParameterId, float]] = []

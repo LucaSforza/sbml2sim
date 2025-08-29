@@ -50,6 +50,25 @@ public:
         return document.replicate_model_per_tissue(tissues, n_tissues);
     }
 
+    static SBMLDoc *normal_sbml(const char *file_path) {
+        SBMLDoc *out = new SBMLDoc(file_path);
+        make_all_input_costant_species(out->model, out->inputs);
+        return out;
+    }
+
+    static SBMLDoc *input_output_normal_species(const char *file_path) {
+        SBMLDoc *out = new SBMLDoc(file_path);
+        create_a_fake_reaction_for_all_outputs(out->model, out->outputs);
+        create_a_fake_reaction_for_all_inputs(out->model, out->inputs);
+        return out;
+    }
+
+    static SBMLDoc *input_normal_species(const char *file_path) {
+        SBMLDoc *out = new SBMLDoc(file_path);
+        create_a_fake_reaction_for_all_inputs(out->model, out->inputs);
+        return out;
+    }
+
     SBMLDoc() { }
 
     /**
@@ -66,7 +85,6 @@ public:
         this->total_kinetic_constant = 0;
         this->infos = register_all_species(model);
         this->inputs = collect_all_inputs(model);
-        make_all_input_costant_species(model, inputs);
         this->outputs = collect_all_outputs(model);
         // create_a_fake_reaction_for_all_outputs(model, outputs);
         // create_a_fake_reaction_for_all_inputs(model, inputs);
