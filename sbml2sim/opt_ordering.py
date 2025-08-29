@@ -12,6 +12,7 @@ import argparse
 import time
 import sys
 import random
+import itertools
 
 def set_parameters_to_model(sim: s2s.Simulator, args,parameter: ng.p.Parameter):    
     if not args.unify:
@@ -52,7 +53,9 @@ def parameters_to_optimize(args, parameterId: ParameterId) -> ng.p.Parameter:
         print("[FATAL ERROR] unexpected error")
         exit(1)
     else:
-        return ng.p.Choice([10**i for i in range(-6, -2)])
+        if parameterId.startswith("k_input_"):
+            return ng.p.Choice([10**i for i in range(-6,1)])
+        return ng.p.Choice([10**i for i in range(-6, 7)])
 
 def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], seed: int) -> dict[ParameterId, float]:
     workers = int(args.workers)
@@ -105,7 +108,7 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], se
         
         
     parametrization = ng.p.Dict(**kinetic_param_dict)
-    optimizer = ng.optimizers.RandomSearch(parametrization=parametrization, budget=budget, num_workers=parallel_degree)
+    optimizer = ng.optimizers.NGOpt(parametrization=parametrization, budget=budget, num_workers=parallel_degree)
     
     
     for _ in range(parallel_degree):
@@ -136,6 +139,7 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], se
         elapsed_time = time.time() - start_time
 
         errors = 0
+        error_is_best = False
         not_errors = 0
         best_result = math.inf
         for (parameter, (value, error)) in zip(parameters, sols):
@@ -143,6 +147,8 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], se
                 print(f"[FATAL ERROR] value is NaN, ignoring this result")
                 exit(1)
             if value < best_result:
+                if error: error_is_best = True
+                else: error_is_best = False
                 best_result = value
             if not error:
                 not_errors += 1
@@ -152,7 +158,9 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], se
                 optimizer.tell(parameter, value)
             else:
                 errors += 1
-                optimizer.tell(parameter, value)
+                optimizer.tell(parameter, math.inf)
+        if error_is_best:
+            print("[WARNING] the best is an error")
         if best_result < best_result_global:
             best_result_global = best_result
         total_elapsed_time = time.time() - total_start_time
@@ -160,6 +168,91 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], se
 
     return amm
 
+def total_search(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], seed: int):
+    k_constants = sbml.get_kinetic_constants()
+   
+    workers = int(args.workers)
+    parallel_degree = int(args.parallel_degree)
+    parallel_simulator = s2s.ParallelSimulator(workers)
+    
+    error_handler = s2s.error_sum_create()
+    s2s.error_sum_add_handler(error_handler, s2s.stability_error_create())
+    
+    to_search: list[tuple[ParameterId, list[float]]] = []
+    combinations = 1
+    for k in k_constants:
+        choices = None
+        if k.startswith("k_input") or k.startswith("k_output"):
+            choices = [10**i for i in range(-24,-12)]
+        else:
+            choices = [10**i for i in range(-6,7)]
+        combinations *= len(choices)
+        to_search.append((k,choices))
+    
+    for _ in range(parallel_degree):
+        sim = s2s.rr_simualtor(sbml)
+        #for (species, _) in concentrations.items():
+        #    s2s.rr_simulator_set_known_species(sim, species)
+        parallel_simulator.add_worker(sim)
+    simulators = parallel_simulator.get_simulators()
+    amm = [] # ammissibli
+     
+    keys = k_constants
+    choices_lists = [choices for (_, choices) in to_search]
+
+    params_iter = (dict(zip(keys, combo)) for combo in itertools.product(*choices_lists))
+
+    batch:list[dict[ParameterId, float]] = []
+    best_value = math.inf
+    best_combinations = None
+    for i,param in enumerate(params_iter):
+        errors = 0
+        start = time.time()
+        batch.append(param)
+        if len(batch) == parallel_degree:
+            local_best_value = math.inf
+            local_best_combinations = None
+            # assign each parameter set to a simulator and run
+            for sim, p in zip(simulators, batch):
+                for pid, val in p.items():
+                    sim.set_parameter(pid, val)
+            sols = parallel_simulator.simulate(error_handler)
+            for p, (value, error) in zip(batch, sols):
+                if value < local_best_value:
+                    local_best_value = value
+                    local_best_combinations = p.copy()
+                if error:
+                    errors += 1
+                if not error and value < 1e-12:
+                    amm.append(p.copy())
+                    if len(amm) >= 100:
+                        return amm
+            if local_best_value < best_value:
+                best_value = local_best_value
+                best_combinations = local_best_combinations
+            print(f"[INFO] {i+1}/{combinations}")
+            print(f"[INFO]      best value: {best_value}")
+            print(f"[INFO]      local best value: {local_best_value}")
+            print(f"[INFO]      time: {time.time() - start}")
+            print(f"[INFO]      errors: {errors}/{len(batch)}")
+            batch = []
+            
+
+    # remaining partial batch
+    if batch:
+        for sim, p in zip(simulators, batch):
+            for pid, val in p.items():
+                sim.set_parameter(pid, val)
+        sols = parallel_simulator.simulate(error_handler)
+        for p, (value, error) in zip(batch, sols):
+            if not error and value < 1e-12:
+                amm.append(p.copy())
+                if len(amm) >= 100:
+                        return amm
+    amm.append(best_combinations)
+    return amm
+            
+    
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Optimize kinetic constants basing on the ordering")
@@ -170,7 +263,7 @@ def parse_args():
     parser.add_argument("--plot", action="store_true", help="Plot the simulation for each kinetic constants found")
     parser.add_argument("--output-file", default="kinetic_constants.json", help="Output file for the list of kinetic constants that satisfy the constraints")
     parser.add_argument("--budget", default="3000", help="Budget for the optimizator")
-    parser.add_argument("--parallel-degree", default="40", help="Paralle degree of the optimizator")
+    parser.add_argument("--parallel-degree", default="16", help="Paralle degree of the optimizator")
     parser.add_argument("--scalar", action="store_true", help="Set this param if the domain is scalar")
     parser.add_argument("--unify", action="store_true", help="unify 2 set of kinetic constants")
     parser.add_argument("--file1", default=None ,help="file1 for unify")
@@ -178,6 +271,7 @@ def parse_args():
     parser.add_argument("--file3", default=None, help="file3 to unify (optional)")
     parser.add_argument("--serial", action="store_true", help="run serial")
     parser.add_argument("--optimizer", default=None, help="select algoritm")
+    parser.add_argument("--all-combination", action="store_true", help="search for every singole combinations")
     return parser.parse_args()
 
 
@@ -200,7 +294,11 @@ def main():
     print("[INFO] random start concentrations")
     sys.stdout.flush()
     # sbml.random_start_concentration() # TODO: start random concentration every restart
-    sols: dict[str, dict[Any]] = optimize(sbml, args, concentrations, seed)
+    sols: dict[str, dict[Any]] = None
+    if args.all_combination:
+        sols = total_search(sbml, args, concentrations, seed)
+    else:
+        sols = optimize(sbml, args, concentrations, seed)
     
     result: list[dict[ParameterId, float]] = []
     if args.unify:

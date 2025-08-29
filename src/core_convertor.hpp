@@ -953,27 +953,48 @@ void create_a_fake_reaction_for_all_inputs(libsbml::Model *model,const Inputs &i
     for(const std::string &species_id : inputs) {
         libsbml::Species *s = model->getSpecies(species_id);
         assert(s != NULL);
-        libsbml::Reaction *r = model->createReaction();
-        r->setId("generate_input_"+species_id);
-        r->setName("Create input species of the pathway: "+species_id);
-        r->setReversible(false);
-        r->setCompartment(s->getCompartment());
-        libsbml::SpeciesReference* sr = r->createProduct();
-        sr->setSpecies(s->getId());
-        sr->setId("sr_input_" + species_id);
-        sr->setStoichiometry(1.0);
-        sr->setSBOTerm(s->getSBOTerm());
-        libsbml::KineticLaw* kl = r->createKineticLaw();
+
+        // Crea un unico parametro cinetico condiviso per generazione e degradazione
+        std::string param_id = "k_input_" + species_id;
         libsbml::Parameter *p = model->createParameter();
-        p->setId("k_input_"+species_id);
+        p->setId(param_id);
         p->setConstant(true);
         p->setValue(1e-7);
+
+        // Reazione di generazione (produzione) dell'input: velocità = k
+        libsbml::Reaction *r_gen = model->createReaction();
+        r_gen->setId("generate_input_"+species_id);
+        r_gen->setName("Create input species of the pathway: "+species_id);
+        r_gen->setReversible(false);
+        r_gen->setCompartment(s->getCompartment());
+        libsbml::SpeciesReference* sr_prod = r_gen->createProduct();
+        sr_prod->setSpecies(s->getId());
+        sr_prod->setId("sr_input_" + species_id);
+        sr_prod->setStoichiometry(1.0);
+        sr_prod->setSBOTerm(s->getSBOTerm());
+        libsbml::KineticLaw* kl_gen = r_gen->createKineticLaw();
+        kl_gen->setFormula(p->getId());
+
+        /*
+        std::string param_id2 = "k_output_" + species_id;
         libsbml::Parameter *p2 = model->createParameter();
-        p2->setId("k_output_"+species_id);
+        p2->setId(param_id2);
         p2->setConstant(true);
-        p2->setValue(1e-7); // default
-        std::string formula = p->getId() + "-" + p2->getId() + "*"+ sr->getId();
-        kl->setFormula(formula);
+        p2->setValue(1e-7);
+
+        // Reazione di degradazione (consumo) dell'input: velocità = k * [S]
+        libsbml::Reaction *r_deg = model->createReaction();
+        r_deg->setId("degrade_input_"+species_id);
+        r_deg->setName("Degrade input species of the pathway: "+species_id);
+        r_deg->setReversible(false);
+        r_deg->setCompartment(s->getCompartment());
+        libsbml::SpeciesReference* sr_cons = r_deg->createReactant();
+        sr_cons->setSpecies(s->getId());
+        sr_cons->setId("sr_input_deg_" + species_id);
+        sr_cons->setStoichiometry(1.0);
+        sr_cons->setSBOTerm(s->getSBOTerm());
+        libsbml::KineticLaw* kl_deg = r_deg->createKineticLaw();
+        kl_deg->setFormula(p2->getId() + "*" + sr_cons->getId()); */
     }
 }
 

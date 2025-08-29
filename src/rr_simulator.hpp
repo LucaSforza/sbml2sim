@@ -19,6 +19,7 @@ public:
     rr_Simulator(const SBMLDoc *doc): simulator(doc->convert_to_sbml_string()) {
         rr::SimulateOptions options;
         options.start = 0;
+        options.steps = 100;
         options.duration = 100;
         simulator.setSimulateOptions(options);
         rr::Logger::disableConsoleLogging();

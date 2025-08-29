@@ -1,22 +1,11 @@
-[
-  {
-    "k_input_species_391287": 1e-05,
-    "k_output_species_391287": 1e-05,
-    "k_input_species_391267": 0.001,
-    "k_output_species_391267": 0.001,
-    "k_input_species_390455": 1e-06,
-    "k_output_species_390455": 1e-06,
-    "k_forcat_reaction_391266": 0.001,
-    "k_forcat_reaction_390470": 1e-06
+{
+  "kinetic_constants": {
+    "k_input_species_391287": 1e-24,
+    "k_input_species_391267": 1e-24,
+    "k_input_species_390455": 1e-24,
+    "k_forcat_reaction_391266": 100,
+    "k_forcat_reaction_390470": 1000000
   },
-  {
-    "k_input_species_391287": 1e-05,
-    "k_output_species_391287": 1e-05,
-    "k_input_species_391267": 0.001,
-    "k_output_species_391267": 0.001,
-    "k_input_species_390455": 1e-05,
-    "k_output_species_390455": 1e-05,
-    "k_forcat_reaction_391266": 0.0001,
-    "k_forcat_reaction_390470": 0.0001
-  }
-]
+  "output_constants": {},
+  "input_constants": {}
+}

@@ -207,7 +207,7 @@ def main():
     set_seed(seed)
     sbml = SBMLDoc(args.input_file)
     if args.random:
-        sbml.random_start_concentration()
+        sbml.input_start_random_concentration()
     if args.kinetic_constants is not None:
         kinetic_constants: list[dict[ParameterId, float]] = None
         with open(args.kinetic_constants) as f:
