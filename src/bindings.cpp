@@ -357,4 +357,12 @@ extern "C" {
         delete _this;
     }
 
+    TransitorialError *TransitorialError_create() {
+        return new TransitorialError();
+    }
+
+    void TransitorialError_delete(TransitorialError *_this) {
+        delete _this;
+    }
+
 }

@@ -21,7 +21,7 @@ def parse_args() -> tuple[str, str]:
 
 def main():
     input_file, output_file = parse_args()
-    sbml = s2s.SBMLDoc_input(input_file)
+    sbml = s2s.SBMLDoc_input_output(input_file)
     volume_cell_breast_cancer_cell = 1.76 * 10**12  # nanometers
     bioutils.set_compartement_size(sbml, volume_cell_breast_cancer_cell)
     sbml.add_kinetic_laws_if_not_exists()

@@ -53,8 +53,8 @@ def parameters_to_optimize(args, parameterId: ParameterId) -> ng.p.Parameter:
         print("[FATAL ERROR] unexpected error")
         exit(1)
     else:
-        if parameterId.startswith("k_input_"):
-            return ng.p.Choice([10**i for i in range(-6,1)])
+        if parameterId.startswith("k_input") or parameterId.startswith("k_output"):
+            return ng.p.Choice([10**i for i in range(-24,-19)])
         return ng.p.Choice([10**i for i in range(-6, 7)])
 
 def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], seed: int) -> dict[ParameterId, float]:
@@ -65,6 +65,7 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], se
 
     error_handler = s2s.error_sum_create()
     s2s.error_sum_add_handler(error_handler, s2s.stability_error_create())
+    s2s.error_sum_add_handler(error_handler, s2s.transitorial_error_create())
     """
     for (species, conc) in concentrations.items():
         if sbml.is_input(species):
@@ -108,7 +109,7 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], se
         
         
     parametrization = ng.p.Dict(**kinetic_param_dict)
-    optimizer = ng.optimizers.NGOpt(parametrization=parametrization, budget=budget, num_workers=parallel_degree)
+    optimizer = ng.optimizers.DiscreteBSOOnePlusOne(parametrization=parametrization, budget=budget, num_workers=parallel_degree)
     
     
     for _ in range(parallel_degree):
@@ -165,7 +166,8 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], se
             best_result_global = best_result
         total_elapsed_time = time.time() - total_start_time
         print(f"[INFO] attempt {i+1}/{attempts}, best value: {best_result}, best result global: {best_result_global}, time: {elapsed_time}, total time: {total_elapsed_time}, errors: {errors}/{parallel_degree} not_errors: {not_errors}")
-
+    if not amm:
+        amm.append(optimizer.provide_recommendation().value)
     return amm
 
 def total_search(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], seed: int):
@@ -177,13 +179,14 @@ def total_search(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float]
     
     error_handler = s2s.error_sum_create()
     s2s.error_sum_add_handler(error_handler, s2s.stability_error_create())
+    s2s.error_sum_add_handler(error_handler, s2s.transitorial_error_create())
     
     to_search: list[tuple[ParameterId, list[float]]] = []
     combinations = 1
     for k in k_constants:
         choices = None
         if k.startswith("k_input") or k.startswith("k_output"):
-            choices = [10**i for i in range(-24,-12)]
+            choices = [10**i for i in range(-24,-11)]
         else:
             choices = [10**i for i in range(-6,7)]
         combinations *= len(choices)
@@ -205,9 +208,10 @@ def total_search(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float]
     batch:list[dict[ParameterId, float]] = []
     best_value = math.inf
     best_combinations = None
+    count = 0
+    start = time.time()
     for i,param in enumerate(params_iter):
         errors = 0
-        start = time.time()
         batch.append(param)
         if len(batch) == parallel_degree:
             local_best_value = math.inf
@@ -223,18 +227,21 @@ def total_search(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float]
                     local_best_combinations = p.copy()
                 if error:
                     errors += 1
-                if not error and value < 1e-12:
+                if not error and value < 1e-10:
                     amm.append(p.copy())
-                    if len(amm) >= 100:
-                        return amm
             if local_best_value < best_value:
                 best_value = local_best_value
                 best_combinations = local_best_combinations
-            print(f"[INFO] {i+1}/{combinations}")
-            print(f"[INFO]      best value: {best_value}")
-            print(f"[INFO]      local best value: {local_best_value}")
-            print(f"[INFO]      time: {time.time() - start}")
-            print(f"[INFO]      errors: {errors}/{len(batch)}")
+            count += 1
+            if count >= 1000:
+                count = 0
+                print(f"[INFO] {i+1}/{combinations}")
+                print(f"[INFO]      best value: {best_value}")
+                print(f"[INFO]      local best value: {local_best_value}")
+                print(f"[INFO]      time: {time.time() - start}")
+                print(f"[INFO]      errors: {errors}/{len(batch)}")
+                print(f"[INFO]      len amm: {len(amm)}")
+                start = time.time()
             batch = []
             
 
@@ -291,8 +298,6 @@ def main():
         proteomics = json.load(f)
         
     concentrations = convert_ibaq_to_concentrations(sbml, proteomics, args.tissue)
-    print("[INFO] random start concentrations")
-    sys.stdout.flush()
     # sbml.random_start_concentration() # TODO: start random concentration every restart
     sols: dict[str, dict[Any]] = None
     if args.all_combination:

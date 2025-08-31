@@ -306,4 +306,35 @@ public:
     }
 };
 
+class TransitorialError: public ErrorHandler {
+
+public:
+    ~TransitorialError() override = default;
+
+    TransitorialError() = default;
+
+    double error(std::expected<SimulationResult,double> sim_result) const override {
+        control(sim_result);
+        SimulationResult simResult = *sim_result;
+        double err = 0.0;
+        auto outputs = this->get_outputs();
+        for (const auto& nc : simResult.not_constrained) {
+            if (outputs.find(nc.first) == outputs.end()) {
+                double b = (simResult.old_values[nc.first] - nc.second);
+                err += b*b;
+            }
+        }
+        
+        for (const auto& nc : simResult.constrained) {
+            if (outputs.find(nc.first) == outputs.end()) {
+                double b = (simResult.old_values[nc.first] - nc.second);
+                err += b*b;
+            }
+        }
+
+        return err;
+    }
+
+};
+
 #endif // LOSS_FUNCTION_HPP_

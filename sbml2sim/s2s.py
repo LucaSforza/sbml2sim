@@ -550,6 +550,15 @@ def fitting_error_create_epsilon(epsilon: float):
 def fitting_error_add_constrain(_this: ErrorHandler, id1: str, id2: str):
     lib.FittingError_add_constrain(_this.obj, id1.encode('utf-8'), id2.encode('utf-8'))
 
+lib.TransitorialError_create.restype = c_void_p
+lib.TransitorialError_create.argtypes = []
+
+lib.TransitorialError_delete.restype = None
+lib.TransitorialError_delete.argtypes = [c_void_p]
+
+def transitorial_error_create():
+    return ErrorHandler(lib.TransitorialError_create())
+
 class ParallelSimulator:
     lib.ParallelSimulator_create.restype = c_void_p
     lib.ParallelSimulator_create.argtypes = [c_int]

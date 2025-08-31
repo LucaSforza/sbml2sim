@@ -93,7 +93,7 @@ public:
 
         // Prendi l'id quando il tempo è all'80%
         const std::vector<std::string>& cols = result->getColNames();
-        int eightyPercentRow = static_cast<int>(result->numRows() * 0.8);
+        int eightyPercentRow = static_cast<int>(result->numRows() * 0.4); // TODO: param
         if (eightyPercentRow >= result->numRows()) eightyPercentRow = result->numRows() - 1;
         // Salva in old_values tutte le specie che iniziano per 'avg_' all'80% del tempo
         for (int i = 0; i < result->numCols(); ++i) {
