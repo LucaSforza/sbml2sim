@@ -325,8 +325,8 @@ extern "C" {
         return new ErrorSum(horizon, scale);
     }
 
-    void ErrorSum_add_handler(ErrorSum *_this, ErrorHandler *handler) {
-        _this->add_handler(handler);
+    void ErrorSum_add_handler(ErrorSum *_this, ErrorHandler *handler, double scale) {
+        _this->add_handler(handler, scale);
     }
 
     void ErrorSum_delete(ErrorSum *_this) {

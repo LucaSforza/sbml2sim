@@ -952,6 +952,7 @@ void create_a_fake_reaction_for_all_outputs(libsbml::Model *model, const Outputs
 void create_a_fake_reaction_for_all_inputs(libsbml::Model *model,const Inputs &inputs) {
     for(const std::string &species_id : inputs) {
         libsbml::Species *s = model->getSpecies(species_id);
+        s->setInitialConcentration(1e-6);
         assert(s != NULL);
 
         // Crea un unico parametro cinetico condiviso per generazione e degradazione
@@ -973,7 +974,7 @@ void create_a_fake_reaction_for_all_inputs(libsbml::Model *model,const Inputs &i
         sr_prod->setStoichiometry(1.0);
         sr_prod->setSBOTerm(s->getSBOTerm());
         libsbml::KineticLaw* kl_gen = r_gen->createKineticLaw();
-        kl_gen->setFormula("scale_parameter *" +p->getId());
+        kl_gen->setFormula("scale_parameter *" +p->getId() + "* (1-"+ sr_prod->getId()+")");
 
         /*
         std::string param_id2 = "k_output_" + species_id;

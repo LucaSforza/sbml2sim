@@ -203,7 +203,7 @@ public:
 
 class ErrorSum: public ErrorHandler {
 
-    std::vector<ErrorHandler*> handlers;
+    std::vector<std::pair<ErrorHandler*, double>> handlers;
     double horizon = 100.0;
     double scale = 1e6;
 
@@ -214,15 +214,15 @@ public:
 
     ErrorSum(double horizon, double scale): horizon(horizon), scale(scale) {}
 
-    void add_handler(ErrorHandler *handler) {
-        this->handlers.push_back(handler);
+    void add_handler(ErrorHandler *handler, double scale) {
+        this->handlers.push_back(std::pair(handler,scale));
     }
 
     double error(std::expected<SimulationResult,double> sim_result) const override {
         double result = 0.0;
         if(sim_result) {
-            for(ErrorHandler *handler : this->handlers) {
-                result += handler->error(sim_result);
+            for (const auto& [handler, scale] : this->handlers) {
+                result += handler->error(sim_result) * scale;
             }
             return result;
         } else {

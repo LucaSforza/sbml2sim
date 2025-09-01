@@ -512,9 +512,9 @@ def error_sum_create():
 def error_sum_create_with_params(horizon: float, scale: float):
     return ErrorHandler(lib.ErrorSum_create_with_params(horizon, scale))
 
-def error_sum_add_handler(_this: ErrorHandler, handler: ErrorHandler):
+def error_sum_add_handler(_this: ErrorHandler, handler: ErrorHandler, scale: float):
     _this.add_gargabe(handler)
-    lib.ErrorSum_add_handler(_this.obj, handler.obj)
+    lib.ErrorSum_add_handler(_this.obj, handler.obj, c_double(scale))
 
 
 # StabilityError bindings

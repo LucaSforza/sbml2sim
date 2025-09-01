@@ -53,8 +53,8 @@ def parameters_to_optimize(args, parameterId: ParameterId) -> ng.p.Parameter:
         print("[FATAL ERROR] unexpected error")
         exit(1)
     else:
-        if parameterId.startswith("k_input") or parameterId.startswith("k_output"):
-            return ng.p.Choice([10**i for i in range(-24,-11)])
+        if parameterId.startswith("k_output"):
+            return ng.p.Choice([10**i for i in range(-48,-35)])
         return ng.p.Choice([10**i for i in range(-6, 7)])
 
 def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], seed: int) -> dict[ParameterId, float]:
@@ -64,8 +64,8 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], se
     parallel_simulator = s2s.ParallelSimulator(workers)
 
     error_handler = s2s.error_sum_create()
-    s2s.error_sum_add_handler(error_handler, s2s.stability_error_create())
-    # s2s.error_sum_add_handler(error_handler, s2s.transitorial_error_create())
+    s2s.error_sum_add_handler(error_handler, s2s.stability_error_create(), 1e6)
+    s2s.error_sum_add_handler(error_handler, s2s.transitorial_error_create(), 1)
     """
     for (species, conc) in concentrations.items():
         if sbml.is_input(species):

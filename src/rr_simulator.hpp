@@ -161,8 +161,6 @@ public:
         simResult.mins = min_values;
         simResult.maxs = max_values; 
 
-        simulator.reset();
-
         return simResult;
     } // simulale()
 
