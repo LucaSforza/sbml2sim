@@ -78,9 +78,14 @@ public:
             return std::unexpected(crash_time);
         } catch (const std::exception& e) {
             double crash_time = simulator.getCurrentTime();
-            eprintf("[FATAL ERROR] crashed at: %lf\n", crash_time);
+            eprintf("[SIMULATION ERROR] %s crashed at: %lf\n", e.what(), crash_time);
+            exit(1);
+        } catch (...) {
+            double crash_time = simulator.getCurrentTime();
+            eprintf("[SIMULATION ERROR] unknown exception crashed at: %lf\n", crash_time);
             exit(1);
         }
+
 
         assert(result != NULL);
 
@@ -155,6 +160,8 @@ public:
         simResult.old_values  = old_values;
         simResult.mins = min_values;
         simResult.maxs = max_values; 
+
+        simulator.reset();
 
         return simResult;
     } // simulale()

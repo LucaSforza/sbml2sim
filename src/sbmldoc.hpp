@@ -58,6 +58,10 @@ public:
 
     static SBMLDoc *input_output_normal_species(const char *file_path) {
         SBMLDoc *out = new SBMLDoc(file_path);
+        libsbml::Parameter *s = out->model->createParameter();
+        s->setId("scale_parameter");
+        s->setValue(1.0);
+        s->setConstant(true);
         create_a_fake_reaction_for_all_outputs(out->model, out->outputs);
         create_a_fake_reaction_for_all_inputs(out->model, out->inputs);
         return out;
@@ -65,6 +69,10 @@ public:
 
     static SBMLDoc *input_normal_species(const char *file_path) {
         SBMLDoc *out = new SBMLDoc(file_path);
+        libsbml::Parameter *s = out->model->createParameter();
+        s->setId("scale_parameter");
+        s->setValue(1.0);
+        s->setConstant(true);
         create_a_fake_reaction_for_all_inputs(out->model, out->inputs);
         return out;
     }

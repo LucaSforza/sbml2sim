@@ -205,7 +205,7 @@ class ErrorSum: public ErrorHandler {
 
     std::vector<ErrorHandler*> handlers;
     double horizon = 100.0;
-    double scale = 1e18;
+    double scale = 1e6;
 
 public:
     ~ErrorSum() override = default;
@@ -317,19 +317,14 @@ public:
         control(sim_result);
         SimulationResult simResult = *sim_result;
         double err = 0.0;
-        auto outputs = this->get_outputs();
         for (const auto& nc : simResult.not_constrained) {
-            if (outputs.find(nc.first) == outputs.end()) {
-                double b = (simResult.old_values[nc.first] - nc.second);
-                err += b*b;
-            }
+            double b = (simResult.old_values[nc.first] - nc.second);
+            err += b*b;
         }
         
         for (const auto& nc : simResult.constrained) {
-            if (outputs.find(nc.first) == outputs.end()) {
-                double b = (simResult.old_values[nc.first] - nc.second);
-                err += b*b;
-            }
+            double b = (simResult.old_values[nc.first] - nc.second);
+            err += b*b;
         }
 
         return err;

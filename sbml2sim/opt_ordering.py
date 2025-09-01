@@ -54,7 +54,7 @@ def parameters_to_optimize(args, parameterId: ParameterId) -> ng.p.Parameter:
         exit(1)
     else:
         if parameterId.startswith("k_input") or parameterId.startswith("k_output"):
-            return ng.p.Choice([10**i for i in range(-24,-19)])
+            return ng.p.Choice([10**i for i in range(-24,-11)])
         return ng.p.Choice([10**i for i in range(-6, 7)])
 
 def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], seed: int) -> dict[ParameterId, float]:
@@ -65,7 +65,7 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], se
 
     error_handler = s2s.error_sum_create()
     s2s.error_sum_add_handler(error_handler, s2s.stability_error_create())
-    s2s.error_sum_add_handler(error_handler, s2s.transitorial_error_create())
+    # s2s.error_sum_add_handler(error_handler, s2s.transitorial_error_create())
     """
     for (species, conc) in concentrations.items():
         if sbml.is_input(species):
@@ -109,7 +109,7 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], se
         
         
     parametrization = ng.p.Dict(**kinetic_param_dict)
-    optimizer = ng.optimizers.DiscreteBSOOnePlusOne(parametrization=parametrization, budget=budget, num_workers=parallel_degree)
+    optimizer = ng.optimizers.DiscreteDE(parametrization=parametrization, budget=budget, num_workers=parallel_degree)
     
     
     for _ in range(parallel_degree):
@@ -126,8 +126,6 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], se
     attempts = optimizer.budget // len(simulators)
     best_result_global = math.inf
     for i in range(attempts):
-        if len(amm) >= 100:
-            return amm
         total_start_time = time.time()
         parameters = []
         for sim in simulators:
@@ -153,21 +151,20 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], se
                 best_result = value
             if not error:
                 not_errors += 1
-                if value < 1e-12:
+                if value <= 0:
                     print(f"[INFO] ammissibile: {value}")
                     amm.append({k: v.value for k, v in parameter.items()})
                 optimizer.tell(parameter, value)
             else:
                 errors += 1
-                optimizer.tell(parameter, math.inf)
+                optimizer.tell(parameter, value)
         if error_is_best:
             print("[WARNING] the best is an error")
         if best_result < best_result_global:
             best_result_global = best_result
         total_elapsed_time = time.time() - total_start_time
         print(f"[INFO] attempt {i+1}/{attempts}, best value: {best_result}, best result global: {best_result_global}, time: {elapsed_time}, total time: {total_elapsed_time}, errors: {errors}/{parallel_degree} not_errors: {not_errors}")
-    if not amm:
-        amm.append(optimizer.provide_recommendation().value)
+    amm.append(optimizer.provide_recommendation().value)
     return amm
 
 def total_search(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], seed: int):

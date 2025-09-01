@@ -3,6 +3,7 @@ from typing import Any
 import numpy as np
 import roadrunner as rr
 
+import s2s
 from s2s import SBMLDoc, set_seed
 from bioutils import SpeciesId, ParameterId, convert_ibaq_to_concentrations
 import pandas as pd
@@ -103,7 +104,7 @@ def run(sbml: SBMLDoc, plot=False,only_avg=False, output_file="simulation", conc
     r = rr.RoadRunner(file_sbml)
     output_file_csv = output_file+".csv"
     output_file_png = output_file+".png"
-    sim = r.simulate(0, 100, output_file=output_file_csv)
+    sim = r.simulate(0, 100, output_file=output_file_csv, steps=100)
     if plot:
         import matplotlib.pyplot as plt
         if concentrations:
@@ -138,12 +139,13 @@ def run(sbml: SBMLDoc, plot=False,only_avg=False, output_file="simulation", conc
                     and not sbml.is_output(col.replace("avg_","",1))
                 ]
             for col in cols:
-                plt.plot(df["time"], df[col])
+                plt.plot(df["time"], df[col], label=col)
             plt.xlabel('Secondi')
             plt.ylabel('Concentrazione mol/L')
             plt.title('Simulazione')
-            plt.ylim(bottom=1e-24)
-            plt.yscale('log')
+            plt.legend()
+            # plt.ylim(bottom=1e-24)
+            # plt.yscale('log')
             plt.savefig(output_file_png)
     return sim
         
@@ -161,6 +163,30 @@ def parse_args():
     parser.add_argument("--log-parameters", action="store_true", help="plot only constrained species")
     parser.add_argument("--random", action="store_true", help="random start concentrations")
     return parser.parse_args()
+
+def main3():
+    args = parse_args()
+    sbml = SBMLDoc(args.input_file)
+    sim = s2s.rr_simualtor(sbml)
+    parallel = s2s.ParallelSimulator(1)
+    parallel.add_worker(sim)
+    error = s2s.error_sum_create()
+    s2s.error_sum_add_handler(error, s2s.transitorial_error_create())
+    s2s.error_sum_add_handler(error, s2s.stability_error_create())
+    if args.kinetic_constants is not None:
+        kinetic_constants: dict[str, dict[ParameterId, float]] = None
+        with open(args.kinetic_constants) as f:
+            kinetic_constants = json.load(f)
+        k_constants = kinetic_constants["kinetic_constants"]
+        output_constants = kinetic_constants["output_constants"]
+        input_constants = kinetic_constants["input_constants"]
+        
+        for (param, value) in k_constants.items():
+            if args.log_parameters:
+                sim.set_parameter(param, 10**value)
+            else:
+                sim.set_parameter(param, value) 
+    print(parallel.simulate(error))
 
 def main2():
     args = parse_args()
