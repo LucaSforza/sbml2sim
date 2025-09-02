@@ -205,7 +205,7 @@ class ErrorSum: public ErrorHandler {
 
     std::vector<std::pair<ErrorHandler*, double>> handlers;
     double horizon = 100.0;
-    double scale = 1e6;
+    double scale = 1e12;
 
 public:
     ~ErrorSum() override = default;

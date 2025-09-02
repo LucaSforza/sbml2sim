@@ -53,9 +53,7 @@ def parameters_to_optimize(args, parameterId: ParameterId) -> ng.p.Parameter:
         print("[FATAL ERROR] unexpected error")
         exit(1)
     else:
-        if parameterId.startswith("k_output"):
-            return ng.p.Choice([10**i for i in range(-48,-35)])
-        return ng.p.Choice([10**i for i in range(-6, 7)])
+        return ng.p.Choice([10**i for i in range(-40, 40)])
 
 def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], seed: int) -> dict[ParameterId, float]:
     workers = int(args.workers)
@@ -64,7 +62,7 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], se
     parallel_simulator = s2s.ParallelSimulator(workers)
 
     error_handler = s2s.error_sum_create()
-    s2s.error_sum_add_handler(error_handler, s2s.stability_error_create(), 1e6)
+    s2s.error_sum_add_handler(error_handler, s2s.stability_error_create(), 1e2)
     s2s.error_sum_add_handler(error_handler, s2s.transitorial_error_create(), 1)
     """
     for (species, conc) in concentrations.items():
@@ -157,7 +155,7 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], se
                 optimizer.tell(parameter, value)
             else:
                 errors += 1
-                optimizer.tell(parameter, value)
+                optimizer.tell(parameter, math.inf)
         if error_is_best:
             print("[WARNING] the best is an error")
         if best_result < best_result_global:
@@ -175,17 +173,13 @@ def total_search(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float]
     parallel_simulator = s2s.ParallelSimulator(workers)
     
     error_handler = s2s.error_sum_create()
-    s2s.error_sum_add_handler(error_handler, s2s.stability_error_create())
-    s2s.error_sum_add_handler(error_handler, s2s.transitorial_error_create())
+    s2s.error_sum_add_handler(error_handler, s2s.stability_error_create(), 1e6)
+    s2s.error_sum_add_handler(error_handler, s2s.transitorial_error_create(), 1)
     
     to_search: list[tuple[ParameterId, list[float]]] = []
     combinations = 1
     for k in k_constants:
-        choices = None
-        if k.startswith("k_input") or k.startswith("k_output"):
-            choices = [10**i for i in range(-24,-11)]
-        else:
-            choices = [10**i for i in range(-6,7)]
+        choices = [10**i for i in range(-6,7)]
         combinations *= len(choices)
         to_search.append((k,choices))
     
@@ -224,7 +218,7 @@ def total_search(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float]
                     local_best_combinations = p.copy()
                 if error:
                     errors += 1
-                if not error and value < 1e-10:
+                if not error and value < 1e-16:
                     amm.append(p.copy())
             if local_best_value < best_value:
                 best_value = local_best_value
@@ -232,12 +226,12 @@ def total_search(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float]
             count += 1
             if count >= 1000:
                 count = 0
-                print(f"[INFO] {i+1}/{combinations}")
-                print(f"[INFO]      best value: {best_value}")
-                print(f"[INFO]      local best value: {local_best_value}")
-                print(f"[INFO]      time: {time.time() - start}")
-                print(f"[INFO]      errors: {errors}/{len(batch)}")
-                print(f"[INFO]      len amm: {len(amm)}")
+                print(f"[INFO] {i+1}/{combinations}", file=sys.stderr)
+                print(f"[INFO]      best value: {best_value}", file=sys.stderr)
+                print(f"[INFO]      local best value: {local_best_value}", file=sys.stderr)
+                print(f"[INFO]      time: {time.time() - start}", file=sys.stderr)
+                print(f"[INFO]      errors: {errors}/{len(batch)}", file=sys.stderr)
+                print(f"[INFO]      len amm: {len(amm)}", file=sys.stderr)
                 start = time.time()
             batch = []
             

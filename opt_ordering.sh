@@ -13,9 +13,8 @@ PYTHON=/venv-sbml2sim/bin/python3
 
 docker run -it \
     -e DISPLAY=$DISPLAY --net=host \
-    --cap-add=SYS_PTRACE --security-opt seccomp=unconfined --privileged \
     --name sbml2sim sbml2sim \
-    gdb --args $PYTHON sbml2sim/opt_ordering.py "$file_path" --output-file ord_params.json "$@"
+    $PYTHON sbml2sim/opt_ordering.py "$file_path" --output-file ord_params.json "$@"
 
 ./take_file.sh ord_params.json 
 

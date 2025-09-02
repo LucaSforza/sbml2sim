@@ -52,7 +52,7 @@ public:
 
     static SBMLDoc *normal_sbml(const char *file_path) {
         SBMLDoc *out = new SBMLDoc(file_path);
-        make_all_input_costant_species(out->model, out->inputs);
+        // make_all_input_costant_species(out->model, out->inputs);
         return out;
     }
 

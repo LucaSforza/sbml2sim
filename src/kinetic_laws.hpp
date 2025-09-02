@@ -146,11 +146,11 @@ std::string add_convinience_kinetic_law_reversible(libsbml::Model *model, libsbm
         p->setValue(1.0);
         *kinetic_constant_added += 1;
         int stoichiometry = sr->getStoichiometry();
-        reaction_part += "*(("+sr->getId()+"/"+paramName+")^"+std::to_string(stoichiometry)+")";
+        reaction_part += "*(("+sr->getSpecies()+"/"+paramName+")^"+std::to_string(stoichiometry)+")";
         if(j != 0) den_substrate_part += "*";
-        den_substrate_part += "( 1 +("+sr->getId()+"/"+paramName+")";
+        den_substrate_part += "( 1 +("+sr->getSpecies()+"/"+paramName+")";
         for(int s = 2; s <= stoichiometry; s++) {
-            den_substrate_part += "+(("+sr->getId()+"/"+paramName+")^"+std::to_string(s)+")";
+            den_substrate_part += "+(("+sr->getSpecies()+"/"+paramName+")^"+std::to_string(s)+")";
         }
         den_substrate_part += ")";
 
@@ -165,11 +165,11 @@ std::string add_convinience_kinetic_law_reversible(libsbml::Model *model, libsbm
         p->setValue(1.0);
         *kinetic_constant_added += 1;
         int stoichiometry = sr->getStoichiometry();
-        product_part += "*(("+sr->getId()+"/"+paramName+")^"+std::to_string(stoichiometry)+")";
+        product_part += "*(("+sr->getSpecies()+"/"+paramName+")^"+std::to_string(stoichiometry)+")";
         if(j != 0) den_product_part += "*";
-        den_product_part += "( 1 +("+sr->getId()+"/"+paramName+")";
+        den_product_part += "( 1 +("+sr->getSpecies()+"/"+paramName+")";
         for(int s = 2; s <= stoichiometry; s++) {
-            den_product_part += "+(("+sr->getId()+"/"+paramName+")^"+std::to_string(s)+")";
+            den_product_part += "+(("+sr->getSpecies()+"/"+paramName+")^"+std::to_string(s)+")";
         }
         den_product_part += ")";
     }
@@ -209,11 +209,11 @@ std::string add_convinience_kinetic_law_irreversible(libsbml::Model *model, libs
         p->setConstant(true);
         *kinetic_constant_added += 1;
         int stoichiometry = sr->getStoichiometry();
-        reaction_part += "*(("+sr->getId()+"/"+paramName+")^"+std::to_string(stoichiometry)+")";
+        reaction_part += "*(("+sr->getSpecies()+"/"+paramName+")^"+std::to_string(stoichiometry)+")";
         if(j != 0) den_substrate_part += "*";
-        den_substrate_part += "( 1 +("+sr->getId()+"/"+paramName+")";
+        den_substrate_part += "( 1 +("+sr->getSpecies()+"/"+paramName+")";
         for(int s = 2; s <= stoichiometry; s++) {
-            den_substrate_part += "+(("+sr->getId()+"/"+paramName+")^"+std::to_string(s)+")";
+            den_substrate_part += "+(("+sr->getSpecies()+"/"+paramName+")^"+std::to_string(s)+")";
         }
         den_substrate_part += ")";
 

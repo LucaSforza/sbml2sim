@@ -156,7 +156,7 @@ def parse_args():
     parser.add_argument("--plot", default=True, action="store_true", help="Plot the simulation results")
     parser.add_argument("--only-avg", action="store_true", help="Plot only avg_* columns")
     parser.add_argument("--output-file", default="simulation", help="Base name for output files (csv/png)")
-    parser.add_argument("--kinetic-constants", default="ord_params.json", help="file path to kientic constants")
+    parser.add_argument("--kinetic-constants", default=None, help="file path to kientic constants")
     parser.add_argument("--proteomics", default=None, help="file path to proteomics")
     parser.add_argument("--tissue", default="breast_cancer_cell", help="tissue name")
     parser.add_argument("--plot-constrained", action="store_true", help="plot only constrained species")
@@ -191,6 +191,7 @@ def main3():
 def main2():
     args = parse_args()
     sbml = SBMLDoc(args.input_file)
+    print(sbml.convert_to_string())
     if args.random:
         sbml.random_start_concentration()
     if args.kinetic_constants is not None:
