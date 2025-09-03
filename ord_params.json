@@ -1,13 +1,11 @@
 {
   "kinetic_constants": {
-    "k_output_species_390481": 1e-33,
-    "k_output_species_391256": 100000000,
-    "k_input_species_391287": 1e-26,
-    "k_input_species_391267": 1e-23,
-    "k_input_species_390455": 1e-24,
-    "k_forcat_reaction_391266": 1000,
-    "k_forcat_reaction_390470": 1e-37
-  },
-  "output_constants": {},
-  "input_constants": {}
+      "k_output_species_390481": 1e-11,
+    "k_output_species_391256": 1e-14,
+    "k_input_species_391287": 1e-17,
+    "k_input_species_391267": 1e-19,
+    "k_input_species_390455": 1e-18,
+    "k_forcat_reaction_391266": 1e-17,
+    "k_forcat_reaction_390470": 1e-15
+  }
 }

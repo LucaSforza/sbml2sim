@@ -59,11 +59,13 @@ class NevergradOpt(Optimizer):
                 best_value = loss
             print(f"[INFO] termineted {str_err} error in {time.time() - start_time}")
             if err:
-                return math.inf
+                return 1e9 
             else:
-                return loss
+                if loss < 1e9:
+                    return loss
+                return 1e9
 
-        optimizer_cls = getattr(ng.optimizers, optimizer_name, ng.optimizers.OnePlusOne)
+        optimizer_cls = getattr(ng.optimizers, optimizer_name, ng.optimizers.NGOpt)
         if optimizer_name == "BayesianOptimization":
             opt = ng.optimizers._BO(parametrization=parametrization, budget=budget,init_budget=20, utility_kind="ei")
         else:

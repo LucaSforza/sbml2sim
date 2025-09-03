@@ -118,32 +118,25 @@ def utility_function(
 
 TISSUE="breast_cancer_cell" # TODO: param
 
-def search_for_kinetic_constants(budget: str, optimizer: str, known_input: list[str], sbml: s2s.SBMLDoc, tissue: str, concentrations: dict[SpeciesId, float], model: s2s.Simulator, simulator: s2s.ParallelSimulator, error_handler: s2s.ErrorHandler) -> dict[ParameterId, float]:
+def search_for_kinetic_constants(budget: str, optimizer: str,sbml: s2s.SBMLDoc, model: s2s.Simulator, simulator: s2s.ParallelSimulator, error_handler: s2s.ErrorHandler) -> dict[ParameterId, float]:
     print("[INFO] Opt kinetic constants") 
     kinetic_constants: list[ParameterId] = sbml.get_kinetic_constants()
-    output_constants: list[ParameterId] = sbml.get_output_constants()
-    input_species: list[ParameterId] = [species for species in sbml.get_input_species() if species not in known_input]
-    print(f"[INFO] input species: {input_species}")
+    # output_constants: list[ParameterId] = sbml.get_output_constants()
+    # input_species: list[ParameterId] = [species for species in sbml.get_input_species() if species not in known_input]
     
     # Build parametrization with separate dictionaries
     kinetic_param_dict = {}
     for kc in kinetic_constants:
         # Parameter: kinetic constant
-        kinetic_param_dict[kc] = ng.p.Scalar(lower=-6.0, upper=6.0)
-
-    output_param_dict = {}
-    for oc in output_constants:
-        # Parameter: output constant
-        output_param_dict[oc] = ng.p.Scalar(lower=-12, upper=-2)
-    
-    input_param_dict = {}
-    for ic in input_species:
-        input_param_dict[ic] = ng.p.Scalar(lower=-20.0, upper=-2.0)
+        if kc.startswith("k_input"):
+            kinetic_param_dict[kc] = ng.p.Scalar(lower=-40.0, upper=-0.0)
+        else:
+            kinetic_param_dict[kc] = ng.p.Scalar(lower=-20.0, upper=20.0)
         
     opt = NevergradOpt(model, simulator, error_handler)
     
     
-    parametrization = ng.p.Dict(**{ "kinetic_constants": ng.p.Dict(**kinetic_param_dict), "output_constants": ng.p.Dict(**output_param_dict), "input_constants": ng.p.Dict(**input_param_dict) })
+    parametrization = ng.p.Dict(**{ "kinetic_constants": ng.p.Dict(**kinetic_param_dict)})
     
     args = {"params": parametrization}
     
@@ -199,33 +192,14 @@ def main(args: Any):
     except Exception:
         pass
     sbml: s2s.SBMLDoc = s2s.SBMLDoc(args.input_file)
-    # ref: https://bionumbers.hms.harvard.edu/bionumber.aspx?id=115154&ver=1&trm=cell+size+breast+cancer+cell+human+&org=
-    volume_cell_breast_cancer_cell = 1.76 * 10**12  # nanometers
-    set_compartement_size(sbml, volume_cell_breast_cancer_cell)
-    proteins: dict[SpeciesId,UniprodId] = sbml.get_proteins_data()
-    
-    (proteomics, _) = get_proteomics(proteins) # APIs
-
-    concentrations: dict[SpeciesId, float] = convert_ibaq_to_concentrations(sbml, proteomics, TISSUE)
-    print(concentrations)
-    # replica il modello per il tessuto del cancro al seno
-    # le costanti cinetiche rappresentato un esponente x. Per avere il valore calcolcare 10^x
-    error_handler = s2s.classical_error_create()
-    known_input = []
-    for (species, conc) in concentrations.items():
-        if sbml.is_input(species):
-            known_input.append(species)
-            sbml.set_initial_concentration(species, conc)
-        elif not sbml.is_output(species):
-            sbml.set_initial_concentration(species, conc)
-            error_handler.add_real_concentration(species, conc)
-        else:
-            error_handler.add_output(species)
     model = s2s.rr_simualtor(sbml)
     simualtor = s2s.ParallelSimulator(1)
     simualtor.add_worker(model) # TODO: cambia nome funzione
     # TODO: error handler
-    result = search_for_kinetic_constants(args.budget, args.optimizer, known_input, sbml, TISSUE, concentrations, model, simualtor, error_handler)
+    error_handler = s2s.error_sum_create()
+    s2s.error_sum_add_handler(error_handler, s2s.stability_error_create(), 10)
+    s2s.error_sum_add_handler(error_handler, s2s.transitorial_error_create(), 1)
+    result = search_for_kinetic_constants(args.budget, args.optimizer, sbml, model, simualtor, error_handler)
     print("[INFO] kinetic costants: ")
     print(result["kinetic_constants"])
     

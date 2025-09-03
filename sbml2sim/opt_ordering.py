@@ -48,12 +48,12 @@ def set_parameters_to_model(sim: s2s.Simulator, args,parameter: ng.p.Parameter):
 
 def parameters_to_optimize(args, parameterId: ParameterId) -> ng.p.Parameter:
     if args.scalar:
-       return ng.p.Scalar(lower=-6,upper=6) 
+        return ng.p.Scalar(lower=-20, upper=20, init=-20)
     elif args.unify:
         print("[FATAL ERROR] unexpected error")
         exit(1)
     else:
-        return ng.p.Choice([10**i for i in range(-40, 40)])
+        return ng.p.TransitionChoice([10**i for i in range(-20, 21)])
 
 def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], seed: int) -> dict[ParameterId, float]:
     workers = int(args.workers)
@@ -62,7 +62,7 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], se
     parallel_simulator = s2s.ParallelSimulator(workers)
 
     error_handler = s2s.error_sum_create()
-    s2s.error_sum_add_handler(error_handler, s2s.stability_error_create(), 1e2)
+    s2s.error_sum_add_handler(error_handler, s2s.stability_error_create(), 10)
     s2s.error_sum_add_handler(error_handler, s2s.transitorial_error_create(), 1)
     """
     for (species, conc) in concentrations.items():
@@ -107,8 +107,7 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], se
         
         
     parametrization = ng.p.Dict(**kinetic_param_dict)
-    optimizer = ng.optimizers.DiscreteDE(parametrization=parametrization, budget=budget, num_workers=parallel_degree)
-    
+    optimizer = ng.optimizers.DE(parametrization=parametrization, budget=budget, num_workers=parallel_degree)
     
     for _ in range(parallel_degree):
         sim = s2s.rr_simualtor(sbml)
@@ -145,17 +144,25 @@ def optimize(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float], se
                 exit(1)
             if value < best_result:
                 if error: error_is_best = True
-                else: error_is_best = False
-                best_result = value
+                else: 
+                    error_is_best = False
+                    best_result = value
             if not error:
                 not_errors += 1
                 if value <= 0:
                     print(f"[INFO] ammissibile: {value}")
                     amm.append({k: v.value for k, v in parameter.items()})
+                if value > 1e9:
+                    value = 1e9
                 optimizer.tell(parameter, value)
             else:
                 errors += 1
-                optimizer.tell(parameter, math.inf)
+                optimizer.tell(parameter, 1e9)
+            if value < best_result:
+                if error: error_is_best = True
+                else: 
+                    error_is_best = False
+                    best_result = value
         if error_is_best:
             print("[WARNING] the best is an error")
         if best_result < best_result_global:
@@ -173,7 +180,7 @@ def total_search(sbml: s2s.SBMLDoc, args, concentrations: dict[SpeciesId, float]
     parallel_simulator = s2s.ParallelSimulator(workers)
     
     error_handler = s2s.error_sum_create()
-    s2s.error_sum_add_handler(error_handler, s2s.stability_error_create(), 1e6)
+    s2s.error_sum_add_handler(error_handler, s2s.stability_error_create(), 10)
     s2s.error_sum_add_handler(error_handler, s2s.transitorial_error_create(), 1)
     
     to_search: list[tuple[ParameterId, list[float]]] = []

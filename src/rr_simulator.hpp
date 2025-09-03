@@ -22,6 +22,7 @@ public:
         options.steps = 100;
         options.duration = 100;
         simulator.setSimulateOptions(options);
+        rr::Logger::disableLogging();
         // Seleziona solo le colonne che iniziano per 'avg_'
         // TODO:
         /* std::vector<std::string> allColumns = simulator.getSelectionList();

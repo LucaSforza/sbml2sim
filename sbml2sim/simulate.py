@@ -199,8 +199,6 @@ def main2():
         with open(args.kinetic_constants) as f:
             kinetic_constants = json.load(f)
         k_constants = kinetic_constants["kinetic_constants"]
-        output_constants = kinetic_constants["output_constants"]
-        input_constants = kinetic_constants["input_constants"]
         
         for (param, value) in k_constants.items():
             if args.log_parameters:
@@ -208,11 +206,6 @@ def main2():
             else:
                 sbml.set_parameter(param, value)
             
-        for (param, value) in output_constants.items():
-            sbml.set_parameter(param, 10**value)
-            
-        for (species, value) in input_constants.items():
-            sbml.set_initial_concentration(species, 10**value)
     if args.proteomics is not None:
         proteomics = None
         with open(args.proteomics) as f:

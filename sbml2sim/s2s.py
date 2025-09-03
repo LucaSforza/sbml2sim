@@ -430,10 +430,9 @@ class Simulator:
         else:
             for (param, value) in kinetic_costants.items():
                 self.set_parameter(param, 10**value)
-            for (param, value) in output_constants.items():
-                self.set_parameter(param, 10**value)
-            for (param, value) in input_initial_values.items():
-                self.set_initial_concentration(param, 10**value)
+            if input_initial_values:
+                for (param, value) in input_initial_values.items():
+                    self.set_initial_concentration(param, 10**value)
         
         
 def rr_simualtor(doc: SBMLDoc) -> Simulator:
